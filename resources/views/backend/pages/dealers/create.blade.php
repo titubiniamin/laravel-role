@@ -67,17 +67,17 @@
 
                                     <div class="form-group">
                                         <label for="address">Address</label>
-                                        <input type="text" class="form-control bksearch"/>
+                                        <input type="text" class="form-control bksearch" id="address"/>
                                         <div class="bklist"></div>
                                     </div>
+
                                     <div class="form-group">
-                                        <div id="map" style="width: 100%;height: 100px;background-color: yellow">Map</div>
+                                        <div id="map" style="width: 100%; height: 400px; background-color: yellow;"></div>
                                     </div>
 
                                     <button type="submit" class="btn btn-primary">Save Dealer</button>
                                 </form>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -85,28 +85,41 @@
         </div>
     </div>
 
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
     <script
-        src="https://cdn.jsdelivr.net/gh/barikoi/barikoi-js@b6f6295467c19177a7d8b73ad4db136905e7cad6/dist/barikoi.min.js?key:MTM0MjpTTzVSU0hCOFFO"></script>
+        src="https://cdn.jsdelivr.net/gh/barikoi/barikoi-js@b6f6295467c19177a7d8b73ad4db136905e7cad6/dist/barikoi.min.js?key:bkoi_0f0c0e2aaed92fda43a85d29493d69776ef1c810e8f3d425f0b90fed001bef50"></script>
 
     <script>
-        const defaultMarker = [23.7104, 90.40744];
-        let map = L.map("map");
-        map.setView(defaultMarker, 13);
-        // Set up the OSM layer
-        L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-            maxZoom: 18,
-        }).addTo(map);
-        L.marker(defaultMarker).addTo(map);
-        Bkoi.onSelect(function () {
-            // get selected data from dropdown list
-            let selectedPlace = Bkoi.getSelectedData();
-            // center of the map
-            let center = [selectedPlace.latitude, selectedPlace.longitude];
-            // Add marker to the map & bind popup
-            map.setView(center, 19);
-            L.marker(center).addTo(map).bindPopup(selectedPlace.address);
+        document.addEventListener('DOMContentLoaded', function() {
+            const defaultMarker = [23.7104, 90.40744];
+            const map = L.map("map").setView(defaultMarker, 13);
+            let currentMarker; // Variable to hold the marker
+
+            // Set up the OSM layer
+            L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                maxZoom: 18,
+            }).addTo(map);
+
+            // Create the marker initially at the default location
+            currentMarker = new L.marker(defaultMarker).addTo(map);
+
+            Bkoi.onSelect(function () {
+                let selectedPlace = Bkoi.getSelectedData();
+                let center = [selectedPlace.latitude, selectedPlace.longitude];
+
+                // Update marker position
+                currentMarker.setLatLng(center.reverse());
+                map.setView(center, 19); // Center the map on the selected location
+                currentMarker.bindPopup(selectedPlace.address).openPopup(); // Bind popup with address
+            });
         });
     </script>
+
     <script src="https://cdn.barikoi.com/bkoi-gl-js/dist/bkoi-gl.js"></script>
     <script>
         bkoigl.accessToken = "bkoi_664be9ea6285a489c570bccb707e8f705720d213d832837ac176219bdbe0a218"; // Replace with Barikoi API Key
