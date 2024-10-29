@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Backend\DealerController;
+use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -54,3 +55,4 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     //Dealer
     Route::resource('dealers', DealerController::class);
 })->middleware('auth:admin');
+Route::get('/test',[TestController::class,'index'])->name('test');
