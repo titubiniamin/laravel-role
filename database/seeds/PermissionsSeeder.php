@@ -15,6 +15,7 @@ class PermissionsSeeder extends Seeder
         Permission::create(['name' => 'dealer.read']);
         Permission::create(['name' => 'dealer.update']);
         Permission::create(['name' => 'dealer.delete']);
+        Permission::create(['name' => 'dealer.edit']);
         // Add other permissions as needed
     }
 }

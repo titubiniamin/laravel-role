@@ -1,7 +1,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-    Dealers Page - Dealer
+    Edit Page - Dealer
 @endsection
 
 @section('admin-content')
@@ -32,7 +32,7 @@
                     <div class="col-md-12 mt-5 mb-3">
                         <div class="card">
                             <div class="p-4">
-                                <h4>Create Dealer</h4>
+                                <h4>Update Dealer</h4>
 
                                 <!-- Display validation errors -->
                                 @if ($errors->any())
@@ -63,52 +63,53 @@
                                     }, 5000); // 5-second delay
                                 </script>
 
-                                <form action="{{ route('admin.dealers.store') }}" method="POST">
+                                <form action="{{ route('admin.dealers.update',$dealer->id) }}" method="POST">
                                     @csrf
+                                    @method('PUT')
                                     <div class="form-group">
                                         <label for="name">Name</label>
-                                        <input type="text" class="form-control" value="{{ old('name') }}" name="name" required>
+                                        <input type="text" class="form-control" value="{{ old('name', $dealer->name) }}" name="name" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="owner_name">Owner Name</label>
-                                        <input type="text" class="form-control" value="{{ old('owner_name') }}" name="owner_name" required>
+                                        <input type="text" class="form-control" value="{{ old('owner_name', $dealer->owner_name) }}" name="owner_name" required>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="zone">Zone</label>
-                                        <input type="text" class="form-control" name="zone">
+                                        <input type="text" class="form-control" value="{{ old('zone', $dealer->zone) }}" name="zone">
                                     </div>
 
                                     <div class="form-group">
                                         <label for="dealer_code">Dealer Code</label>
-                                        <input type="text" class="form-control" value="{{ old('dealer_code') }}" name="dealer_code">
+                                        <input type="text" class="form-control" value="{{ old('dealer_code', $dealer->dealer_code) }}" name="dealer_code">
                                     </div>
 
                                     <div class="form-group">
                                         <label for="email">Email</label>
-                                        <input type="email" class="form-control" name="email">
+                                        <input type="email" class="form-control" value="{{old('email',$dealer->email)}}" name="email">
                                     </div>
 
                                     <div class="form-group">
                                         <label for="website">Website</label>
-                                        <input type="text" class="form-control" value="{{old('website')}}" name="website">
+                                        <input type="text" class="form-control" value="{{old('website',$dealer->website)}}" name="website">
                                     </div>
 
                                     <div class="form-group">
                                         <label for="phone">Mobile</label>
-                                        <input type="text" class="form-control" value="{{old('mobile')}}" name="mobile">
+                                        <input type="text" class="form-control" value="{{old('mobile',$dealer->mobile)}}" name="mobile">
                                     </div>
 
                                     <div class="form-group">
                                         <label for="phone">Address</label>
-                                        <input type="text" class="form-control" value="{{old('address')}}" name="address">
+                                        <input type="text" class="form-control" value="{{old('address', $dealer->address)}}" name="address">
                                     </div>
 
                                     <div class="form-group">
                                         <label for="location">Location</label>
-                                        <input type="text" name="longitude"  id="longitude" hidden>
-                                        <input type="text" name="latitude"  id="latitude" hidden>
-                                        <input type="text" class="form-control bksearch"  name="location" id="location"/>
+                                        <input type="text" name="longitude" value="{{$dealer->longitude}}" id="longitude" hidden>
+                                        <input type="text" name="latitude" value="{{$dealer->latitude}}"  id="latitude" hidden>
+                                        <input type="text" class="form-control bksearch" value="{{$dealer->location}}"  name="location" id="location"/>
                                         <div class="bklist"></div>
                                         <div id="loading" style="display: none;">Loading...</div> <!-- Loading indicator -->
                                     </div>
@@ -117,7 +118,7 @@
                                         <div id="map" style="width: 100%; height: 400px; background-color: yellow;"></div>
                                     </div>
 
-                                    <button type="submit" class="btn btn-primary">Save Dealer</button>
+                                    <button type="submit" class="btn btn-primary">Update Dealer</button>
                                 </form>
                             </div>
                         </div>
@@ -130,21 +131,36 @@
     <!-- Your existing script and styles here -->
 
 
-<script>
+    <script>
         bkoigl.accessToken = "{{ env('BARIKOI_API_KEY') }}"; // required
+
+        // Fetch dealer's coordinates from backend
+        const dealerLongitude = {{ $dealer->longitude ?? 90.3938010872331 }};
+        const dealerLatitude = {{ $dealer->latitude ?? 23.821600277500405 }};
+        const dealerLocation = "{{ $dealer->location ?? '' }}";
 
         const map = new bkoigl.Map({
             container: "map",
-            center: [90.3938010872331, 23.821600277500405],
+            center: [dealerLongitude, dealerLatitude], // Set map center to dealer's coordinates
             zoom: 15,
         });
 
+        // Initialize the marker at dealer's coordinates
+        let marker = new bkoigl.Marker({ draggable: true })
+            .setLngLat([dealerLongitude, dealerLatitude])
+            .addTo(map);
+
+        // Populate location input field with dealer's location
+        document.getElementById("location").value = dealerLocation;
+        document.getElementById("longitude").value = dealerLongitude;
+        document.getElementById("latitude").value = dealerLatitude;
+
+        // Event listener for location search
         document.getElementById("location").addEventListener("input", function () {
             let query = this.value;
             let loadingIndicator = document.getElementById("loading");
 
             if (query.length > 2) {
-                console.log('Searching for:', query);
                 loadingIndicator.style.display = "block"; // Show loading indicator
                 fetch(`/api/proxy/autocomplete?q=${query}`)
                     .then(response => response.json())
@@ -152,8 +168,6 @@
                         loadingIndicator.style.display = "none"; // Hide loading indicator
                         if (data.places) {
                             let suggestions = data.places;
-                            console.log('suggestion', suggestions);
-
                             let suggestionList = document.querySelector('.bklist');
                             suggestionList.innerHTML = ''; // Clear previous suggestions
 
@@ -183,12 +197,7 @@
             }
         });
 
-        // Initialize the marker
-        let marker = new bkoigl.Marker({ draggable: true })
-            .setLngLat([90.3938010872331, 23.821600277500405])
-            .addTo(map);
-
-        // Event listener for marker drag end
+        // Event listener for marker drag end to update coordinates and address
         marker.on('dragend', function() {
             const lngLat = marker.getLngLat();
             const longitude = lngLat.lng;
@@ -199,11 +208,9 @@
                 .then(data => {
                     if (data.place && data.place.address) {
                         const locationInput = document.getElementById("location");
-                        const longitudeInput = document.getElementById("longitude");
-                        const latitudeInput = document.getElementById("latitude");
                         locationInput.value = data.place.address;
-                        longitudeInput.value = longitude;
-                        latitudeInput.value = latitude;
+                        document.getElementById("longitude").value = longitude;
+                        document.getElementById("latitude").value = latitude;
                     }
                 })
                 .catch(error => {
@@ -212,20 +219,21 @@
         });
     </script>
 
+
     <style>
-    .suggestion-item {
-        padding: 5px;
-        cursor: pointer;
-    }
-    .suggestion-item:hover {
-        background-color: #f0f0f0; /* Highlight on hover */
-    }
-    #loading {
-        display: none; /* Initially hidden */
-        font-size: 14px;
-        color: #888;
-        padding: 10px 0;
-    }
+        .suggestion-item {
+            padding: 5px;
+            cursor: pointer;
+        }
+        .suggestion-item:hover {
+            background-color: #f0f0f0; /* Highlight on hover */
+        }
+        #loading {
+            display: none; /* Initially hidden */
+            font-size: 14px;
+            color: #888;
+            padding: 10px 0;
+        }
 
 
     </style>
