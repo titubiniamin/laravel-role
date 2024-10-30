@@ -34,7 +34,7 @@ class BranchController extends Controller
         $query = $request->get('q');
         $apiKey = env('BARIKOI_API_KEY', 'your-default-api-key');
 
-        $response = Http::get("https://barikoi.xyz/v1/api/search/autocomplete/{$apiKey}/place", [
+        $response = Http::get("https://barikoi.xyz/v2/api/search/autocomplete/{$apiKey}/place", [
             'q' => $query,
         ]);
 

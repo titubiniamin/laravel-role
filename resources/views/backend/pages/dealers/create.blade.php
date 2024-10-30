@@ -85,48 +85,104 @@
             </div>
         </div>
     </div>
-    <link
-        rel="stylesheet"
-        href="https://cdn.barikoi.com/bkoi-gl-js/dist/bkoi-gl.css"
-    />
+    <link rel="stylesheet" href="https://cdn.barikoi.com/bkoi-gl-js/dist/bkoi-gl.css" />
     <script src="https://cdn.barikoi.com/bkoi-gl-js/dist/bkoi-gl.js"></script>
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/barikoi/barikoi-js@b6f6295467c19177a7d8b73ad4db136905e7cad6/dist/barikoi.min.css"
-    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/barikoi/barikoi-js@b6f6295467c19177a7d8b73ad4db136905e7cad6/dist/barikoi.min.css" />
     <script>
         bkoigl.accessToken = "bkoi_0f0c0e2aaed92fda43a85d29493d69776ef1c810e8f3d425f0b90fed001bef50"; // required
-        new bkoigl.Map({
+
+        // Initialize the map with a starting center and zoom level
+        const map = new bkoigl.Map({
             container: "map",
             center: [90.3938010872331, 23.821600277500405],
-            zoom: 12,
+            zoom: 15,
         });
-    </script>
-    <script>
-        bkoigl.accessToken = "bkoi_664be9ea6285a489c570bccb707e8f705720d213d832837ac176219bdbe0a218"; // Replace with Barikoi API Key
+
+        // Initialize the marker
+        let marker = new bkoigl.Marker({ draggable: true })
+            .setLngLat([90.3938010872331, 23.821600277500405])
+            .addTo(map);
+
+        // Event listener for marker drag end
+        marker.on('dragend', function() {
+            const lngLat = marker.getLngLat(); // Get the current position of the marker
+            const longitude = lngLat.lng;
+            const latitude = lngLat.lat;
+
+            // Call the reverse geocoding API to get the address
+            fetch(`/api/proxy/reverse-geocode?longitude=${longitude}&latitude=${latitude}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('API Response:', data); // Log the complete response
+                    if (data.place && data.place.address) { // Check if an address is returned
+                        const addressInput = document.getElementById("address");
+                        addressInput.value = data.place.address; // Update the input with the address
+                        console.log('Updated address:', addressInput.value); // Log the updated address
+                    } else {
+                        console.warn('No address found in response');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching address:', error); // Handle fetch errors
+                });
+        });
+
 
         document.getElementById("address").addEventListener("input", function () {
-            console.log('test');
             let query = this.value;
             if (query.length > 2) {
-                fetch(`https://barikoi.com/v1/api/search/autocomplete/${bkoigl.accessToken}/place?q=${query}`)
+                console.log('Searching for:', query);
+                fetch(`/api/proxy/autocomplete?q=${query}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.places) {
-                            let suggestions = data.places.map(place => place.address);
-                            console.log(suggestions); // Display suggestions or populate autocomplete dropdown
+                            let suggestions = data.places;
+                            console.log('suggestion', suggestions); // Log suggestions here to inspect its content
+
+                            let suggestionList = document.querySelector('.bklist');
+                            suggestionList.innerHTML = ''; // Clear previous suggestions
+
+                            suggestions.forEach(place => {
+                                console.log('this is inside')
+                                let suggestionItem = document.createElement('div');
+                                suggestionItem.textContent = place.address;
+                                suggestionItem.className = 'suggestion-item'; // Add a class for styling
+                                suggestionItem.onclick = function () {
+                                    console.log('Suggestion clicked:', place.address); // Log clicked suggestion
+                                    marker.setLngLat([place.longitude, place.latitude]);
+                                    map.flyTo({ center: [place.longitude, place.latitude], zoom: 15 });
+                                    suggestionList.innerHTML = ''; // Clear suggestions after selection
+                                    document.getElementById("address").value = place.address; // Update the input with the selected address
+                                };
+                                suggestionList.appendChild(suggestionItem);
+                            });
                         }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data:', error); // Handle fetch errors
                     });
             }
         });
     </script>
+
+
+
 
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-    <script
-        src="https://cdn.jsdelivr.net/gh/barikoi/barikoi-js@b6f6295467c19177a7d8b73ad4db136905e7cad6/dist/barikoi.min.js?key:bkoi_0f0c0e2aaed92fda43a85d29493d69776ef1c810e8f3d425f0b90fed001bef50"></script>
+    <script src="https://cdn.jsdelivr.net/gh/barikoi/barikoi-js@b6f6295467c19177a7d8b73ad4db136905e7cad6/dist/barikoi.min.js?key:bkoi_0f0c0e2aaed92fda43a85d29493d69776ef1c810e8f3d425f0b90fed001bef50"></script>
+<style>
+    .suggestion-item {
+        padding: 5px;
+        cursor: pointer;
+    }
 
+    .suggestion-item:hover {
+        background-color: #f0f0f0; /* Highlight on hover */
+    }
+
+</style>
 @endsection

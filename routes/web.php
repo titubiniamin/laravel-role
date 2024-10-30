@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApiProxyController;
 use App\Http\Controllers\Backend\DealerController;
 use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Auth;
@@ -56,3 +57,5 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::resource('dealers', DealerController::class);
 })->middleware('auth:admin');
 Route::get('/test',[TestController::class,'index'])->name('test');
+//Route::get('/api/proxy/autocomplete', [ApiProxyController::class, 'fetchAutocomplete']);
+
