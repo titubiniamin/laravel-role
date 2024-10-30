@@ -39,25 +39,26 @@
                                         <label for="name">Name</label>
                                         <input type="text" class="form-control" name="name" required>
                                     </div>
-
                                     <div class="form-group">
-                                        <label for="company">Company</label>
-                                        <input type="text" class="form-control" name="company">
+                                        <label for="owner_name">Name</label>
+                                        <input type="text" class="form-control" name="owner_name" required>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="representative">Representative</label>
-                                        <input type="text" class="form-control" name="representative">
+                                        <label for="zone">Zone</label>
+                                        <input type="text" class="form-control" name="zone">
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="phone">Phone</label>
-                                        <input type="text" class="form-control" name="phone">
+                                        <label for="dealer_code">Dealer Code</label>
+                                        <input type="text" class="form-control" name="dealer_code">
                                     </div>
+
+
 
                                     <div class="form-group">
                                         <label for="email">Email</label>
-                                        <input type="email" class="form-control" name="email" required>
+                                        <input type="email" class="form-control" name="email">
                                     </div>
 
                                     <div class="form-group">
@@ -66,10 +67,24 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="address">Address</label>
-                                        <input type="text" class="form-control bksearch" id="address"/>
-                                        <div class="bklist"></div>
+                                        <label for="phone">Mobile</label>
+                                        <input type="text" class="form-control" name="mobile">
                                     </div>
+
+                                    <div class="form-group">
+                                        <label for="phone">Address</label>
+                                        <input type="text" class="form-control" name="address">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="location">Location</label>
+                                        <input type="text" name="longitude" id="longitude" hidden>
+                                        <input type="text" name="latitude" id="latitude" hidden>
+                                        <input type="text" class="form-control bksearch" name="location" id="location"/>
+                                        <div class="bklist"></div>
+                                        <div id="loading" style="display: none;">Loading...</div> <!-- Loading indicator -->
+                                    </div>
+
 
                                     <!-- Latitude and Longitude display -->
                                     <div class="form-group">
@@ -85,17 +100,58 @@
             </div>
         </div>
     </div>
-    <link rel="stylesheet" href="https://cdn.barikoi.com/bkoi-gl-js/dist/bkoi-gl.css" />
-    <script src="https://cdn.barikoi.com/bkoi-gl-js/dist/bkoi-gl.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/barikoi/barikoi-js@b6f6295467c19177a7d8b73ad4db136905e7cad6/dist/barikoi.min.css" />
-    <script>
-        bkoigl.accessToken = "bkoi_0f0c0e2aaed92fda43a85d29493d69776ef1c810e8f3d425f0b90fed001bef50"; // required
 
-        // Initialize the map with a starting center and zoom level
+    <script>
+        bkoigl.accessToken = "{{ env('BARIKOI_API_KEY') }}"; // required
+
         const map = new bkoigl.Map({
             container: "map",
             center: [90.3938010872331, 23.821600277500405],
             zoom: 15,
+        });
+
+        document.getElementById("location").addEventListener("input", function () {
+            let query = this.value;
+            let loadingIndicator = document.getElementById("loading");
+
+            if (query.length > 2) {
+                console.log('Searching for:', query);
+                loadingIndicator.style.display = "block"; // Show loading indicator
+                fetch(`/api/proxy/autocomplete?q=${query}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        loadingIndicator.style.display = "none"; // Hide loading indicator
+                        if (data.places) {
+                            let suggestions = data.places;
+                            console.log('suggestion', suggestions);
+
+                            let suggestionList = document.querySelector('.bklist');
+                            suggestionList.innerHTML = ''; // Clear previous suggestions
+
+                            suggestions.forEach(place => {
+                                let suggestionItem = document.createElement('div');
+                                suggestionItem.textContent = place.address;
+                                suggestionItem.className = 'suggestion-item';
+                                suggestionItem.onclick = function () {
+                                    marker.setLngLat([place.longitude, place.latitude]);
+                                    map.flyTo({ center: [place.longitude, place.latitude], zoom: 15 });
+                                    suggestionList.innerHTML = '';
+                                    document.getElementById("location").value = place.address;
+                                    document.getElementById("longitude").value = place.longitude;
+                                    document.getElementById("latitude").value = place.latitude;
+                                };
+                                suggestionList.appendChild(suggestionItem);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        loadingIndicator.style.display = "none"; // Hide loading indicator on error
+                        console.error('Error fetching data:', error);
+                    });
+            } else {
+                document.querySelector('.bklist').innerHTML = ''; // Clear suggestions if query is too short
+                loadingIndicator.style.display = "none"; // Hide loading indicator if no query
+            }
         });
 
         // Initialize the marker
@@ -105,84 +161,43 @@
 
         // Event listener for marker drag end
         marker.on('dragend', function() {
-            const lngLat = marker.getLngLat(); // Get the current position of the marker
+            const lngLat = marker.getLngLat();
             const longitude = lngLat.lng;
             const latitude = lngLat.lat;
 
-            // Call the reverse geocoding API to get the address
             fetch(`/api/proxy/reverse-geocode?longitude=${longitude}&latitude=${latitude}`)
                 .then(response => response.json())
                 .then(data => {
-                    console.log('API Response:', data); // Log the complete response
-                    if (data.place && data.place.address) { // Check if an address is returned
-                        const addressInput = document.getElementById("address");
-                        addressInput.value = data.place.address; // Update the input with the address
-                        console.log('Updated address:', addressInput.value); // Log the updated address
-                    } else {
-                        console.warn('No address found in response');
+                    if (data.place && data.place.address) {
+                        const locationInput = document.getElementById("location");
+                        const longitudeInput = document.getElementById("longitude");
+                        const latitudeInput = document.getElementById("latitude");
+                        locationInput.value = data.place.address;
+                        longitudeInput.value = longitude;
+                        latitudeInput.value = latitude;
                     }
                 })
                 .catch(error => {
-                    console.error('Error fetching address:', error); // Handle fetch errors
+                    console.error('Error fetching address:', error);
                 });
-        });
-
-
-        document.getElementById("address").addEventListener("input", function () {
-            let query = this.value;
-            if (query.length > 2) {
-                console.log('Searching for:', query);
-                fetch(`/api/proxy/autocomplete?q=${query}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.places) {
-                            let suggestions = data.places;
-                            console.log('suggestion', suggestions); // Log suggestions here to inspect its content
-
-                            let suggestionList = document.querySelector('.bklist');
-                            suggestionList.innerHTML = ''; // Clear previous suggestions
-
-                            suggestions.forEach(place => {
-                                console.log('this is inside')
-                                let suggestionItem = document.createElement('div');
-                                suggestionItem.textContent = place.address;
-                                suggestionItem.className = 'suggestion-item'; // Add a class for styling
-                                suggestionItem.onclick = function () {
-                                    console.log('Suggestion clicked:', place.address); // Log clicked suggestion
-                                    marker.setLngLat([place.longitude, place.latitude]);
-                                    map.flyTo({ center: [place.longitude, place.latitude], zoom: 15 });
-                                    suggestionList.innerHTML = ''; // Clear suggestions after selection
-                                    document.getElementById("address").value = place.address; // Update the input with the selected address
-                                };
-                                suggestionList.appendChild(suggestionItem);
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error fetching data:', error); // Handle fetch errors
-                    });
-            }
         });
     </script>
 
-
-
-
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/gh/barikoi/barikoi-js@b6f6295467c19177a7d8b73ad4db136905e7cad6/dist/barikoi.min.js?key:bkoi_0f0c0e2aaed92fda43a85d29493d69776ef1c810e8f3d425f0b90fed001bef50"></script>
-<style>
+    <style>
     .suggestion-item {
         padding: 5px;
         cursor: pointer;
     }
-
     .suggestion-item:hover {
         background-color: #f0f0f0; /* Highlight on hover */
     }
+    #loading {
+        display: none; /* Initially hidden */
+        font-size: 14px;
+        color: #888;
+        padding: 10px 0;
+    }
 
-</style>
+
+    </style>
 @endsection

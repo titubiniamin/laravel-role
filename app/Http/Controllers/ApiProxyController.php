@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\Http;
 
 class ApiProxyController extends Controller
 {
+    private $apiBarikoi;
+
+    public function __construct(){
+        $this->apiBarikoi=env('BARIKOI_API_KEY');
+    }
     public function fetchAutocomplete(Request $request)
     {
         // Extract the query parameter from the request
@@ -14,7 +19,7 @@ class ApiProxyController extends Controller
 
         // Construct the full URL with the API key and query
         $url = "https://barikoi.xyz/v2/api/search/autocomplete/place";
-        $response = Http::get("{$url}?api_key=bkoi_0f0c0e2aaed92fda43a85d29493d69776ef1c810e8f3d425f0b90fed001bef50&q={$query}");
+        $response = Http::get("{$url}?api_key={$this->apiBarikoi}&q={$query}");
 
         // Check if the request was successful
         if ($response->successful()) {
@@ -31,9 +36,7 @@ class ApiProxyController extends Controller
         $longitude = $request->input('longitude');
         $latitude = $request->input('latitude');
 $url="https://barikoi.xyz/v2/api/search/reverse/geocode";
-//        $response = Http::get("https://barikoi.xyz/v2/api/search/reverse/geocode/place?api_key=bkoi_0f0c0e2aaed92fda43a85d29493d69776ef1c810e8f3d425f0b90fed001bef50&longitude={$longitude}&latitude={$latitude}");
-        $response = Http::get("{$url}?longitude={$longitude}&latitude={$latitude}&district=true&post_code=true&country=true&sub_district=true&union=true&pauroshova=true&location_type=true&division=true&address=true&area=true&api_key=bkoi_0f0c0e2aaed92fda43a85d29493d69776ef1c810e8f3d425f0b90fed001bef50");
-//dd(response()->json($response->json()));
+        $response = Http::get("{$url}?longitude={$longitude}&latitude={$latitude}&district=true&post_code=true&country=true&sub_district=true&union=true&pauroshova=true&location_type=true&division=true&address=true&area=true&api_key={$this->apiBarikoi}");
         if ($response->successful()) {
             return response()->json($response->json());
         }
