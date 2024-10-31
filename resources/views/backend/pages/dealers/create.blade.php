@@ -27,7 +27,7 @@
 
     <div class="main-content-inner">
         <div class="row">
-            <div class="col-lg-8">
+            <div class="col-lg-9">
                 <div class="row">
                     <div class="col-md-12 mt-5 mb-3">
                         <div class="card">
@@ -124,6 +124,23 @@
                     </div>
                 </div>
             </div>
+            <!-- Right column for additional content -->
+            <div class="col-lg-3" style="height: 70vh;">
+                <div class="card mt-5 mb-3" style="height: 400px;background-color: white">
+                    <div class="p-4">
+                        <div class="form-group mb-4">
+                            <label for="select-view" class="form-label" style="font-weight: 500; font-size: 14px; color: #464A4D;">Select View</label>
+                            <select id="select-view" class="form-control" style="height: 40px; font-size: 14px; color: #464A4D; border: 1px solid #dcdcdc; border-radius: 4px; background-color: #fff;">
+                                <option value="" disabled selected>Select</option>
+                                <option value="dealers" selected style="background-color: white">Dealers</option>
+                                <option value="retailers">Retailers</option>
+                                <option value="all">All</option>
+                            </select>
+                        </div>
+                        <!-- Add more content here -->
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -138,6 +155,11 @@
             center: [90.3938010872331, 23.821600277500405],
             zoom: 15,
         });
+        map.addControl(new bkoigl.FullscreenControl());
+        map.addControl(new bkoigl.NavigationControl());
+        map.addControl(new bkoigl.ScaleControl());
+
+
 
         document.getElementById("location").addEventListener("input", function () {
             let query = this.value;

@@ -8,6 +8,7 @@ use App\Models\Dealer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Role;
 
 // Use this import for the Request class
@@ -17,11 +18,24 @@ class DealerController extends Controller
     public function index(): Renderable
     {
         $this->checkAuthorization(auth()->user(), ['dealer.view']);
-
+        $dealers = Dealer::all();
         return view('backend.pages.dealers.index', [
-            'dealers' => Dealer::all(),
+            'dealers' => $dealers
         ]);
     }
+
+    public function allDealers()
+    {
+        $this->checkAuthorization(auth()->user(), ['dealer.view']);
+
+//        Log::info('Fetching all dealers');
+        $dealers = Dealer::all()->toArray();
+//        Log::info($dealers);
+
+        return $dealers;
+    }
+
+
 
     public function create(): Renderable
     {
@@ -46,8 +60,8 @@ class DealerController extends Controller
             'website' => 'nullable|url|max:255',
             'mobile' => 'nullable|string|max:15', // Adjust max length as needed
             'address' => 'nullable|string|max:255',
-            'longitude' => 'nullable|numeric',
-            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable',
+            'latitude' => 'nullable',
             'location' => 'nullable',
         ]);
         // Create the dealer with validated data
@@ -88,8 +102,8 @@ class DealerController extends Controller
             'website' => 'nullable|url|max:255',
             'mobile' => 'nullable|string|max:15', // Adjust max length as needed
             'address' => 'nullable|string|max:255',
-            'longitude' => 'nullable|numeric',
-            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable',
+            'latitude' => 'nullable',
             'location' => 'nullable',
         ]);
 //        dd('update');

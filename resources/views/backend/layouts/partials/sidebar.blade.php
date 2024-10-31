@@ -75,7 +75,14 @@
                                 @endif
                             </ul>
                         </li>
-                    @endif
+                            <li class="{{ Route::is('admin.map.analytics')  ? 'active' : '' }}">
+                                <a href="{{ route('admin.map.analytics') }}">
+                                    <i class="fa fa-map"></i> <!-- Use fa-map or fa-map-marker for map icons -->
+                                    Map Analytics
+                                </a>
+                            </li>
+
+                        @endif
 
                 </ul>
             </nav>

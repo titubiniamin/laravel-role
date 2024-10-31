@@ -22,8 +22,11 @@ return new class extends Migration
                 $table->string('mobile')->unique()->nullable();
                 $table->text('address')->nullable();
                 $table->text('location')->nullable();
-                $table->text('longitude')->nullable();
-                $table->text('latitude')->nullable();
+                $table->double('longitude')->nullable();
+                $table->string('average_sales')->nullable();
+                $table->string('market_size')->nullable();
+                $table->string('market_share')->nullable();
+                $table->string('competition_brand')->nullable();
                 $table->timestamps();
             });
 

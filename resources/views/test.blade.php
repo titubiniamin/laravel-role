@@ -1,75 +1,78 @@
-<!DOCTYPE html>
+{{--    {{dd($dealers)}}--}}
+    <!DOCTYPE html>
 <html lang="en">
-​
 <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Barikoi Autocomplete</title>
     <link
         rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/barikoi/barikoi-js@b6f6295467c19177a7d8b73ad4db136905e7cad6/dist/barikoi.min.css"
+        href="https://cdn.barikoi.com/bkoi-gl-js/dist/bkoi-gl.css"
     />
-    <link
-        href="https://fonts.googleapis.com/css?family=Open+Sans"
-        rel="stylesheet"
-    />
-    ​
-    <link
-        rel="stylesheet"
-        href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
-        integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
-        crossorigin=""
-    />
-    ​
-    <script
-        src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
-        integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
-        crossorigin=""
-    ></script>
-    ​
+    <script src="https://cdn.barikoi.com/bkoi-gl-js/dist/bkoi-gl.js"></script>
     <style>
-        body {
-            font-family: "Open Sans", sans-serif;
-        }
-        ​ h1 {
-            text-align: center;
+        body,
+        #map {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
         }
     </style>
-    ​
+    <title>Add Marker To Map</title>
 </head>
-​
 <body>
-<h1>Barikoi Autocomplete Demo</h1>
-​
-<div>
-    <input type="text" class=" bksearch" />
-    <div class="bklist"></div>
-</div>
-​
-<div id="map" style="height: 400px;"></div>
-​ ​
-<script src="https://cdn.jsdelivr.net/gh/barikoi/barikoi-js@b6f6295467c19177a7d8b73ad4db136905e7cad6/dist/barikoi.min.js?key:bkoi_0f0c0e2aaed92fda43a85d29493d69776ef1c810e8f3d425f0b90fed001bef50"></script>
-​ ​
+<div id="map"></div>
+
 <script>
-    const defaultMarker = [23.7104, 90.40744];
-    let map = L.map("map");
-    map.setView(defaultMarker, 13);
-    // Set up the OSM layer
-    L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 18,
-    }).addTo(map);
-    L.marker(defaultMarker).addTo(map);
-    Bkoi.onSelect(function () {
-        // get selected data from dropdown list
-        let selectedPlace = Bkoi.getSelectedData();
-        // center of the map
-        let center = [selectedPlace.latitude, selectedPlace.longitude];
-        // Add marker to the map & bind popup
-        map.setView(center, 19);
-        L.marker(center).addTo(map).bindPopup(selectedPlace.address);
+    bkoigl.accessToken = "bkoi_0f0c0e2aaed92fda43a85d29493d69776ef1c810e8f3d425f0b90fed001bef50"; // required
+    const map = new bkoigl.Map({
+        container: "map",
+        center: [90.3938010872331, 23.821600277500405],
+        zoom: 12,
+    });
+
+    const dealers = @json($dealers); // Pass the dealer data to JavaScript
+    console.log("Dealers data:", dealers); // Check dealer data in console
+    console.log("Dealers data:", dealers);
+
+    // Function to add markers for dealers on the map
+    function addMarkers(dealers) {
+        if (!Array.isArray(dealers)) {
+            console.error("Expected dealers to be an array");
+            return;
+        }
+
+        dealers.forEach(dealer => {
+            const longitude = parseFloat(dealer.longitude);
+            const latitude = parseFloat(dealer.latitude);
+
+            // Log parsed values and their types
+            console.log("Parsed Longitude:", longitude, "Type:", typeof longitude);
+            console.log("Parsed Latitude:", latitude, "Type:", typeof latitude);
+
+            // Ensure coordinates are valid
+            if (!isNaN(longitude) && !isNaN(latitude)) {
+                console.log('this is'+longitude)
+                console.log('this is'+latitude)
+                const marker = new bkoigl.Marker()
+                    .setLngLat([longitude, latitude])
+                    .setPopup(new bkoigl.Popup().setText(dealer.name))
+                    .addTo(map);
+            } else {
+                console.error("Invalid coordinates for dealer:", dealer);
+            }
+        });
+    }
+
+
+    // Add Marker on Map Load
+    map.on("load", () => {
+        addMarkers(dealers); // Call the addMarkers function to place dealer markers on the map
     });
 </script>
+
 </body>
-​
 </html>

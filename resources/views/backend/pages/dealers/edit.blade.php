@@ -144,6 +144,10 @@
             center: [dealerLongitude, dealerLatitude], // Set map center to dealer's coordinates
             zoom: 15,
         });
+        map.addControl(new bkoigl.FullscreenControl());
+        map.addControl(new bkoigl.NavigationControl());
+        map.addControl(new bkoigl.ScaleControl());
+
 
         // Initialize the marker at dealer's coordinates
         let marker = new bkoigl.Marker({ draggable: true })
