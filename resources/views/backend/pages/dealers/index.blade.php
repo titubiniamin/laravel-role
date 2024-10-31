@@ -1,7 +1,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-    {{ __('Admins - Admin Panel') }}
+    {{ __('Users - User Panel') }}
 @endsection
 
 @section('styles')
@@ -19,10 +19,10 @@
     <div class="row align-items-center">
         <div class="col-sm-6">
             <div class="breadcrumbs-area clearfix">
-                <h4 class="page-title pull-left">{{ __('Admins') }}</h4>
+                <h4 class="page-title pull-left">{{ __('Users') }}</h4>
                 <ul class="breadcrumbs pull-left">
                     <li><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-                    <li><span>{{ __('All Admins') }}</span></li>
+                    <li><span>{{ __('All Users') }}</span></li>
                 </ul>
             </div>
         </div>

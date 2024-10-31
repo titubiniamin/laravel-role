@@ -63,6 +63,10 @@ class DealerController extends Controller
             'longitude' => 'nullable',
             'latitude' => 'nullable',
             'location' => 'nullable',
+            'average_sales' => 'nullable',
+            'market_size' => 'nullable',
+            'market_share' => 'nullable',
+            'competition_brand' => 'nullable',
         ]);
         // Create the dealer with validated data
         Dealer::create($validatedData);
@@ -88,6 +92,7 @@ class DealerController extends Controller
 
     public function update(Request $request, int $id): RedirectResponse
     {
+//        dd(request()->all());
         $this->checkAuthorization(auth()->user(), ['dealer.edit']);
 
         $dealer = Dealer::findOrFail($id);
@@ -105,6 +110,10 @@ class DealerController extends Controller
             'longitude' => 'nullable',
             'latitude' => 'nullable',
             'location' => 'nullable',
+            'average_sales' => 'nullable',
+            'market_size' => 'nullable',
+            'market_share' => 'nullable',
+            'competition_brand' => 'nullable',
         ]);
 //        dd('update');
 //        dd($validatedData);

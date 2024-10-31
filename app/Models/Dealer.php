@@ -21,6 +21,10 @@ class Dealer extends Model
         'longitude',
         'latitude',
         'location',
+        'average_sales',
+        'market_size',
+        'market_share',
+        'competition_brand'
     ];
 
     public static function getpermissionGroups()

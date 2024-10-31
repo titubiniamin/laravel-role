@@ -84,21 +84,37 @@
                 const longitude = parseFloat(dealer.longitude);
                 const latitude = parseFloat(dealer.latitude);
 
-                // Log parsed values and their types
-                console.log("Parsed Longitude:", longitude, "Type:", typeof longitude);
-                console.log("Parsed Latitude:", latitude, "Type:", typeof latitude);
 
                 // Ensure coordinates are valid
                 if (!isNaN(longitude) && !isNaN(latitude)) {
-                    console.log('this is ' + longitude);
-                    console.log('this is ' + latitude);
-
                     // Create a popup with styled HTML content
-                    const popupContent = `
-                <div style="font-family: Arial, sans-serif; line-height: 1.5;">
-                    <h4 style="margin: 0; font-size: 16px;">${dealer.name}</h4>
-                    <p style="margin: 0; color: gray;">${dealer.location}</p>
-                    <p style="margin: 0;">Mobile: <strong>${dealer.mobile}</strong></p>
+                    let popupContent = `
+                <div class="maplibregl-popup-content mapboxgl-popup-content">
+                    <div>
+                        <span>
+                            <div><span class="popup-label">Branch Name: </span>${dealer.name || "N/A"}</div>
+                            <div><span class="popup-label">Address: </span>${dealer.location || "N/A"}</div>`;
+
+                    if (dealer.average_sales) {
+                        popupContent += `<div><span class="popup-label">Average Sales: </span>${dealer.average_sales}</div>`;
+                    }
+
+                    if (dealer.market_size) {
+                        popupContent += `<div><span class="popup-label">Market Size: </span>${dealer.market_size}</div>`;
+                    }
+
+                    if (dealer.market_share) {
+                        popupContent += `<div><span class="popup-label">Market Share: </span>${dealer.market_share}</div>`;
+                    }
+
+                    if (dealer.competition_brand) {
+                        popupContent += `<div><span class="popup-label">Competition Brand: </span>${dealer.competition_brand}</div>`;
+                    }
+
+                    // Close the content div
+                    popupContent += `
+                        </span>
+                    </div>
                 </div>
             `;
 
@@ -120,7 +136,30 @@
         });
     </script>
 
+<style>
+    .popup-label {
+        font-weight: 600;
+        color: rgb(70, 74, 77);
+    }
+    .maplibregl-popup-content {
+        background-color: #3498db; /* Change to your preferred color */
+        color: #fff; /* Text color */
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
 
+    /* Popup tip styling (the small arrow pointing to the marker) */
+    .maplibregl-popup-tip {
+        background-color: #3498db; /* Same color as the popup content */
+    }
+
+    /* Label styling inside popup */
+    .popup-label {
+        font-weight: 600;
+        color: #fff; /* Adjust text color if needed */
+    }
+</style>
 
 
 @endsection

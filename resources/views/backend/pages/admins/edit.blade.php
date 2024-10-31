@@ -25,7 +25,7 @@ Admin Edit - Admin Panel
                 <h4 class="page-title pull-left">Admin Edit</h4>
                 <ul class="breadcrumbs pull-left">
                     <li><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                    <li><a href="{{ route('admin.admins.index') }}">All Admins</a></li>
+                    <li><a href="{{ route('admin.admins.index') }}">All Users</a></li>
                     <li><span>Edit Admin - {{ $admin->name }}</span></li>
                 </ul>
             </div>

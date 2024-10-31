@@ -23,6 +23,7 @@ return new class extends Migration
                 $table->text('address')->nullable();
                 $table->text('location')->nullable();
                 $table->double('longitude')->nullable();
+                $table->double('latitude')->nullable();
                 $table->string('average_sales')->nullable();
                 $table->string('market_size')->nullable();
                 $table->string('market_share')->nullable();

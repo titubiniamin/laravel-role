@@ -26,8 +26,12 @@
     <!-- page title area end -->
 
     <div class="main-content-inner">
+        <form action="{{ route('admin.dealers.update',$dealer->id) }}" method="POST">
+            @csrf
+            @method('PUT')
         <div class="row">
-            <div class="col-lg-8">
+            <!--Left Column-->
+            <div class="col-lg-9">
                 <div class="row">
                     <div class="col-md-12 mt-5 mb-3">
                         <div class="card">
@@ -63,9 +67,8 @@
                                     }, 5000); // 5-second delay
                                 </script>
 
-                                <form action="{{ route('admin.dealers.update',$dealer->id) }}" method="POST">
-                                    @csrf
-                                    @method('PUT')
+
+
                                     <div class="form-group">
                                         <label for="name">Name</label>
                                         <input type="text" class="form-control" value="{{ old('name', $dealer->name) }}" name="name" required>
@@ -119,13 +122,40 @@
                                     </div>
 
                                     <button type="submit" class="btn btn-primary">Update Dealer</button>
-                                </form>
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <!-- Right column for additional content -->
+            <div class="col-lg-3" style="height: 70vh;">
+                <div class="card mt-5 mb-3" style="height: 400px;background-color: white">
+                    <div class="p-4">
+                        <div class="form-group mb-4">
+                            <div class="form-group">
+                                <label for="name">Average Sales</label>
+                                <input type="text" class="form-control" value="{{ old('average_sales', $dealer->average_sales) }}" name="average_sales">
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Market Size</label>
+                                <input type="text" class="form-control" value="{{ old('market_size', $dealer->market_size) }}" name="market_size">
+                            </div>
+                            <div class="form-group">
+                                <label for="market-share">Market Share</label>
+                                <input type="text" class="form-control" value="{{ old('market_share', $dealer->market_share) }}" name="market_share">
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Competition Brand</label>
+                                <input type="text" class="form-control" value="{{ old('competition_brand', $dealer->competition_brand )}}" name="competition_brand">
+                            </div>
+                        </div>
+                        <!-- Additional content goes here -->
+                    </div>
+                </div>
+            </div>
         </div>
+        </form>
     </div>
 
     <!-- Your existing script and styles here -->

@@ -1,7 +1,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-    {{ __('Admins - Admin Panel') }}
+    {{ __('User - User Panel') }}
 @endsection
 
 @section('styles')
@@ -22,7 +22,7 @@
                 <h4 class="page-title pull-left">{{ __('Admins') }}</h4>
                 <ul class="breadcrumbs pull-left">
                     <li><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-                    <li><span>{{ __('All Admins') }}</span></li>
+                    <li><span>{{ __('All Users') }}</span></li>
                 </ul>
             </div>
         </div>
@@ -39,7 +39,7 @@
         <div class="col-12 mt-5">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title float-left">{{ __('Admins') }}</h4>
+                    <h4 class="header-title float-left">{{ __('Users') }}</h4>
                     <p class="float-right mb-2">
                         @if (auth()->user()->can('admin.edit'))
                             <a class="btn btn-primary text-white" href="{{ route('admin.admins.create') }}">
@@ -77,7 +77,7 @@
                                         @if (auth()->user()->can('admin.edit'))
                                             <a class="btn btn-success text-white" href="{{ route('admin.admins.edit', $admin->id) }}">Edit</a>
                                         @endif
-                                        
+
                                         @if (auth()->user()->can('admin.delete'))
                                         <a class="btn btn-danger text-white" href="javascript:void(0);"
                                         onclick="event.preventDefault(); if(confirm('Are you sure you want to delete?')) { document.getElementById('delete-form-{{ $admin->id }}').submit(); }">
@@ -110,7 +110,7 @@
      <script src="https://cdn.datatables.net/1.10.18/js/dataTables.bootstrap4.min.js"></script>
      <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
      <script src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap.min.js"></script>
-     
+
      <script>
         if ($('#dataTable').length) {
             $('#dataTable').DataTable({
