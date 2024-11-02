@@ -11,8 +11,8 @@ namespace PHPUnit\Framework;
 
 use const PHP_EOL;
 use function assert;
-use function class_exists;
 use function defined;
+use function error_clear_last;
 use function extension_loaded;
 use function get_include_path;
 use function hrtime;
@@ -25,6 +25,7 @@ use function var_export;
 use AssertionError;
 use PHPUnit\Event;
 use PHPUnit\Event\NoPreviousThrowableException;
+use PHPUnit\Event\TestData\MoreThanOneDataSetFromDataProviderException;
 use PHPUnit\Metadata\Api\CodeCoverage as CodeCoverageMetadataApi;
 use PHPUnit\Metadata\Parser\Registry as MetadataRegistry;
 use PHPUnit\Runner\CodeCoverage;
@@ -44,6 +45,8 @@ use SebastianBergmann\Template\Template;
 use Throwable;
 
 /**
+ * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ *
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
 final class TestRunner
@@ -60,11 +63,16 @@ final class TestRunner
      * @throws \PHPUnit\Runner\Exception
      * @throws CodeCoverageException
      * @throws InvalidArgumentException
+     * @throws MoreThanOneDataSetFromDataProviderException
      * @throws UnintentionallyCoveredCodeException
      */
     public function run(TestCase $test): void
     {
         Assert::resetCount();
+
+        if ($this->configuration->registerMockObjectsFromTestArgumentsRecursively()) {
+            $test->registerMockObjectsFromTestArgumentsRecursively();
+        }
 
         $shouldCodeCoverageBeCollected = (new CodeCoverageMetadataApi)->shouldCodeCoverageBeCollectedFor(
             $test::class,
@@ -76,6 +84,8 @@ final class TestRunner
         $incomplete = false;
         $risky      = false;
         $skipped    = false;
+
+        error_clear_last();
 
         if ($this->shouldErrorHandlerBeUsed($test)) {
             ErrorHandler::instance()->enable();
@@ -242,6 +252,7 @@ final class TestRunner
      * @throws \PHPUnit\Util\Exception
      * @throws \SebastianBergmann\Template\InvalidArgumentException
      * @throws Exception
+     * @throws MoreThanOneDataSetFromDataProviderException
      * @throws NoPreviousThrowableException
      * @throws ProcessIsolationException
      * @throws StaticAnalysisCacheNotConfiguredException
@@ -277,6 +288,7 @@ final class TestRunner
             $iniSettings   = GlobalState::getIniSettingsAsString();
         }
 
+        $exportObjects    = Event\Facade::emitter()->exportsObjects() ? 'true' : 'false';
         $coverage         = CodeCoverage::instance()->isActive() ? 'true' : 'false';
         $linesToBeIgnored = var_export(CodeCoverage::instance()->linesToBeIgnored(), true);
 
@@ -327,6 +339,7 @@ final class TestRunner
             'offsetNanoseconds'              => $offset[1],
             'serializedConfiguration'        => $serializedConfiguration,
             'processResultFile'              => $processResultFile,
+            'exportObjects'                  => $exportObjects,
         ];
 
         if (!$runEntireClass) {
@@ -347,22 +360,22 @@ final class TestRunner
      */
     private function hasCoverageMetadata(string $className, string $methodName): bool
     {
-        $metadata = MetadataRegistry::parser()->forClassAndMethod($className, $methodName);
+        foreach (MetadataRegistry::parser()->forClassAndMethod($className, $methodName) as $metadata) {
+            if ($metadata->isCovers()) {
+                return true;
+            }
 
-        if ($metadata->isCovers()->isNotEmpty()) {
-            return true;
-        }
+            if ($metadata->isCoversClass()) {
+                return true;
+            }
 
-        if ($metadata->isCoversClass()->isNotEmpty()) {
-            return true;
-        }
+            if ($metadata->isCoversFunction()) {
+                return true;
+            }
 
-        if ($metadata->isCoversFunction()->isNotEmpty()) {
-            return true;
-        }
-
-        if ($metadata->isCoversNothing()->isNotEmpty()) {
-            return true;
+            if ($metadata->isCoversNothing()) {
+                return true;
+            }
         }
 
         return false;
@@ -371,12 +384,6 @@ final class TestRunner
     private function canTimeLimitBeEnforced(): bool
     {
         if ($this->timeLimitCanBeEnforced !== null) {
-            return $this->timeLimitCanBeEnforced;
-        }
-
-        if (!class_exists(Invoker::class)) {
-            $this->timeLimitCanBeEnforced = false;
-
             return $this->timeLimitCanBeEnforced;
         }
 

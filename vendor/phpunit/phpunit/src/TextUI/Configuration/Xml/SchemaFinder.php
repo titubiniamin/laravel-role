@@ -18,9 +18,11 @@ use DirectoryIterator;
 use PHPUnit\Runner\Version;
 
 /**
+ * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ *
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
-final readonly class SchemaFinder
+final class SchemaFinder
 {
     /**
      * @psalm-return non-empty-list<non-empty-string>

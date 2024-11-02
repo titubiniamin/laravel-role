@@ -27,7 +27,6 @@ use Illuminate\Support\Traits\Macroable;
 use InvalidArgumentException;
 use LogicException;
 use RuntimeException;
-use UnitEnum;
 
 class Builder implements BuilderContract
 {
@@ -151,13 +150,6 @@ class Builder implements BuilderContract
      * @var int
      */
     public $limit;
-
-    /**
-     * The maximum number of records to return per group.
-     *
-     * @var array
-     */
-    public $groupLimit;
 
     /**
      * The number of records to skip.
@@ -1215,7 +1207,7 @@ class Builder implements BuilderContract
         $values = Arr::flatten($values);
 
         foreach ($values as &$value) {
-            $value = (int) $value;
+            $value = (int) ($value instanceof BackedEnum ? $value->value : $value);
         }
 
         $this->wheres[] = compact('type', 'column', 'values', 'boolean');
@@ -1316,7 +1308,7 @@ class Builder implements BuilderContract
         $type = 'between';
 
         if ($values instanceof CarbonPeriod) {
-            $values = [$values->getStartDate(), $values->getEndDate()];
+            $values = [$values->start, $values->end];
         }
 
         $this->wheres[] = compact('type', 'column', 'values', 'boolean', 'not');
@@ -1444,6 +1436,13 @@ class Builder implements BuilderContract
             $value, $operator, func_num_args() === 2
         );
 
+        // If the given operator is not found in the list of valid operators we will
+        // assume that the developer is just short-cutting the '=' operators and
+        // we will set the operators to '=' and set the values appropriately.
+        if ($this->invalidOperator($operator)) {
+            [$value, $operator] = [$operator, '='];
+        }
+
         $value = $this->flattenValue($value);
 
         if ($value instanceof DateTimeInterface) {
@@ -1485,6 +1484,13 @@ class Builder implements BuilderContract
             $value, $operator, func_num_args() === 2
         );
 
+        // If the given operator is not found in the list of valid operators we will
+        // assume that the developer is just short-cutting the '=' operators and
+        // we will set the operators to '=' and set the values appropriately.
+        if ($this->invalidOperator($operator)) {
+            [$value, $operator] = [$operator, '='];
+        }
+
         $value = $this->flattenValue($value);
 
         if ($value instanceof DateTimeInterface) {
@@ -1525,6 +1531,13 @@ class Builder implements BuilderContract
         [$value, $operator] = $this->prepareValueAndOperator(
             $value, $operator, func_num_args() === 2
         );
+
+        // If the given operator is not found in the list of valid operators we will
+        // assume that the developer is just short-cutting the '=' operators and
+        // we will set the operators to '=' and set the values appropriately.
+        if ($this->invalidOperator($operator)) {
+            [$value, $operator] = [$operator, '='];
+        }
 
         $value = $this->flattenValue($value);
 
@@ -1571,6 +1584,13 @@ class Builder implements BuilderContract
             $value, $operator, func_num_args() === 2
         );
 
+        // If the given operator is not found in the list of valid operators we will
+        // assume that the developer is just short-cutting the '=' operators and
+        // we will set the operators to '=' and set the values appropriately.
+        if ($this->invalidOperator($operator)) {
+            [$value, $operator] = [$operator, '='];
+        }
+
         $value = $this->flattenValue($value);
 
         if ($value instanceof DateTimeInterface) {
@@ -1615,6 +1635,13 @@ class Builder implements BuilderContract
         [$value, $operator] = $this->prepareValueAndOperator(
             $value, $operator, func_num_args() === 2
         );
+
+        // If the given operator is not found in the list of valid operators we will
+        // assume that the developer is just short-cutting the '=' operators and
+        // we will set the operators to '=' and set the values appropriately.
+        if ($this->invalidOperator($operator)) {
+            [$value, $operator] = [$operator, '='];
+        }
 
         $value = $this->flattenValue($value);
 
@@ -1712,7 +1739,7 @@ class Builder implements BuilderContract
      *
      * @param  \Illuminate\Contracts\Database\Query\Expression|string  $column
      * @param  string  $operator
-     * @param  \Closure||\Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder  $callback
+     * @param  \Closure|\Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder  $callback
      * @param  string  $boolean
      * @return $this
      */
@@ -1981,6 +2008,13 @@ class Builder implements BuilderContract
         [$value, $operator] = $this->prepareValueAndOperator(
             $value, $operator, func_num_args() === 2
         );
+
+        // If the given operator is not found in the list of valid operators we will
+        // assume that the developer is just short-cutting the '=' operators and
+        // we will set the operators to '=' and set the values appropriately.
+        if ($this->invalidOperator($operator)) {
+            [$value, $operator] = [$operator, '='];
+        }
 
         $this->wheres[] = compact('type', 'column', 'operator', 'value', 'boolean');
 
@@ -2381,7 +2415,7 @@ class Builder implements BuilderContract
         $type = 'between';
 
         if ($values instanceof CarbonPeriod) {
-            $values = [$values->getStartDate(), $values->getEndDate()];
+            $values = [$values->start, $values->end];
         }
 
         $this->havings[] = compact('type', 'column', 'values', 'boolean', 'not');
@@ -2566,22 +2600,6 @@ class Builder implements BuilderContract
 
         if ($value >= 0) {
             $this->$property = ! is_null($value) ? (int) $value : null;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Add a "group limit" clause to the query.
-     *
-     * @param  int  $value
-     * @param  string  $column
-     * @return $this
-     */
-    public function groupLimit($value, $column)
-    {
-        if ($value >= 0) {
-            $this->groupLimit = compact('value', 'column');
         }
 
         return $this;
@@ -2880,13 +2898,9 @@ class Builder implements BuilderContract
      */
     public function get($columns = ['*'])
     {
-        $items = collect($this->onceWithColumns(Arr::wrap($columns), function () {
+        return collect($this->onceWithColumns(Arr::wrap($columns), function () {
             return $this->processor->processSelect($this, $this->runSelect());
         }));
-
-        return isset($this->groupLimit)
-            ? $this->withoutGroupLimitKeys($items)
-            : $items;
     }
 
     /**
@@ -2902,32 +2916,6 @@ class Builder implements BuilderContract
     }
 
     /**
-     * Remove the group limit keys from the results in the collection.
-     *
-     * @param  \Illuminate\Support\Collection  $items
-     * @return \Illuminate\Support\Collection
-     */
-    protected function withoutGroupLimitKeys($items)
-    {
-        $keysToRemove = ['laravel_row'];
-
-        if (is_string($this->groupLimit['column'])) {
-            $column = last(explode('.', $this->groupLimit['column']));
-
-            $keysToRemove[] = '@laravel_group := '.$this->grammar->wrap($column);
-            $keysToRemove[] = '@laravel_group := '.$this->grammar->wrap('pivot_'.$column);
-        }
-
-        $items->each(function ($item) use ($keysToRemove) {
-            foreach ($keysToRemove as $key) {
-                unset($item->$key);
-            }
-        });
-
-        return $items;
-    }
-
-    /**
      * Paginate the given query into a simple paginator.
      *
      * @param  int|\Closure  $perPage
@@ -2937,11 +2925,11 @@ class Builder implements BuilderContract
      * @param  \Closure|int|null  $total
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function paginate($perPage = 15, $columns = ['*'], $pageName = 'page', $page = null, $total = null)
+    public function paginate($perPage = 15, $columns = ['*'], $pageName = 'page', $page = null)
     {
         $page = $page ?: Paginator::resolveCurrentPage($pageName);
 
-        $total = value($total) ?? $this->getCountForPagination();
+        $total = func_num_args() === 5 ? value(func_get_arg(4)) : $this->getCountForPagination();
 
         $perPage = $perPage instanceof Closure ? $perPage($total) : $perPage;
 
@@ -3070,10 +3058,10 @@ class Builder implements BuilderContract
                 ->get()->all();
         }
 
-        $without = $this->unions ? ['orders', 'limit', 'offset'] : ['columns', 'orders', 'limit', 'offset'];
+        $without = $this->unions ? ['unionOrders', 'unionLimit', 'unionOffset'] : ['columns', 'orders', 'limit', 'offset'];
 
         return $this->cloneWithout($without)
-                    ->cloneWithoutBindings($this->unions ? ['order'] : ['select', 'order'])
+                    ->cloneWithoutBindings($this->unions ? ['unionOrder'] : ['select', 'order'])
                     ->setAggregate('count', $this->withoutSelectAliases($columns))
                     ->get()->all();
     }
@@ -3609,20 +3597,10 @@ class Builder implements BuilderContract
     {
         $this->applyBeforeQueryCallbacks();
 
-        $values = collect($values)->map(function ($value) {
-            if (! $value instanceof Builder) {
-                return ['value' => $value, 'bindings' => $value];
-            }
-
-            [$query, $bindings] = $this->parseSub($value);
-
-            return ['value' => new Expression("({$query})"), 'bindings' => fn () => $bindings];
-        });
-
-        $sql = $this->grammar->compileUpdate($this, $values->map(fn ($value) => $value['value'])->all());
+        $sql = $this->grammar->compileUpdate($this, $values);
 
         return $this->connection->update($sql, $this->cleanBindings(
-            $this->grammar->prepareBindingsForUpdate($this->bindings, $values->map(fn ($value) => $value['bindings'])->all())
+            $this->grammar->prepareBindingsForUpdate($this->bindings, $values)
         ));
     }
 
@@ -3880,6 +3858,18 @@ class Builder implements BuilderContract
     }
 
     /**
+     * Get the query builder instances that are used in the union of the query.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    protected function getUnionBuilders()
+    {
+        return isset($this->unions)
+            ? collect($this->unions)->pluck('query')
+            : collect();
+    }
+
+    /**
      * Get the current query value bindings in a flattened array.
      *
      * @return array
@@ -3954,11 +3944,7 @@ class Builder implements BuilderContract
      */
     public function castBinding($value)
     {
-        if ($value instanceof UnitEnum) {
-            return $value instanceof BackedEnum ? $value->value : $value->name;
-        }
-
-        return $value;
+        return $value instanceof BackedEnum ? $value->value : $value;
     }
 
     /**
@@ -4111,16 +4097,11 @@ class Builder implements BuilderContract
     /**
      * Dump the current SQL and bindings.
      *
-     * @param  mixed  ...$args
      * @return $this
      */
-    public function dump(...$args)
+    public function dump()
     {
-        dump(
-            $this->toSql(),
-            $this->getBindings(),
-            ...$args,
-        );
+        dump($this->toSql(), $this->getBindings());
 
         return $this;
     }

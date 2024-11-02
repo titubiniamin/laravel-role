@@ -3,12 +3,15 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Backend;
 
+use App\Exports\DealersExport;
 use App\Http\Controllers\Controller;
+use App\Imports\DealersImport;
 use App\Models\Dealer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 use Spatie\Permission\Models\Role;
 
 // Use this import for the Request class
@@ -135,4 +138,34 @@ class DealerController extends Controller
         session()->flash('success', 'Dealer has been deleted.');
         return redirect()->route('admin.dealers.index');
     }
+
+    public function importShow(Request $request)
+    {
+
+        $dealer = Dealer::all(); // Use findOrFail to throw an error if not found
+
+        // Return the view with the dealer data
+        return view('backend.pages.dealers.excel-import', compact('dealer'));
+    }
+
+    public function import(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'file' => 'required|mimes:xls,xlsx',
+        ]);
+
+        // Import the data from the Excel file
+        Excel::import(new DealersImport, $request->file('file'));
+
+        return redirect()->back()->with('success', 'Dealers data imported successfully.');
+    }
+
+    public function export()
+    {
+        return Excel::download(new DealersExport, 'dealers.xlsx');
+    }
+
+
+
 }

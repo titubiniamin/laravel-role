@@ -7,9 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
         rel="stylesheet"
-        href="https://cdn.barikoi.com/bkoi-gl-js/dist/bkoi-gl.css"
+        href="https://cdn.barikoi.xyz/bkoi-gl-js/dist/bkoi-gl.css"
     />
-    <script src="https://cdn.barikoi.com/bkoi-gl-js/dist/bkoi-gl.js"></script>
+    <script src="https://cdn.barikoi.xyz/bkoi-gl-js/dist/bkoi-gl.js"></script>
     <style>
         body,
         #map {

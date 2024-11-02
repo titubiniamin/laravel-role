@@ -55,7 +55,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::post('/password/reset/submit', [ForgotPasswordController::class, 'reset'])->name('password.update');
 
     //Dealer
-    Route::resource('dealers', DealerController::class);
+    Route::get('dealers/import-show', [DealerController::class, 'importShow'])->name('dealers.import-show');
+    Route::post('dealers/import', [DealerController::class, 'import'])->name('dealers.import');
+    Route::get('dealers/sample-excel', [DealerController::class, 'export'])->name('dealers.sample-excel');
+    Route::resource('dealers', DealerController::class)->except(['show']);
     Route::get('all-dealers', [DealerController::class,'allDealers'])->name('allDealers');
     Route::get('map-analytics', [MapAnalyticsController::class, 'mapAnalytics'])->name('map.analytics');
 })->middleware('auth:admin');

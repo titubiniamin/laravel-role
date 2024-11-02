@@ -12,11 +12,13 @@ namespace PHPUnit\TextUI\Command;
 use PHPUnit\TextUI\Help;
 
 /**
+ * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ *
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
-final readonly class ShowHelpCommand implements Command
+final class ShowHelpCommand implements Command
 {
-    private int $shellExitCode;
+    private readonly int $shellExitCode;
 
     public function __construct(int $shellExitCode)
     {

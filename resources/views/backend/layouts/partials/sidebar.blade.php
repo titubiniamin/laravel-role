@@ -53,6 +53,13 @@
                             Map Analytics
                         </a>
                     </li>
+                        <li class="{{ Route::is('admin.dealers.import-show') ? 'active' : '' }}">
+                            <a href="{{ route('admin.dealers.import-show') }}">
+                                <i class="fa fa-map"></i> <!-- Use fa-map or fa-map-marker for map icons -->
+                                Excel Import
+                            </a>
+                        </li>
+
 
                     @if ($usr->can('role.create') || $usr->can('role.view') ||  $usr->can('role.edit') ||  $usr->can('role.delete'))
                         <li>

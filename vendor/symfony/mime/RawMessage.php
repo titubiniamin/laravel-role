@@ -18,18 +18,33 @@ use Symfony\Component\Mime\Exception\LogicException;
  */
 class RawMessage
 {
-    private iterable|string $message;
+    /** @var iterable<string>|string|resource */
+    private $message;
     private bool $isGeneratorClosed;
 
-    public function __construct(iterable|string $message)
+    /**
+     * @param iterable<string>|string|resource $message
+     */
+    public function __construct(mixed $message)
     {
         $this->message = $message;
+    }
+
+    public function __destruct()
+    {
+        if (\is_resource($this->message)) {
+            fclose($this->message);
+        }
     }
 
     public function toString(): string
     {
         if (\is_string($this->message)) {
             return $this->message;
+        }
+
+        if (\is_resource($this->message)) {
+            return stream_get_contents($this->message, -1, 0);
         }
 
         $message = '';
@@ -43,7 +58,8 @@ class RawMessage
     public function toIterable(): iterable
     {
         if ($this->isGeneratorClosed ?? false) {
-            throw new LogicException('Unable to send the email as its generator is already closed.');
+            trigger_deprecation('symfony/mime', '6.4', 'Sending an email with a closed generator is deprecated and will throw in 7.0.');
+            // throw new LogicException('Unable to send the email as its generator is already closed.');
         }
 
         if (\is_string($this->message)) {
@@ -52,10 +68,19 @@ class RawMessage
             return;
         }
 
+        if (\is_resource($this->message)) {
+            rewind($this->message);
+            while ($line = fgets($this->message)) {
+                yield $line;
+            }
+
+            return;
+        }
+
         if ($this->message instanceof \Generator) {
-            $message = '';
+            $message = fopen('php://temp', 'w+');
             foreach ($this->message as $chunk) {
-                $message .= $chunk;
+                fwrite($message, $chunk);
                 yield $chunk;
             }
             $this->isGeneratorClosed = !$this->message->valid();
@@ -70,9 +95,11 @@ class RawMessage
     }
 
     /**
+     * @return void
+     *
      * @throws LogicException if the message is not valid
      */
-    public function ensureValidity(): void
+    public function ensureValidity()
     {
     }
 

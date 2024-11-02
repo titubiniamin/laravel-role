@@ -28,6 +28,7 @@ use PHPUnit\Event\Code\TestMethodBuilder;
 use PHPUnit\Event\Code\ThrowableBuilder;
 use PHPUnit\Event\Facade;
 use PHPUnit\Event\NoPreviousThrowableException;
+use PHPUnit\Event\TestData\MoreThanOneDataSetFromDataProviderException;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\Test;
@@ -37,6 +38,8 @@ use PHPUnit\TestRunner\TestResult\PassedTests;
 use SebastianBergmann\Environment\Runtime;
 
 /**
+ * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ *
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
 abstract class AbstractPhpProcess
@@ -128,6 +131,7 @@ abstract class AbstractPhpProcess
      *
      * @throws \PHPUnit\Runner\Exception
      * @throws Exception
+     * @throws MoreThanOneDataSetFromDataProviderException
      * @throws NoPreviousThrowableException
      */
     public function runTestJob(string $job, Test $test, string $processResultFile): void
@@ -228,6 +232,7 @@ abstract class AbstractPhpProcess
     /**
      * @throws \PHPUnit\Runner\Exception
      * @throws Exception
+     * @throws MoreThanOneDataSetFromDataProviderException
      * @throws NoPreviousThrowableException
      */
     private function processChildResult(Test $test, string $stdout, string $stderr): void

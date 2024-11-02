@@ -9,6 +9,8 @@
  */
 namespace PHPUnit\Metadata\Api;
 
+use function array_unique;
+use function array_values;
 use function assert;
 use function count;
 use function interface_exists;
@@ -16,24 +18,31 @@ use function sprintf;
 use function str_starts_with;
 use PHPUnit\Framework\CodeCoverageException;
 use PHPUnit\Framework\InvalidCoversTargetException;
+use PHPUnit\Framework\TestSuite;
 use PHPUnit\Metadata\Covers;
 use PHPUnit\Metadata\CoversClass;
 use PHPUnit\Metadata\CoversDefaultClass;
 use PHPUnit\Metadata\CoversFunction;
+use PHPUnit\Metadata\IgnoreClassForCodeCoverage;
+use PHPUnit\Metadata\IgnoreFunctionForCodeCoverage;
+use PHPUnit\Metadata\IgnoreMethodForCodeCoverage;
 use PHPUnit\Metadata\Parser\Registry;
 use PHPUnit\Metadata\Uses;
 use PHPUnit\Metadata\UsesClass;
 use PHPUnit\Metadata\UsesDefaultClass;
 use PHPUnit\Metadata\UsesFunction;
+use RecursiveIteratorIterator;
 use SebastianBergmann\CodeUnit\CodeUnitCollection;
 use SebastianBergmann\CodeUnit\Exception as CodeUnitException;
 use SebastianBergmann\CodeUnit\InvalidCodeUnitException;
 use SebastianBergmann\CodeUnit\Mapper;
 
 /**
+ * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ *
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
-final readonly class CodeCoverage
+final class CodeCoverage
 {
     /**
      * @psalm-param class-string $className
@@ -187,6 +196,23 @@ final readonly class CodeCoverage
     }
 
     /**
+     * @psalm-return array<string,list<int>>
+     */
+    public function linesToBeIgnored(TestSuite $testSuite): array
+    {
+        $codeUnits = CodeUnitCollection::fromList();
+        $mapper    = new Mapper;
+
+        foreach ($this->testCaseClassesIn($testSuite) as $testCaseClassName) {
+            $codeUnits = $codeUnits->mergeWith(
+                $this->codeUnitsIgnoredBy($testCaseClassName),
+            );
+        }
+
+        return $mapper->codeUnitsToSourceLines($codeUnits);
+    }
+
+    /**
      * @psalm-param class-string $className
      * @psalm-param non-empty-string $methodName
      */
@@ -210,6 +236,51 @@ final readonly class CodeCoverage
         }
 
         return true;
+    }
+
+    /**
+     * @psalm-return list<class-string>
+     */
+    private function testCaseClassesIn(TestSuite $testSuite): array
+    {
+        $classNames = [];
+
+        foreach (new RecursiveIteratorIterator($testSuite) as $test) {
+            $classNames[] = $test::class;
+        }
+
+        return array_values(array_unique($classNames));
+    }
+
+    /**
+     * @psalm-param class-string $className
+     */
+    private function codeUnitsIgnoredBy(string $className): CodeUnitCollection
+    {
+        $codeUnits = CodeUnitCollection::fromList();
+        $mapper    = new Mapper;
+
+        foreach (Registry::parser()->forClass($className) as $metadata) {
+            if ($metadata instanceof IgnoreClassForCodeCoverage) {
+                $codeUnits = $codeUnits->mergeWith(
+                    $mapper->stringToCodeUnits($metadata->className()),
+                );
+            }
+
+            if ($metadata instanceof IgnoreMethodForCodeCoverage) {
+                $codeUnits = $codeUnits->mergeWith(
+                    $mapper->stringToCodeUnits($metadata->className() . '::' . $metadata->methodName()),
+                );
+            }
+
+            if ($metadata instanceof IgnoreFunctionForCodeCoverage) {
+                $codeUnits = $codeUnits->mergeWith(
+                    $mapper->stringToCodeUnits('::' . $metadata->functionName()),
+                );
+            }
+        }
+
+        return $codeUnits;
     }
 
     /**

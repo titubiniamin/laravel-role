@@ -69,82 +69,6 @@ use PHPUnit\Framework\MockObject\Stub\ReturnValueMap as ReturnValueMapStub;
 use PHPUnit\Util\Xml\XmlException;
 use Throwable;
 
-if (!function_exists('PHPUnit\Framework\assertArrayIsEqualToArrayOnlyConsideringListOfKeys')) {
-    /**
-     * Asserts that two arrays are equal while only considering a list of keys.
-     *
-     * @psalm-param list<array-key> $keysToBeConsidered
-     *
-     * @throws Exception
-     * @throws ExpectationFailedException
-     *
-     * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
-     *
-     * @see Assert::assertArrayIsEqualToArrayOnlyConsideringListOfKeys
-     */
-    function assertArrayIsEqualToArrayOnlyConsideringListOfKeys(array $expected, array $actual, array $keysToBeConsidered, string $message = ''): void
-    {
-        Assert::assertArrayIsEqualToArrayOnlyConsideringListOfKeys(...func_get_args());
-    }
-}
-
-if (!function_exists('PHPUnit\Framework\assertArrayIsEqualToArrayIgnoringListOfKeys')) {
-    /**
-     * Asserts that two arrays are equal while ignoring a list of keys.
-     *
-     * @psalm-param list<array-key> $keysToBeIgnored
-     *
-     * @throws Exception
-     * @throws ExpectationFailedException
-     *
-     * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
-     *
-     * @see Assert::assertArrayIsEqualToArrayIgnoringListOfKeys
-     */
-    function assertArrayIsEqualToArrayIgnoringListOfKeys(array $expected, array $actual, array $keysToBeIgnored, string $message = ''): void
-    {
-        Assert::assertArrayIsEqualToArrayIgnoringListOfKeys(...func_get_args());
-    }
-}
-
-if (!function_exists('PHPUnit\Framework\assertArrayIsIdenticalToArrayOnlyConsideringListOfKeys')) {
-    /**
-     * Asserts that two arrays are identical while only considering a list of keys.
-     *
-     * @psalm-param list<array-key> $keysToBeConsidered
-     *
-     * @throws Exception
-     * @throws ExpectationFailedException
-     *
-     * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
-     *
-     * @see Assert::assertArrayIsIdenticalToArrayOnlyConsideringListOfKeys
-     */
-    function assertArrayIsIdenticalToArrayOnlyConsideringListOfKeys(array $expected, array $actual, array $keysToBeConsidered, string $message = ''): void
-    {
-        Assert::assertArrayIsIdenticalToArrayOnlyConsideringListOfKeys(...func_get_args());
-    }
-}
-
-if (!function_exists('PHPUnit\Framework\assertArrayIsIdenticalToArrayIgnoringListOfKeys')) {
-    /**
-     * Asserts that two arrays are equal while ignoring a list of keys.
-     *
-     * @psalm-param list<array-key> $keysToBeIgnored
-     *
-     * @throws Exception
-     * @throws ExpectationFailedException
-     *
-     * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
-     *
-     * @see Assert::assertArrayIsIdenticalToArrayIgnoringListOfKeys
-     */
-    function assertArrayIsIdenticalToArrayIgnoringListOfKeys(array $expected, array $actual, array $keysToBeIgnored, string $message = ''): void
-    {
-        Assert::assertArrayIsIdenticalToArrayIgnoringListOfKeys(...func_get_args());
-    }
-}
-
 if (!function_exists('PHPUnit\Framework\assertArrayHasKey')) {
     /**
      * Asserts that an array has a specified key.
@@ -2384,13 +2308,6 @@ if (!function_exists('PHPUnit\Framework\isTrue')) {
     }
 }
 
-if (!function_exists('PHPUnit\Framework\callback')) {
-    function callback(callable $callback): Callback
-    {
-        return Assert::callback(...func_get_args());
-    }
-}
-
 if (!function_exists('PHPUnit\Framework\isFalse')) {
     function isFalse(): IsFalse
     {
@@ -2640,6 +2557,20 @@ if (!function_exists('PHPUnit\Framework\objectEquals')) {
     function objectEquals(object $object, string $method = 'equals'): ObjectEquals
     {
         return Assert::objectEquals(...func_get_args());
+    }
+}
+
+if (!function_exists('PHPUnit\Framework\callback')) {
+    /**
+     * @psalm-template CallbackInput of mixed
+     *
+     * @psalm-param callable(CallbackInput $callback): bool $callback
+     *
+     * @psalm-return Callback<CallbackInput>
+     */
+    function callback(callable $callback): Callback
+    {
+        return Assert::callback($callback);
     }
 }
 
