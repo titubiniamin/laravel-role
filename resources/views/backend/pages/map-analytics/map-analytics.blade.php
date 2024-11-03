@@ -79,7 +79,6 @@
                 console.error("Expected dealers to be an array");
                 return;
             }
-
             dealers.forEach(dealer => {
                 const longitude = parseFloat(dealer.longitude);
                 const latitude = parseFloat(dealer.latitude);
