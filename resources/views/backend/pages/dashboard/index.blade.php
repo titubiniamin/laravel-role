@@ -3,7 +3,7 @@
 
 @section('title')
 Dashboard Page - Admin Panel
-@endsectio
+@endsection
 
 @section('admin-content')
 

@@ -44,17 +44,7 @@ class RolePermissionSeeder extends Seeder
                     'dashboard.edit',
                 ]
             ],
-            [
-                'group_name' => 'blog',
-                'permissions' => [
-                    // Blog Permissions
-                    'blog.create',
-                    'blog.view',
-                    'blog.edit',
-                    'blog.delete',
-                    'blog.approve',
-                ]
-            ],
+
             [
                 'group_name' => 'admin',
                 'permissions' => [
@@ -74,7 +64,20 @@ class RolePermissionSeeder extends Seeder
                     'dealer.view',
                     'dealer.edit',
                     'dealer.delete',
-                    'dealer.approve',
+                    'dealer.import',
+                    'dealer.import-show',
+                ]
+            ],
+            [
+                'group_name' => 'retailer',
+                'permissions' => [
+                    // admin Permissions
+                    'retailer.create',
+                    'retailer.view',
+                    'retailer.edit',
+                    'retailer.delete',
+                    'retailer.import',
+                    'retailer.import-show'
                 ]
             ],
             [
@@ -89,15 +92,13 @@ class RolePermissionSeeder extends Seeder
                 ]
             ],
             [
-                'group_name' => 'profile',
+                'group_name' => 'map',
                 'permissions' => [
-                    // profile Permissions
-                    'profile.view',
-                    'profile.edit',
-                    'profile.delete',
-                    'profile.update',
+                    // map Permissions
+                    'map.analytics',
                 ]
             ],
+
         ];
 
 

@@ -24,14 +24,21 @@ class PermissionsSeeder extends Seeder
             ['name' => 'role.edit', 'guard_name' => 'admin', 'group_name' => 'role', 'created_at' => now(), 'updated_at' => now()],
             ['name' => 'role.delete', 'guard_name' => 'admin', 'group_name' => 'role', 'created_at' => now(), 'updated_at' => now()],
             ['name' => 'role.approve', 'guard_name' => 'admin', 'group_name' => 'role', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'profile.view', 'guard_name' => 'admin', 'group_name' => 'profile', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'profile.edit', 'guard_name' => 'admin', 'group_name' => 'profile', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'profile.delete', 'guard_name' => 'admin', 'group_name' => 'profile', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'profile.update', 'guard_name' => 'admin', 'group_name' => 'profile', 'created_at' => now(), 'updated_at' => now()],
             ['name' => 'dealer.create', 'guard_name' => 'admin', 'group_name' => 'dealer', 'created_at' => null, 'updated_at' => null],
             ['name' => 'dealer.view', 'guard_name' => 'admin', 'group_name' => 'dealer', 'created_at' => null, 'updated_at' => null],
             ['name' => 'dealer.edit', 'guard_name' => 'admin', 'group_name' => 'dealer', 'created_at' => null, 'updated_at' => null],
             ['name' => 'dealer.delete', 'guard_name' => 'admin', 'group_name' => 'dealer', 'created_at' => null, 'updated_at' => null],
+            ['name' => 'dealer.import-show', 'guard_name' => 'admin', 'group_name' => 'dealer', 'created_at' => null, 'updated_at' => null],
+            ['name' => 'dealer.import', 'guard_name' => 'admin', 'group_name' => 'dealer', 'created_at' => null, 'updated_at' => null],
+            ['name' => 'map.analytics', 'guard_name' => 'admin', 'group_name' => 'analytics', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'retailer.create', 'guard_name' => 'admin', 'group_name' => 'retailer', 'created_at' => null, 'updated_at' => null],
+            ['name' => 'retailer.view', 'guard_name' => 'admin', 'group_name' => 'retailer', 'created_at' => null, 'updated_at' => null],
+            ['name' => 'retailer.edit', 'guard_name' => 'admin', 'group_name' => 'retailer', 'created_at' => null, 'updated_at' => null],
+            ['name' => 'retailer.delete', 'guard_name' => 'admin', 'group_name' => 'retailer', 'created_at' => null, 'updated_at' => null],
+            ['name' => 'retailer.import', 'guard_name' => 'admin', 'group_name' => 'retailer', 'created_at' => null, 'updated_at' => null],
+            ['name' => 'retailer.import-show', 'guard_name' => 'admin', 'group_name' => 'retailer', 'created_at' => null, 'updated_at' => null],
+            ['name' => 'map.analytics', 'guard_name' => 'admin', 'group_name' => 'analytics', 'created_at' => now(), 'updated_at' => now()],
+
         ];
 
         DB::table('permissions')->insert($permissions);

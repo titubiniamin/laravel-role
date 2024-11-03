@@ -1,7 +1,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-    Dealers Page - Dealer
+    Retailers Page - Retailer
 @endsection
 
 @section('admin-content')
@@ -10,10 +10,10 @@
         <div class="row align-items-center">
             <div class="col-sm-6">
                 <div class="breadcrumbs-area clearfix">
-                    <h4 class="page-title pull-left">Dealers</h4>
+                    <h4 class="page-title pull-left">Retailers</h4>
                     <ul class="breadcrumbs pull-left">
                         <li><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                        <li><a href="{{ route('admin.dealers.index') }}">Dealers</a></li>
+                        <li><a href="{{ route('admin.retailers.index') }}">Retailers</a></li>
                         <li><span>Excel Import</span></li>
                     </ul>
                 </div>
@@ -33,7 +33,7 @@
             </div>
         @endif
 
-        <form action="{{ route('admin.dealers.import') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.retailers.import') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="row">
                 <div class="col-lg-12">
@@ -41,22 +41,22 @@
                         <div class="col-md-12 mt-5 mb-3">
                             <div class="card">
                                 <div class="p-4">
-                                    <h4>Import Dealers</h4>
+                                    <h4>Import Retailers</h4>
 
                                     <!-- Existing error handling and success message code here -->
 
                                     <!-- Sample File Download Button -->
                                     <div class="mb-3">
-                                        <a href="{{ route('admin.dealers.sample-excel') }}" class="btn btn-secondary">Download Sample Excel</a>
+                                        <a href="{{ route('admin.retailers.sample-excel') }}" class="btn btn-secondary">Download Sample Excel</a>
                                     </div>
 
                                     <!-- File Upload Field -->
                                     <div class="form-group">
-                                        <label for="file">Upload Dealer Data (Excel)</label>
+                                        <label for="file">Upload Retailer Data (Excel)</label>
                                         <input type="file" class="form-control" name="file" accept=".xls,.xlsx" required>
                                     </div>
 
-                                    <button type="submit" class="btn btn-primary">Import Dealers</button>
+                                    <button type="submit" class="btn btn-primary">Import Retailers</button>
                                 </div>
                             </div>
                         </div>

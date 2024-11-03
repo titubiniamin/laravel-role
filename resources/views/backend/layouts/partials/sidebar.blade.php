@@ -27,38 +27,67 @@
 
 
                     <!-- Dealer Menu Section -->
-                    @if ($usr->can('dealer.create') || $usr->can('dealer.view') || $usr->can('dealer.edit') || $usr->can('dealer.delete'))
-                        <li>
-                            <a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-user-tag"></i><span>
-                            Dealers
-                        </span></a>
-                            <ul class="collapse {{ Route::is('admin.dealers.create') || Route::is('admin.dealers.index') || Route::is('admin.dealers.edit') || Route::is('admin.dealers.show') ? 'in' : '' }}">
+                        <!-- Dealer Menu Section -->
+                        @if ($usr->can('dealer.create') || $usr->can('dealer.view') || $usr->can('dealer.edit') || $usr->can('dealer.delete'))
+                            <li>
+                                <a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-briefcase"></i><span>Dealers</span></a>
+                                <ul class="collapse {{ Route::is('admin.dealers.create') || Route::is('admin.dealers.index') || Route::is('admin.dealers.edit') || Route::is('admin.dealers.show') ? 'in' : '' }}">
+                                    @if ($usr->can('dealer.view'))
+                                        <li class="{{ Route::is('admin.dealers.index') || Route::is('admin.dealers.edit') ? 'active' : '' }}">
+                                            <a href="{{ route('admin.dealers.index') }}">All Dealers</a>
+                                        </li>
+                                    @endif
+                                    @if ($usr->can('dealer.create'))
+                                        <li class="{{ Route::is('admin.dealers.create') ? 'active' : '' }}">
+                                            <a href="{{ route('admin.dealers.create') }}">Create Dealer</a>
+                                        </li>
+                                    @endif
+                                        @if($usr->can('dealer.import-show'))
+                                            <li class="{{ Route::is('admin.dealers.import-show') ? 'active' : '' }}">
+                                                <a href="{{ route('admin.dealers.import-show') }}">
+                                                    <i class="fa fa-map"></i> <!-- Use fa-map or fa-map-marker for map icons -->
+                                                    Excel Import
+                                                </a>
+                                            </li>
+                                        @endif
+                                </ul>
+                            </li>
+                        @endif
+                    <!-- Retailer Menu Section-->
+                        @if ($usr->can('retailer.create') || $usr->can('retailer.view') || $usr->can('retailer.edit') || $usr->can('retailer.delete'))
+                            <li>
+                                <a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-tag"></i><span>Retailers</span></a>
+                                <ul class="collapse {{ Route::is('admin.retailers.create') || Route::is('admin.retailers.index') || Route::is('admin.retailers.edit') || Route::is('admin.retailers.show') ? 'in' : '' }}">
+                                    @if ($usr->can('retailer.view'))
+                                        <li class="{{ Route::is('admin.retailers.index') || Route::is('admin.retailers.edit') ? 'active' : '' }}">
+                                            <a href="{{ route('admin.retailers.index') }}">All Retailers</a>
+                                        </li>
+                                    @endif
+                                    @if ($usr->can('retailer.create'))
+                                        <li class="{{ Route::is('admin.retailers.create') ? 'active' : '' }}">
+                                            <a href="{{ route('admin.retailers.create') }}">Create Retailer</a>
+                                        </li>
+                                    @endif
+                                    @if($usr->can('retailer.import-show'))
+                                        <li class="{{ Route::is('admin.retailers.import-show') ? 'active' : '' }}">
+                                            <a href="{{ route('admin.retailers.import-show') }}">
+                                                <i class="fa fa-map"></i> <!-- Use fa-map or fa-map-marker for map icons -->
+                                                Excel Import
+                                            </a>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </li>
+                        @endif
+                        <!--Retailer End-->
+                    @if ($usr->can('map.analytics'))
+                            <li class="{{ Route::is('admin.map.analytics') ? 'active' : '' }}">
+                                <a href="{{ route('admin.map.analytics') }}">
+                                    <i class="fa fa-map"></i> Map Analytics
+                                </a>
+                            </li>
+                        @endif
 
-                                @if ($usr->can('dealer.view'))
-                                    <li class="{{ Route::is('admin.dealers.index')  || Route::is('admin.dealers.edit') ? 'active' : '' }}">
-                                        <a href="{{ route('admin.dealers.index') }}">All Dealers</a></li>
-                                @endif
-
-                                @if ($usr->can('dealer.create'))
-                                    <li class="{{ Route::is('admin.dealers.create')  ? 'active' : '' }}"><a
-                                            href="{{ route('admin.dealers.create') }}">Create Dealer</a></li>
-                                @endif
-                            </ul>
-                        </li>
-                    @endif
-
-                    <li class="{{ Route::is('admin.map.analytics')  ? 'active' : '' }}">
-                        <a href="{{ route('admin.map.analytics') }}">
-                            <i class="fa fa-map"></i> <!-- Use fa-map or fa-map-marker for map icons -->
-                            Map Analytics
-                        </a>
-                    </li>
-                        <li class="{{ Route::is('admin.dealers.import-show') ? 'active' : '' }}">
-                            <a href="{{ route('admin.dealers.import-show') }}">
-                                <i class="fa fa-map"></i> <!-- Use fa-map or fa-map-marker for map icons -->
-                                Excel Import
-                            </a>
-                        </li>
 
 
                     @if ($usr->can('role.create') || $usr->can('role.view') ||  $usr->can('role.edit') ||  $usr->can('role.delete'))

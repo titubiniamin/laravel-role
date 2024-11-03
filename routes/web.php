@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ApiProxyController;
 use App\Http\Controllers\Backend\DealerController;
+use App\Http\Controllers\Backend\RetailerController;
 use App\Http\Controllers\MapAnalyticsController;
 use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Auth;
@@ -60,6 +61,12 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::get('dealers/sample-excel', [DealerController::class, 'export'])->name('dealers.sample-excel');
     Route::resource('dealers', DealerController::class)->except(['show']);
     Route::get('all-dealers', [DealerController::class,'allDealers'])->name('allDealers');
+    //Retailer
+    Route::resource('retailers', RetailerController::class)->except(['show']);
+    Route::get('retailers/import-show', [RetailerController::class, 'importShow'])->name('retailers.import-show');
+    Route::post('retailers/import', [RetailerController::class, 'import'])->name('retailers.import');
+    Route::get('retailers/sample-excel', [RetailerController::class, 'export'])->name('retailers.sample-excel');
+    Route::get('all-retailers', [RetailerController::class,'allDealers'])->name('allRetailers');
     Route::get('map-analytics', [MapAnalyticsController::class, 'mapAnalytics'])->name('map.analytics');
 })->middleware('auth:admin');
 Route::get('/test',[TestController::class,'index'])->name('test');
