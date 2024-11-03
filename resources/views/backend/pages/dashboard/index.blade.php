@@ -33,10 +33,10 @@ Dashboard Page - Admin Panel
             <div class="col-md-6 mt-5 mb-3">
                 <div class="card">
                     <div class="seo-fact sbg1">
-                        <a href="{{ route('admin.roles.index') }}">
+                        <a href="{{ route('admin.dealers.index') }}">
                             <div class="p-4 d-flex justify-content-between align-items-center">
-                                <div class="seofct-icon"><i class="fa fa-users"></i> Roles</div>
-                                <h2>{{ $total_roles }}</h2>
+                                <div class="seofct-icon"><i class="fa fa-users"></i> Dealers</div>
+                                <h2>{{ $total_dealers }}</h2>
                             </div>
                         </a>
                     </div>
@@ -47,8 +47,8 @@ Dashboard Page - Admin Panel
                     <div class="seo-fact sbg2">
                         <a href="{{ route('admin.admins.index') }}">
                             <div class="p-4 d-flex justify-content-between align-items-center">
-                                <div class="seofct-icon"><i class="fa fa-user"></i> Users</div>
-                                <h2>{{ $total_admins }}</h2>
+                                <div class="seofct-icon"><i class="fa fa-user"></i> Retailers</div>
+                                <h2>{{ $total_retailers }}</h2>
                             </div>
                         </a>
                     </div>
@@ -57,9 +57,10 @@ Dashboard Page - Admin Panel
             <div class="col-md-6 mb-3 mb-lg-0">
                 <div class="card">
                     <div class="seo-fact sbg3">
+                        <a href="{{ route('admin.admins.index') }}">
                         <div class="p-4 d-flex justify-content-between align-items-center">
-                            <div class="seofct-icon">Permissions</div>
-                            <h2>{{ $total_permissions }}</h2>
+                            <div class="seofct-icon"><i class="fa fa-user"></i> Users</div>
+                            <h2>{{ $total_admins }}</h2>
                         </div>
                     </div>
                 </div>

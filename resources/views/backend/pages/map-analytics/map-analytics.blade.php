@@ -57,7 +57,7 @@
     </div>
 
     <script>
-        bkoigl.accessToken = "bkoi_0f0c0e2aaed92fda43a85d29493d69776ef1c810e8f3d425f0b90fed001bef50"; // required
+        bkoigl.accessToken = "{{ env('BARIKOI_API_KEY') }}"; // Pass the environment variable to JavaScript
         const map = new bkoigl.Map({
             container: "map",
             center: [90.3938010872331, 23.821600277500405],
@@ -76,22 +76,49 @@
         let dealerMarkers = [];
         let retailerMarkers = [];
 
-        // Custom icon URL for retailer markers
-        const retailerIconUrl = '{{asset('images/active-user-icon.png')}}'; // Update this to the URL of your custom icon
+        // Custom icon URLs
+        const retailerIconUrl = '{{ asset('images/red.png') }}'; // Custom icon for retailers
+        const dealerIconUrl = '{{ asset('images/blue.png') }}'; // Custom icon for dealers
+        const centralIconUrl = '{{ asset('images/branch-icon.png') }}'; // Custom icon for central point
 
-        // Function to add markers for dealers on the map
+        // Central point coordinates (you can adjust this)
+        const centralCoordinates = [90.3938010872331, 23.821600277500405];
+
+        // Function to add the central point marker
+        function addCentralPoint() {
+            const marker = new bkoigl.Marker({ element: createCustomMarkerElement(centralIconUrl) })
+                .setLngLat(centralCoordinates)
+                .addTo(map);
+        }
+
+        // Function to calculate distance between two points (in km)
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Radius of the Earth in km
+            const dLat = (lat2 - lat1) * (Math.PI / 180);
+            const dLon = (lon2 - lon1) * (Math.PI / 180);
+            const a =
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c; // Distance in km
+        }
+
+        // Function to add markers for dealers on the map with custom icon
         function addDealerMarkers(dealers) {
             dealers.forEach(dealer => {
                 const longitude = parseFloat(dealer.longitude);
                 const latitude = parseFloat(dealer.latitude);
 
                 if (!isNaN(longitude) && !isNaN(latitude)) {
+                    const distance = calculateDistance(centralCoordinates[1], centralCoordinates[0], latitude, longitude).toFixed(2);
                     let popupContent = `
                     <div class="maplibregl-popup-content">
                         <div>
                             <span>
                                 <div><span class="popup-label">Branch Name: </span>${dealer.name || "N/A"}</div>
                                 <div><span class="popup-label">Address: </span>${dealer.location || "N/A"}</div>
+                                <div><span class="popup-label">Distance from Central Point: </span>${distance} km</div>
                                 ${dealer.average_sales ? `<div><span class="popup-label">Average Sales: </span>${dealer.average_sales}</div>` : ''}
                                 ${dealer.market_size ? `<div><span class="popup-label">Market Size: </span>${dealer.market_size}</div>` : ''}
                                 ${dealer.market_share ? `<div><span class="popup-label">Market Share: </span>${dealer.market_share}</div>` : ''}
@@ -101,7 +128,7 @@
                     </div>
                 `;
 
-                    const marker = new bkoigl.Marker()
+                    const marker = new bkoigl.Marker({ element: createCustomMarkerElement(dealerIconUrl) }) // Use custom icon for dealers
                         .setLngLat([longitude, latitude])
                         .setPopup(new bkoigl.Popup().setHTML(popupContent))
                         .addTo(map);
@@ -118,19 +145,24 @@
                 const latitude = parseFloat(retailer.latitude);
 
                 if (!isNaN(longitude) && !isNaN(latitude)) {
+                    const distance = calculateDistance(centralCoordinates[1], centralCoordinates[0], latitude, longitude).toFixed(2);
                     let popupContent = `
-                    <div class="maplibregl-popup-content" style="background-color: #f1c40f; border-radius: 5px; padding: 10px;">
+                    <div class="maplibregl-popup-content" style="background-color:orangered; border-radius: 5px; padding: 10px;">
                         <div>
                             <span>
                                 <div><strong>Retailer Name:</strong> ${retailer.name || "N/A"}</div>
                                 <div><strong>Address:</strong> ${retailer.location || "N/A"}</div>
-                                <div><strong>Special Offers:</strong> ${retailer.special_offers || "None"}</div>
+                                <div><strong>Distance from Central Point:</strong> ${distance} km</div>
+                                ${retailer.average_sales ? `<div><span class="popup-label">Average Sales: </span>${retailer.average_sales}</div>` : ''}
+                                ${retailer.market_size ? `<div><span class="popup-label">Market Size: </span>${retailer.market_size}</div>` : ''}
+                                ${retailer.market_share ? `<div><span class="popup-label">Market Share: </span>${retailer.market_share}</div>` : ''}
+                                ${retailer.competition_brand ? `<div><span class="popup-label">Competition Brand: </span>${retailer.competition_brand}</div>` : ''}
                             </span>
                         </div>
                     </div>
                 `;
 
-                    const marker = new bkoigl.Marker({ element: createCustomMarkerElement(retailerIconUrl) }) // Use custom icon
+                    const marker = new bkoigl.Marker({ element: createCustomMarkerElement(retailerIconUrl) }) // Use custom icon for retailers
                         .setLngLat([longitude, latitude])
                         .setPopup(new bkoigl.Popup().setHTML(popupContent))
                         .addTo(map);
@@ -143,7 +175,7 @@
         // Function to create a custom marker element
         function createCustomMarkerElement(iconUrl) {
             const markerElement = document.createElement('div');
-            markerElement.className = 'retailer-marker'; // You can add a class for styling if needed
+            markerElement.className = 'marker'; // You can add a class for styling if needed
             markerElement.style.backgroundImage = `url(${iconUrl})`;
             markerElement.style.backgroundSize = 'contain';
             markerElement.style.width = '30px'; // Adjust size as needed
@@ -173,16 +205,15 @@
             }
         }
 
-        // Add Marker on Map Load
+        // Add Central Point and Marker on Map Load
         map.on("load", () => {
+            addCentralPoint(); // Add the central marker
             updateMarkers(); // Call the updateMarkers function to place markers based on default selection
         });
 
         // Event listener for dropdown change
         document.getElementById('select-view').addEventListener('change', updateMarkers);
     </script>
-
-
 
     <style>
         .popup-label {
