@@ -67,6 +67,17 @@ class RolePermissionSeeder extends Seeder
                 ]
             ],
             [
+                'group_name' => 'dealer',
+                'permissions' => [
+                    // admin Permissions
+                    'dealer.create',
+                    'dealer.view',
+                    'dealer.edit',
+                    'dealer.delete',
+                    'dealer.approve',
+                ]
+            ],
+            [
                 'group_name' => 'role',
                 'permissions' => [
                     // role Permissions

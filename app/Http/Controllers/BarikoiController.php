@@ -11,7 +11,7 @@ class BarikoiController extends Controller
         $query = $request->query('q');
         $apiKey = 'bkoi_0f0c0e2aaed92fda43a85d29493d69776ef1c810e8f3d425f0b90fed001bef50';
 
-        $response = Http::get("https://barikoi.com/v1/api/search/autocomplete/{$apiKey}/place", [
+        $response = Http::get("https://barikoi.xyz/v2/api/search/autocomplete/{$apiKey}/place", [
             'q' => $query,
         ]);
 

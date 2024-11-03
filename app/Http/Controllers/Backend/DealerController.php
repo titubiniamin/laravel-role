@@ -4,22 +4,38 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-//use App\Http\Requests\DealerRequest;
 use App\Models\Dealer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Contracts\Support\Renderable;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Spatie\Permission\Models\Role;
+
+// Use this import for the Request class
 
 class DealerController extends Controller
 {
     public function index(): Renderable
     {
         $this->checkAuthorization(auth()->user(), ['dealer.view']);
-
+        $dealers = Dealer::all();
         return view('backend.pages.dealers.index', [
-            'dealers' => Dealer::all(),
+            'dealers' => $dealers
         ]);
     }
+
+    public function allDealers()
+    {
+        $this->checkAuthorization(auth()->user(), ['dealer.view']);
+
+//        Log::info('Fetching all dealers');
+        $dealers = Dealer::all()->toArray();
+//        Log::info($dealers);
+
+        return $dealers;
+    }
+
+
 
     public function create(): Renderable
     {
@@ -30,32 +46,83 @@ class DealerController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+//dd(request()->all());
+        // Check authorization before proceeding
         $this->checkAuthorization(auth()->user(), ['dealer.create']);
 
-        Dealer::create($request->validated());
+        // Validate the request data and handle any validation errors automatically
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'owner_name' => 'required|string|max:255',
+            'zone' => 'nullable|string|max:255',
+            'dealer_code' => 'nullable|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'website' => 'nullable|url|max:255',
+            'mobile' => 'nullable|string|max:15', // Adjust max length as needed
+            'address' => 'nullable|string|max:255',
+            'longitude' => 'nullable',
+            'latitude' => 'nullable',
+            'location' => 'nullable',
+            'average_sales' => 'nullable',
+            'market_size' => 'nullable',
+            'market_share' => 'nullable',
+            'competition_brand' => 'nullable',
+        ]);
+        // Create the dealer with validated data
+        Dealer::create($validatedData);
 
+        // Flash success message to the session
         session()->flash('success', 'Dealer has been created.');
-        return redirect()->route('admin.dealers.index');
+
+        // Redirect to the index route for dealers
+        return redirect()->back();
     }
 
     public function edit(int $id): Renderable|RedirectResponse
     {
-        $this->checkAuthorization(auth()->user(), ['dealer.update']);
+        $this->checkAuthorization(auth()->user(), ['dealer.edit']);
 
         $dealer = Dealer::findOrFail($id);
+        return view('backend.pages.dealers.edit', [
+            'dealer' => $dealer,
+            'roles' => Role::all(),
+        ]);
 
-        return view('backend.pages.dealers.edit', compact('dealer'));
     }
 
     public function update(Request $request, int $id): RedirectResponse
     {
-        $this->checkAuthorization(auth()->user(), ['dealer.update']);
+//        dd(request()->all());
+        $this->checkAuthorization(auth()->user(), ['dealer.edit']);
 
         $dealer = Dealer::findOrFail($id);
-        $dealer->update($request->validated());
+
+        // Validate the request data
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'owner_name' => 'required|string|max:255',
+            'zone' => 'nullable|string|max:255',
+            'dealer_code' => 'nullable|string|max:255',
+            'email' => 'required|email|unique:dealers,email,' . $dealer->id,//email
+            'website' => 'nullable|url|max:255',
+            'mobile' => 'nullable|string|max:15', // Adjust max length as needed
+            'address' => 'nullable|string|max:255',
+            'longitude' => 'nullable',
+            'latitude' => 'nullable',
+            'location' => 'nullable',
+            'average_sales' => 'nullable',
+            'market_size' => 'nullable',
+            'market_share' => 'nullable',
+            'competition_brand' => 'nullable',
+        ]);
+//        dd('update');
+//        dd($validatedData);
+
+        // Update the dealer with validated data
+        $dealer->update($validatedData);
 
         session()->flash('success', 'Dealer has been updated.');
-        return redirect()->route('admin.dealers.index');
+        return back();
     }
 
     public function destroy(int $id): RedirectResponse
@@ -69,4 +136,3 @@ class DealerController extends Controller
         return redirect()->route('admin.dealers.index');
     }
 }
-

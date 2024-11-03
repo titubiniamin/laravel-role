@@ -8,6 +8,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     @include('backend.layouts.partials.styles')
     @yield('styles')
+    <link rel="stylesheet" href="https://cdn.barikoi.com/bkoi-gl-js/dist/bkoi-gl.css" />
+    <script src="https://cdn.barikoi.com/bkoi-gl-js/dist/bkoi-gl.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/barikoi/barikoi-js@b6f6295467c19177a7d8b73ad4db136905e7cad6/dist/barikoi.min.css" />
 </head>
 
 <body>
@@ -33,7 +36,10 @@
         @include('backend.layouts.partials.footer')
     </div>
     <!-- page container area end -->
-
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     @include('backend.layouts.partials.offsets')
     @include('backend.layouts.partials.scripts')
     @yield('scripts')

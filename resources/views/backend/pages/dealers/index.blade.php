@@ -1,7 +1,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-    {{ __('User - User Panel') }}
+    {{ __('Users - User Panel') }}
 @endsection
 
 @section('styles')
@@ -19,7 +19,7 @@
     <div class="row align-items-center">
         <div class="col-sm-6">
             <div class="breadcrumbs-area clearfix">
-                <h4 class="page-title pull-left">{{ __('Admins') }}</h4>
+                <h4 class="page-title pull-left">{{ __('Users') }}</h4>
                 <ul class="breadcrumbs pull-left">
                     <li><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
                     <li><span>{{ __('All Users') }}</span></li>
@@ -39,11 +39,11 @@
         <div class="col-12 mt-5">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title float-left">{{ __('Users') }}</h4>
+                    <h4 class="header-title float-left">{{ __('Dealers') }}</h4>
                     <p class="float-right mb-2">
                         @if (auth()->user()->can('admin.edit'))
-                            <a class="btn btn-primary text-white" href="{{ route('admin.admins.create') }}">
-                                {{ __('Create New Admin') }}
+                            <a class="btn btn-primary text-white" href="{{ route('admin.dealers.create') }}">
+                                {{ __('Create New Dealer') }}
                             </a>
                         @endif
                     </p>
@@ -53,38 +53,36 @@
                         <table id="dataTable" class="text-center">
                             <thead class="bg-light text-capitalize">
                                 <tr>
-                                    <th width="5%">{{ __('Sl') }}</th>
+                                    <th style="width: 105px">{{ __('Sl') }}</th>
                                     <th width="10%">{{ __('Name') }}</th>
                                     <th width="10%">{{ __('Email') }}</th>
-                                    <th width="40%">{{ __('Roles') }}</th>
+                                    <th width="40%">{{ __('Mobile') }}</th>
+                                    <th width="40%">{{ __('Zone') }}</th>
+                                    <th width="40%">{{ __('Address') }}</th>
                                     <th width="15%">{{ __('Action') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                               @foreach ($admins as $admin)
+                               @foreach ($dealers as $dealer)
                                <tr>
                                     <td>{{ $loop->index+1 }}</td>
-                                    <td>{{ $admin->name }}</td>
-                                    <td>{{ $admin->email }}</td>
-                                    <td>
-                                        @foreach ($admin->roles as $role)
-                                            <span class="badge badge-info mr-1">
-                                                {{ $role->name }}
-                                            </span>
-                                        @endforeach
-                                    </td>
+                                    <td>{{ $dealer->name }}</td>
+                                    <td>{{ $dealer->email }}</td>
+                                    <td>{{ $dealer->mobile }}</td>
+                                    <td>{{ $dealer->zone }}</td>
+                                    <td>{{ $dealer->address }}</td>
                                     <td>
                                         @if (auth()->user()->can('admin.edit'))
-                                            <a class="btn btn-success text-white" href="{{ route('admin.admins.edit', $admin->id) }}">Edit</a>
+                                            <a class="btn btn-success text-white" href="{{ route('admin.dealers.edit', $dealer->id) }}">Edit</a>
                                         @endif
 
                                         @if (auth()->user()->can('admin.delete'))
                                         <a class="btn btn-danger text-white" href="javascript:void(0);"
-                                        onclick="event.preventDefault(); if(confirm('Are you sure you want to delete?')) { document.getElementById('delete-form-{{ $admin->id }}').submit(); }">
+                                        onclick="event.preventDefault(); if(confirm('Are you sure you want to delete?')) { document.getElementById('delete-form-{{ $dealer->id }}').submit(); }">
                                             {{ __('Delete') }}
                                         </a>
 
-                                        <form id="delete-form-{{ $admin->id }}" action="{{ route('admin.admins.destroy', $admin->id) }}" method="POST" style="display: none;">
+                                        <form id="delete-form-{{ $dealer->id }}" action="{{ route('admin.dealers.destroy', $dealer->id) }}" method="POST" style="display: none;">
                                             @method('DELETE')
                                             @csrf
                                         </form>
@@ -114,8 +112,19 @@
      <script>
         if ($('#dataTable').length) {
             $('#dataTable').DataTable({
-                responsive: true
+                responsive: true,
+                columnDefs: [
+                    { width: "5%", targets: 0 },   // Sl column
+                    { width: "15%", targets: 1 },  // Name column
+                    { width: "10%", targets: 2 },  // Email column
+                    { width: "8%", targets: 3 },  // Mobile column
+                    { width: "10%", targets: 4 },  // Zone column
+                    { width: "30%", address: 4 },  // Zone column
+                    { width: "20%", targets: 5 }   // Action column
+                ]
             });
         }
      </script>
+
+
 @endsection

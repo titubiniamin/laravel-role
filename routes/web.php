@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\ApiProxyController;
 use App\Http\Controllers\Backend\DealerController;
+use App\Http\Controllers\MapAnalyticsController;
+use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -53,4 +56,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 
     //Dealer
     Route::resource('dealers', DealerController::class);
+    Route::get('all-dealers', [DealerController::class,'allDealers'])->name('allDealers');
+    Route::get('map-analytics', [MapAnalyticsController::class, 'mapAnalytics'])->name('map.analytics');
 })->middleware('auth:admin');
+Route::get('/test',[TestController::class,'index'])->name('test');
+//Route::get('/api/proxy/autocomplete', [ApiProxyController::class, 'fetchAutocomplete']);
+

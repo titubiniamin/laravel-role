@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+// routes/api.php
+use App\Http\Controllers\ApiProxyController;
+
+Route::get('/proxy/autocomplete', [ApiProxyController::class, 'fetchAutocomplete']);
+Route::get('/proxy/reverse-geocode', [ApiProxyController::class, 'reverseGeocode']);
 
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
 //     return $request->user();

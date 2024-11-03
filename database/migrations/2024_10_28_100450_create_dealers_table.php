@@ -14,12 +14,20 @@ return new class extends Migration
         Schema::create('dealers', function (Blueprint $table) {
                 $table->id();
                 $table->string('name');
-                $table->string('company')->nullable();
-                $table->string('representative')->nullable();
-                $table->string('phone')->nullable();
-                $table->string('email')->unique();
-                $table->string('website')->nullable();
+                $table->string('owner_name');
+                $table->string('zone')->nullable();
+                $table->string('dealer_code')->nullable();
+                $table->string('email')->unique()->nullable();
+                $table->string('website')->unique()->nullable();
+                $table->string('mobile')->unique()->nullable();
                 $table->text('address')->nullable();
+                $table->text('location')->nullable();
+                $table->double('longitude')->nullable();
+                $table->double('latitude')->nullable();
+                $table->string('average_sales')->nullable();
+                $table->string('market_size')->nullable();
+                $table->string('market_share')->nullable();
+                $table->string('competition_brand')->nullable();
                 $table->timestamps();
             });
 

@@ -13,7 +13,7 @@ class BarikoiService
 
     public function __construct()
     {
-        $this->client = new Client(['base_uri' => 'https://barikoi.com/v1/api/']);
+        $this->client = new Client(['base_uri' => 'https://barikoi.xyz/v2/api/']);
         $this->accessToken = env('BARIKOI_API_KEY'); // Set this in your .env
     }
 
@@ -22,7 +22,7 @@ class BarikoiService
         $query = $request->query('q');
         $apiKey = $this->accessToken;
 
-        $response = Http::get("https://barikoi.com/v1/api/search/autocomplete/{$apiKey}/place", [
+        $response = Http::get("https://barikoi.xyz/v2/api/search/autocomplete/{$apiKey}/place", [
             'q' => $query,
         ]);
 
