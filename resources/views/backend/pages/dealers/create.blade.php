@@ -78,7 +78,7 @@
 
                                     <div class="form-group">
                                         <label for="zone">Zone</label>
-                                        <input type="text" class="form-control" name="zone">
+                                        <input type="text" class="form-control" value="{{ old('zone')  }}" name="zone">
                                     </div>
 
                                     <div class="form-group">
@@ -88,7 +88,7 @@
 
                                     <div class="form-group">
                                         <label for="email">Email</label>
-                                        <input type="email" class="form-control" name="email">
+                                        <input type="email" class="form-control" value="email" name="email">
                                     </div>
 
                                     <div class="form-group">
@@ -110,6 +110,7 @@
                                         <label for="location">Location</label>
                                         <input type="text" name="longitude" id="longitude" hidden>
                                         <input type="text" name="latitude" id="latitude" hidden>
+                                        <input type="text" name="district" id="district" hidden>
                                         <input type="text" class="form-control bksearch" name="location" id="location" />
                                         <div class="bklist"></div>
                                         <div id="loading" style="display: none;">Loading...</div> <!-- Loading indicator -->
@@ -206,6 +207,7 @@
                                     document.getElementById("location").value = place.address;
                                     document.getElementById("longitude").value = place.longitude;
                                     document.getElementById("latitude").value = place.latitude;
+                                    document.getElementById("district").value = place.district;
                                 };
                                 suggestionList.appendChild(suggestionItem);
                             });
@@ -239,7 +241,9 @@
                         const locationInput = document.getElementById("location");
                         const longitudeInput = document.getElementById("longitude");
                         const latitudeInput = document.getElementById("latitude");
+                        const districtInput = document.getElementById("district");
                         locationInput.value = data.place.address;
+                        districtInput.value = data.place.district;
                         longitudeInput.value = longitude;
                         latitudeInput.value = latitude;
                     }

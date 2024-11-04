@@ -1,7 +1,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-    Retailers Page - Retailer
+    Central Point Page - Central Point
 @endsection
 
 @section('admin-content')
@@ -11,10 +11,10 @@
         <div class="row align-items-center">
             <div class="col-sm-6">
                 <div class="breadcrumbs-area clearfix">
-                    <h4 class="page-title pull-left">Retailers</h4>
+                    <h4 class="page-title pull-left">Central Point</h4>
                     <ul class="breadcrumbs pull-left">
                         <li><a href="{{ route('admin.dashboard') }}">Home</a></li>
-                        <li><span>Retailers</span></li>
+                        <li><span>Central Point</span></li>
                     </ul>
                 </div>
             </div>
@@ -26,7 +26,7 @@
     <!-- page title area end -->
 
     <div class="main-content-inner">
-        <form action="{{ route('admin.retailers.store') }}" method="POST"> <!-- Form starts here -->
+        <form action="{{ route('admin.central-points.store') }}" method="POST"> <!-- Form starts here -->
             @csrf
             <div class="row">
                 <!-- Left column for form inputs -->
@@ -35,7 +35,7 @@
                         <div class="col-md-12 mt-5 mb-3">
                             <div class="card">
                                 <div class="p-4">
-                                    <h4>Create Retailer</h4>
+                                    <h4>Create Central Point</h4>
 
                                     <!-- Display validation errors -->
                                     @if ($errors->any())
@@ -71,40 +71,6 @@
                                         <label for="name">Name</label>
                                         <input type="text" class="form-control" value="{{ old('name') }}" name="name" required>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="owner_name">Owner Name</label>
-                                        <input type="text" class="form-control" value="{{ old('owner_name') }}" name="owner_name" required>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="zone">Zone</label>
-                                        <input type="text" class="form-control" value="{{old('zone')}}" name="zone">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="retailer_code">Retailer Code</label>
-                                        <input type="text" class="form-control" value="{{ old('retailer_code') }}" name="retailer_code">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="email">Email</label>
-                                        <input type="email" class="form-control" value="email" name="email">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="website">Website</label>
-                                        <input type="text" class="form-control" value="{{ old('website') }}" name="website">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="phone">Mobile</label>
-                                        <input type="text" class="form-control" value="{{ old('mobile') }}" name="mobile">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="address">Address</label>
-                                        <input type="text" class="form-control" value="{{ old('address') }}" name="address">
-                                    </div>
 
                                     <div class="form-group">
                                         <label for="location">Location</label>
@@ -120,7 +86,7 @@
                                         <div id="map" style="width: 100%; height: 400px; background-color: yellow;"></div>
                                     </div>
 
-                                    <button type="submit" class="btn btn-primary">Save Retailer</button>
+                                    <button type="submit" class="btn btn-primary">Save Central Point</button>
                                     <!-- Form Fields End -->
 
                                 </div>
@@ -129,32 +95,7 @@
                     </div>
                 </div>
 
-                <!-- Right column for additional content -->
-                <div class="col-lg-3" style="height: 70vh;">
-                    <div class="card mt-5 mb-3" style="height: 400px;background-color: white">
-                        <div class="p-4">
-                            <div class="form-group mb-4">
-                                <div class="form-group">
-                                    <label for="name">Average Sales</label>
-                                    <input type="text" class="form-control" value="{{ old('average_sales') }}" name="average_sales">
-                                </div>
-                                <div class="form-group">
-                                    <label for="name">Market Size</label>
-                                    <input type="text" class="form-control" value="{{ old('market_size') }}" name="market_size">
-                                </div>
-                                <div class="form-group">
-                                    <label for="market-share">Market Share</label>
-                                    <input type="text" class="form-control" value="{{ old('market_share') }}" name="market_share">
-                                </div>
-                                <div class="form-group">
-                                    <label for="name">Competition Brand</label>
-                                    <input type="text" class="form-control" value="{{ old('competition_brand') }}" name="competition_brand">
-                                </div>
-                            </div>
-                            <!-- Additional content goes here -->
-                        </div>
-                    </div>
-                </div>
+
             </div>
         </form> <!-- Form ends here -->
     </div>
@@ -238,13 +179,10 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.place && data.place.address) {
-
                         const locationInput = document.getElementById("location");
                         const longitudeInput = document.getElementById("longitude");
                         const latitudeInput = document.getElementById("latitude");
-                        const districtInput = document.getElementById("district");
                         locationInput.value = data.place.address;
-                        districtInput.value = data.place.district;
                         longitudeInput.value = longitude;
                         latitudeInput.value = latitude;
                     }

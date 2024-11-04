@@ -1,7 +1,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-    Edit Page - Retailer
+    Edit Page - Dealer
 @endsection
 
 @section('admin-content')
@@ -11,10 +11,10 @@
         <div class="row align-items-center">
             <div class="col-sm-6">
                 <div class="breadcrumbs-area clearfix">
-                    <h4 class="page-title pull-left">Retailers</h4>
+                    <h4 class="page-title pull-left">Dealers</h4>
                     <ul class="breadcrumbs pull-left">
                         <li><a href="{{ route('admin.dashboard') }}">Home</a></li>
-                        <li><span>Retailers</span></li>
+                        <li><span>Dealers</span></li>
                     </ul>
                 </div>
             </div>
@@ -26,7 +26,7 @@
     <!-- page title area end -->
 
     <div class="main-content-inner">
-        <form action="{{ route('admin.retailers.update',$retailer->id) }}" method="POST">
+        <form action="{{ route('admin.dealers.update',$dealer->id) }}" method="POST">
             @csrf
             @method('PUT')
         <div class="row">
@@ -36,7 +36,7 @@
                     <div class="col-md-12 mt-5 mb-3">
                         <div class="card">
                             <div class="p-4">
-                                <h4>Update Retailer</h4>
+                                <h4>Update Dealer</h4>
 
                                 <!-- Display validation errors -->
                                 @if ($errors->any())
@@ -71,49 +71,48 @@
 
                                     <div class="form-group">
                                         <label for="name">Name</label>
-                                        <input type="text" class="form-control" value="{{ old('name', $retailer->name) }}" name="name" required>
+                                        <input type="text" class="form-control" value="{{ old('name', $dealer->name) }}" name="name" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="owner_name">Owner Name</label>
-                                        <input type="text" class="form-control" value="{{ old('owner_name', $retailer->owner_name) }}" name="owner_name" required>
+                                        <input type="text" class="form-control" value="{{ old('owner_name', $dealer->owner_name) }}" name="owner_name" required>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="zone">Zone</label>
-                                        <input type="text" class="form-control" value="{{ old('zone', $retailer->zone) }}" name="zone">
+                                        <input type="text" class="form-control" value="{{ old('zone', $dealer->zone) }}" name="zone">
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="retailer_code">Retailer Code</label>
-                                        <input type="text" class="form-control" value="{{ old('retailer_code', $retailer->retailer_code) }}" name="retailer_code">
+                                        <label for="dealer_code">Dealer Code</label>
+                                        <input type="text" class="form-control" value="{{ old('dealer_code', $dealer->dealer_code) }}" name="dealer_code">
                                     </div>
 
                                     <div class="form-group">
                                         <label for="email">Email</label>
-                                        <input type="email" class="form-control" value="{{old('email',$retailer->email)}}" name="email">
+                                        <input type="email" class="form-control" value="{{old('email',$dealer->email)}}" name="email">
                                     </div>
 
                                     <div class="form-group">
                                         <label for="website">Website</label>
-                                        <input type="text" class="form-control" value="{{old('website',$retailer->website)}}" name="website">
+                                        <input type="text" class="form-control" value="{{old('website',$dealer->website)}}" name="website">
                                     </div>
 
                                     <div class="form-group">
                                         <label for="phone">Mobile</label>
-                                        <input type="text" class="form-control" value="{{old('mobile',$retailer->mobile)}}" name="mobile">
+                                        <input type="text" class="form-control" value="{{old('mobile',$dealer->mobile)}}" name="mobile">
                                     </div>
 
                                     <div class="form-group">
                                         <label for="phone">Address</label>
-                                        <input type="text" class="form-control" value="{{old('address', $retailer->address)}}" name="address">
+                                        <input type="text" class="form-control" value="{{old('address', $dealer->address)}}" name="address">
                                     </div>
 
                                     <div class="form-group">
                                         <label for="location">Location</label>
-                                        <input type="text" name="longitude" value="{{$retailer->longitude}}" id="longitude" hidden>
-                                        <input type="text" name="latitude" value="{{$retailer->latitude}}"  id="latitude" hidden>
-                                        <input type="text" name="district" value="{{$retailer->district}}" id="district" hidden>
-                                        <input type="text" class="form-control bksearch" value="{{$retailer->location}}"  name="location" id="location"/>
+                                        <input type="text" name="longitude" value="{{$dealer->longitude}}" id="longitude" hidden>
+                                        <input type="text" name="latitude" value="{{$dealer->latitude}}"  id="latitude" hidden>
+                                        <input type="text" class="form-control bksearch" value="{{$dealer->location}}"  name="location" id="location"/>
                                         <div class="bklist"></div>
                                         <div id="loading" style="display: none;">Loading...</div> <!-- Loading indicator -->
                                     </div>
@@ -122,7 +121,7 @@
                                         <div id="map" style="width: 100%; height: 400px; background-color: yellow;"></div>
                                     </div>
 
-                                    <button type="submit" class="btn btn-primary">Update Retailer</button>
+                                    <button type="submit" class="btn btn-primary">Update Dealer</button>
 
                             </div>
                         </div>
@@ -136,19 +135,19 @@
                         <div class="form-group mb-4">
                             <div class="form-group">
                                 <label for="name">Average Sales</label>
-                                <input type="text" class="form-control" value="{{ old('average_sales', $retailer->average_sales) }}" name="average_sales">
+                                <input type="text" class="form-control" value="{{ old('average_sales', $dealer->average_sales) }}" name="average_sales">
                             </div>
                             <div class="form-group">
                                 <label for="name">Market Size</label>
-                                <input type="text" class="form-control" value="{{ old('market_size', $retailer->market_size) }}" name="market_size">
+                                <input type="text" class="form-control" value="{{ old('market_size', $dealer->market_size) }}" name="market_size">
                             </div>
                             <div class="form-group">
                                 <label for="market-share">Market Share</label>
-                                <input type="text" class="form-control" value="{{ old('market_share', $retailer->market_share) }}" name="market_share">
+                                <input type="text" class="form-control" value="{{ old('market_share', $dealer->market_share) }}" name="market_share">
                             </div>
                             <div class="form-group">
                                 <label for="name">Competition Brand</label>
-                                <input type="text" class="form-control" value="{{ old('competition_brand', $retailer->competition_brand )}}" name="competition_brand">
+                                <input type="text" class="form-control" value="{{ old('competition_brand', $dealer->competition_brand )}}" name="competition_brand">
                             </div>
                         </div>
                         <!-- Additional content goes here -->
@@ -165,15 +164,14 @@
     <script>
         bkoigl.accessToken = "{{ env('BARIKOI_API_KEY') }}"; // required
 
-        // Fetch retailer's coordinates from backend
-        const retailerLongitude = {{ $retailer->longitude ?? 90.3938010872331 }};
-        const retailerLatitude = {{ $retailer->latitude ?? 23.821600277500405 }};
-        const retailerLocation = "{{ $retailer->location ?? '' }}";
-        const retailerDistrict = "{{ $retailer->district ?? '' }}";
+        // Fetch dealer's coordinates from backend
+        const dealerLongitude = {{ $dealer->longitude ?? 90.3938010872331 }};
+        const dealerLatitude = {{ $dealer->latitude ?? 23.821600277500405 }};
+        const dealerLocation = "{{ $dealer->location ?? '' }}";
 
         const map = new bkoigl.Map({
             container: "map",
-            center: [retailerLongitude, retailerLatitude], // Set map center to retailer's coordinates
+            center: [dealerLongitude, dealerLatitude], // Set map center to dealer's coordinates
             zoom: 15,
         });
         map.addControl(new bkoigl.FullscreenControl());
@@ -181,16 +179,15 @@
         map.addControl(new bkoigl.ScaleControl());
 
 
-        // Initialize the marker at retailer's coordinates
+        // Initialize the marker at dealer's coordinates
         let marker = new bkoigl.Marker({ draggable: true })
-            .setLngLat([retailerLongitude, retailerLatitude])
+            .setLngLat([dealerLongitude, dealerLatitude])
             .addTo(map);
 
-        // Populate location input field with retailer's location
-        document.getElementById("location").value = retailerLocation;
-        document.getElementById("longitude").value = retailerLongitude;
-        document.getElementById("latitude").value = retailerLatitude;
-        // document.getElementById("district").value = retailerDistrict;
+        // Populate location input field with dealer's location
+        document.getElementById("location").value = dealerLocation;
+        document.getElementById("longitude").value = dealerLongitude;
+        document.getElementById("latitude").value = dealerLatitude;
 
         // Event listener for location search
         document.getElementById("location").addEventListener("input", function () {
@@ -219,7 +216,6 @@
                                     document.getElementById("location").value = place.address;
                                     document.getElementById("longitude").value = place.longitude;
                                     document.getElementById("latitude").value = place.latitude;
-                                    document.getElementById("district").value = place.district;
                                 };
                                 suggestionList.appendChild(suggestionItem);
                             });

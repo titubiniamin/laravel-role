@@ -49,8 +49,6 @@ class DealerController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-//dd(request()->all());
-        // Check authorization before proceeding
         $this->checkAuthorization(auth()->user(), ['dealer.create']);
 
         // Validate the request data and handle any validation errors automatically
@@ -66,6 +64,7 @@ class DealerController extends Controller
             'longitude' => 'nullable',
             'latitude' => 'nullable',
             'location' => 'nullable',
+            'district' => 'nullable',
             'average_sales' => 'nullable',
             'market_size' => 'nullable',
             'market_share' => 'nullable',
@@ -113,6 +112,7 @@ class DealerController extends Controller
             'longitude' => 'nullable',
             'latitude' => 'nullable',
             'location' => 'nullable',
+            'district' => 'nullable',
             'average_sales' => 'nullable',
             'market_size' => 'nullable',
             'market_share' => 'nullable',

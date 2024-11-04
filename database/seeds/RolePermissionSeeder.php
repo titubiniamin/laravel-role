@@ -53,7 +53,6 @@ class RolePermissionSeeder extends Seeder
                     'admin.view',
                     'admin.edit',
                     'admin.delete',
-                    'admin.approve',
                 ]
             ],
             [
@@ -88,7 +87,16 @@ class RolePermissionSeeder extends Seeder
                     'role.view',
                     'role.edit',
                     'role.delete',
-                    'role.approve',
+                ]
+            ],
+            [
+                'group_name' => 'central-point',
+                'permissions' => [
+                    // role Permissions
+                    'central-point.create',
+                    'central-point.view',
+                    'central-point.edit',
+                    'central-point.delete',
                 ]
             ],
             [

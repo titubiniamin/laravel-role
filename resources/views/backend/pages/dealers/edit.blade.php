@@ -112,6 +112,7 @@
                                         <label for="location">Location</label>
                                         <input type="text" name="longitude" value="{{$dealer->longitude}}" id="longitude" hidden>
                                         <input type="text" name="latitude" value="{{$dealer->latitude}}"  id="latitude" hidden>
+                                        <input type="text" name="district" value="{{$dealer->district}}"  id="district" hidden>
                                         <input type="text" class="form-control bksearch" value="{{$dealer->location}}"  name="location" id="location"/>
                                         <div class="bklist"></div>
                                         <div id="loading" style="display: none;">Loading...</div> <!-- Loading indicator -->
@@ -216,6 +217,7 @@
                                     document.getElementById("location").value = place.address;
                                     document.getElementById("longitude").value = place.longitude;
                                     document.getElementById("latitude").value = place.latitude;
+                                    document.getElementById("district").value = place.district;
                                 };
                                 suggestionList.appendChild(suggestionItem);
                             });

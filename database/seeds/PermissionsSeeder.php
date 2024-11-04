@@ -37,7 +37,10 @@ class PermissionsSeeder extends Seeder
             ['name' => 'retailer.delete', 'guard_name' => 'admin', 'group_name' => 'retailer', 'created_at' => null, 'updated_at' => null],
             ['name' => 'retailer.import', 'guard_name' => 'admin', 'group_name' => 'retailer', 'created_at' => null, 'updated_at' => null],
             ['name' => 'retailer.import-show', 'guard_name' => 'admin', 'group_name' => 'retailer', 'created_at' => null, 'updated_at' => null],
-            ['name' => 'map.analytics', 'guard_name' => 'admin', 'group_name' => 'analytics', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'central-point.create', 'guard_name' => 'admin', 'group_name' => 'central-point', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'central-point.view', 'guard_name' => 'admin', 'group_name' => 'central-point', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'central-point.edit', 'guard_name' => 'admin', 'group_name' => 'central-point', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'central-point.delete', 'guard_name' => 'admin', 'group_name' => 'central-point', 'created_at' => now(), 'updated_at' => now()],
 
         ];
 

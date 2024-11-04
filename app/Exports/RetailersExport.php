@@ -23,6 +23,7 @@ class RetailersExport implements FromCollection, WithHeadings, WithStyles
             'mobile',
             'address',
             'location',
+            'district',
             'longitude',
             'latitude',
             'average_sales',
@@ -46,6 +47,7 @@ class RetailersExport implements FromCollection, WithHeadings, WithStyles
             'Mobile',
             'Address',
             'Location',
+            'District',
             'Longitude',
             'Latitude',
             'Average Sales',
@@ -69,15 +71,16 @@ class RetailersExport implements FromCollection, WithHeadings, WithStyles
         $sheet->getColumnDimension('H')->setWidth(15);  // Mobile
         $sheet->getColumnDimension('I')->setWidth(30);  // Address
         $sheet->getColumnDimension('J')->setWidth(25);  // Location
-        $sheet->getColumnDimension('K')->setWidth(10);  // Longitude
-        $sheet->getColumnDimension('L')->setWidth(10);  // Latitude
-        $sheet->getColumnDimension('M')->setWidth(10);  // Average Sales
-        $sheet->getColumnDimension('N')->setWidth(10);  // Market Size
-        $sheet->getColumnDimension('O')->setWidth(10);  // Market Share
-        $sheet->getColumnDimension('P')->setWidth(10);  // Competition Brand
+        $sheet->getColumnDimension('K')->setWidth(25);  // District
+        $sheet->getColumnDimension('L')->setWidth(10);  // Longitude
+        $sheet->getColumnDimension('M')->setWidth(10);  // Latitude
+        $sheet->getColumnDimension('N')->setWidth(10);  // Average Sales
+        $sheet->getColumnDimension('O')->setWidth(10);  // Market Size
+        $sheet->getColumnDimension('P')->setWidth(10);  // Market Share
+        $sheet->getColumnDimension('Q')->setWidth(10);  // Competition Brand
 
         // Enable text wrapping for all columns
-        foreach (range('A', 'P') as $column) {
+        foreach (range('A', 'Q') as $column) {
             $sheet->getStyle($column)->getAlignment()->setWrapText(true);
         }
     }

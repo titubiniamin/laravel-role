@@ -20,6 +20,7 @@ class Retailer extends Model
         'longitude',
         'latitude',
         'location',
+        'district',
         'average_sales',
         'market_size',
         'market_share',

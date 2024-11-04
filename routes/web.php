@@ -1,18 +1,17 @@
 <?php
 
-use App\Http\Controllers\ApiProxyController;
+use App\Http\Controllers\Backend\AdminsController;
+use App\Http\Controllers\Backend\Auth\ForgotPasswordController;
+use App\Http\Controllers\Backend\Auth\LoginController;
+use App\Http\Controllers\Backend\CentralPointController;
+use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\DealerController;
 use App\Http\Controllers\Backend\RetailerController;
+use App\Http\Controllers\Backend\RolesController;
 use App\Http\Controllers\MapAnalyticsController;
 use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\Backend\AdminsController;
-use App\Http\Controllers\Backend\Auth\ForgotPasswordController;
-use App\Http\Controllers\Backend\Auth\LoginController;
-use App\Http\Controllers\Backend\DashboardController;
-use App\Http\Controllers\Backend\RolesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -68,6 +67,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::get('retailers/sample-excel', [RetailerController::class, 'export'])->name('retailers.sample-excel');
     Route::get('all-retailers', [RetailerController::class,'allDealers'])->name('allRetailers');
     Route::get('map-analytics', [MapAnalyticsController::class, 'mapAnalytics'])->name('map.analytics');
+    Route::resource('central-points',CentralPointController::class);
 })->middleware('auth:admin');
 Route::get('/test',[TestController::class,'index'])->name('test');
 //Route::get('/api/proxy/autocomplete', [ApiProxyController::class, 'fetchAutocomplete']);
