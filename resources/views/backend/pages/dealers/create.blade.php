@@ -169,7 +169,7 @@
 
         const map = new bkoigl.Map({
             container: "map",
-            center: [90.3938010872331, 23.821600277500405],
+            center: [90.3938010, 23.821600277500405],
             zoom: 15,
         });
         map.addControl(new bkoigl.FullscreenControl());

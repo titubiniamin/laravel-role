@@ -27,9 +27,25 @@
 
     <div class="main-content-inner">
         <!-- Existing success message display -->
-        @if (session('success'))
-            <div id="flash-message" class="alert alert-success">
+        @if(session('success'))
+            <div class="alert alert-success">
                 {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        @if(session('importErrors'))
+            <div class="alert alert-warning">
+                <ul>
+                    @foreach(session('importErrors') as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
             </div>
         @endif
 

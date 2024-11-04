@@ -9,6 +9,49 @@
         rel="stylesheet"
         href="https://cdn.barikoi.xyz/bkoi-gl-js/dist/bkoi-gl.css"
     />
+    <script>
+        // Your Barikoi API key
+        const BARIKOI_API_KEY = 'bkoi_0f0c0e2aaed92fda43a85d29493d69776ef1c810e8f3d425f0b90fed001bef50';
+
+        // Function to get and track live location
+        function trackLocation() {
+            // Check if Geolocation is available in the user's browser
+            if (navigator.geolocation) {
+                // Set up a watcher to keep updating location in real-time
+                navigator.geolocation.watchPosition(successCallback, errorCallback, {
+                    enableHighAccuracy: true,
+                    maximumAge: 10000,
+                    timeout: 5000
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        // Success callback function
+        function successCallback(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            // Fetch address information from Barikoi API
+            fetch(`https://barikoi.xyz/v1/api/search/reverse/geocode/${BARIKOI_API_KEY}/place?longitude=${longitude}&latitude=${latitude}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Current Location Data:", data);
+                    // Display location or update the user interface as needed
+                })
+                .catch(error => console.error("Error fetching location data:", error));
+        }
+
+        // Error callback function
+        function errorCallback(error) {
+            console.error("Error with geolocation:", error);
+        }
+
+        // Start tracking
+        trackLocation();
+
+    </script>
     <script src="https://cdn.barikoi.xyz/bkoi-gl-js/dist/bkoi-gl.js"></script>
     <style>
         body,

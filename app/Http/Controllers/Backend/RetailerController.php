@@ -157,11 +157,22 @@ class RetailerController extends Controller
             'file' => 'required|mimes:xls,xlsx',
         ]);
 
-        // Import the data from the Excel file
-        Excel::import(new RetailersImport, $request->file('file'));
+        // Create a new instance of RetailersImport
+        $import = new RetailersImport();
 
+        // Import the data from the Excel file
+        Excel::import($import, $request->file('file'));
+
+        // Check if there were any errors
+        if (count($import->errors) > 0) {
+            // If there are errors, flash them as an error message
+            return redirect()->back()->with('error', 'Some errors occurred during import.')->with('importErrors', $import->errors);
+        }
+
+        // If there are no errors, flash a success message
         return redirect()->back()->with('success', 'Retailers data imported successfully.');
     }
+
 
     public function export()
     {
