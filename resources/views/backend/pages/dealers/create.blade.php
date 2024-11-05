@@ -167,14 +167,77 @@
 <script>
         bkoigl.accessToken = "{{ env('BARIKOI_API_KEY') }}"; // required
 
-        const map = new bkoigl.Map({
-            container: "map",
-            center: [90.3938010, 23.821600277500405],
-            zoom: 15,
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    console.log('Latitude:', latitude);
+                    console.log('Longitude:', longitude);
+
+                    // Initialize the map with user's current coordinates
+                    initializeMap(latitude, longitude);
+
+                    // Fetch and set the address name using reverse geocoding
+                    fetchLocationName(latitude, longitude);
+
+                }, (error) => {
+                    console.error("Error fetching location:", error);
+                });
+            } else {
+                console.error("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function initializeMap(latitude, longitude) {
+            // Initialize map with the user's current coordinates
+            const map = new bkoigl.Map({
+                container: "map",
+                center: [longitude, latitude], // center map at current location
+                zoom: 15,
+            });
+
+            map.addControl(new bkoigl.FullscreenControl());
+            map.addControl(new bkoigl.NavigationControl());
+            map.addControl(new bkoigl.ScaleControl());
+
+            // Add a draggable marker at the user's location
+            let marker = new bkoigl.Marker({ draggable: true })
+                .setLngLat([longitude, latitude])
+                .addTo(map);
+
+            // Event listener for marker drag to update location field
+            marker.on('dragend', () => {
+                const lngLat = marker.getLngLat();
+                console.log('Marker dragged to:', lngLat);
+
+                // Update the address field and hidden fields with new coordinates
+                fetchLocationName(lngLat.lat, lngLat.lng);
+            });
+        }
+
+        function fetchLocationName(latitude, longitude) {
+            // Fetch the address from the backend (reverse geocode)
+            fetch(`/api/proxy/reverse-geocode?longitude=${longitude}&latitude=${latitude}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.place && data.place.address) {
+                        // Populate the location and hidden fields with fetched data
+                        document.getElementById("location").value = data.place.address;
+                        document.getElementById("longitude").value = longitude;
+                        document.getElementById("latitude").value = latitude;
+                        document.getElementById("district").value = data.place.district;
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching address:", error);
+                });
+        }
+
+        // Load map and set address on page load
+        document.addEventListener("DOMContentLoaded", function () {
+            getCurrentLocation();
         });
-        map.addControl(new bkoigl.FullscreenControl());
-        map.addControl(new bkoigl.NavigationControl());
-        map.addControl(new bkoigl.ScaleControl());
 
 
 
