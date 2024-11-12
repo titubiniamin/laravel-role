@@ -1,7 +1,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-    Edit Page - Dealer
+    Edit Page - Billboard
 @endsection
 
 @section('admin-content')
@@ -11,10 +11,10 @@
         <div class="row align-items-center">
             <div class="col-sm-6">
                 <div class="breadcrumbs-area clearfix">
-                    <h4 class="page-title pull-left">Dealers</h4>
+                    <h4 class="page-title pull-left">Billboards</h4>
                     <ul class="breadcrumbs pull-left">
                         <li><a href="{{ route('admin.dashboard') }}">Home</a></li>
-                        <li><span>Dealers</span></li>
+                        <li><span>Billboards</span></li>
                     </ul>
                 </div>
             </div>
@@ -26,7 +26,7 @@
     <!-- page title area end -->
 
     <div class="main-content-inner">
-        <form action="{{ route('admin.dealers.update',$dealer->id) }}" method="POST">
+        <form action="{{ route('admin.billboards.update',$billboard->id) }}" method="POST">
             @csrf
             @method('PUT')
         <div class="row">
@@ -36,7 +36,7 @@
                     <div class="col-md-12 mt-5 mb-3">
                         <div class="card">
                             <div class="p-4">
-                                <h4>Update Dealer</h4>
+                                <h4>Update Billboard</h4>
 
                                 <!-- Display validation errors -->
                                 @if ($errors->any())
@@ -71,49 +71,33 @@
 
                                     <div class="form-group">
                                         <label for="name">Name</label>
-                                        <input type="text" class="form-control" value="{{ old('name', $dealer->name) }}" name="name" required>
+                                        <input type="text" class="form-control" value="{{ old('name', $billboard->name) }}" name="name" required>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="owner_name">Owner Name</label>
-                                        <input type="text" class="form-control" value="{{ old('owner_name', $dealer->owner_name) }}" name="owner_name" required>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="zone">Zone</label>
-                                        <input type="text" class="form-control" value="{{ old('zone', $dealer->zone) }}" name="zone">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="dealer_code">Dealer Code</label>
-                                        <input type="text" class="form-control" value="{{ old('dealer_code', $dealer->dealer_code) }}" name="dealer_code">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="email">Email</label>
-                                        <input type="email" class="form-control" value="{{old('email',$dealer->email)}}" name="email">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="website">Website</label>
-                                        <input type="text" class="form-control" value="{{old('website',$dealer->website)}}" name="website">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="phone">Mobile</label>
-                                        <input type="text" class="form-control" value="{{old('mobile',$dealer->mobile)}}" name="mobile">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="phone">Address</label>
-                                        <input type="text" class="form-control" value="{{old('address', $dealer->address)}}" name="address">
-                                    </div>
+                                <div class="form-group">
+                                    <label for="size">Size</label>
+                                    <input type="text" class="form-control" value="{{ old('size',$billboard->size) }}" name="size">
+                                </div>
+                                <div class="form-group">
+                                    <label for="brand">Brand</label>
+                                    <input type="text" class="form-control" value="{{ old('brand',$billboard->brand) }}" name="brand">
+                                </div>
+                                <div class="form-group">
+                                    <label for="type">Type</label>
+{{--                                    @dd($billboard->type)--}}
+                                    <select id="type" name="type" class="form-control" style="height: 40px; font-size: 14px; color: #464A4D; border: 1px solid #dcdcdc; border-radius: 4px; background-color: #fff;">
+                                        <option value="" disabled selected>Select</option>
+                                        <option value="2 side" {{ $billboard->type == '2 side' ? 'selected' : '' }}>2 Side</option>
+                                        <option value="unipool" {{ $billboard->type == 'unipool' ? 'selected' : '' }}>Unipool</option>
+                                        <option value="neon" {{ $billboard->type == 'neon' ? 'selected' : '' }}>Neon</option>
+                                    </select>
+                                </div>
 
                                     <div class="form-group">
                                         <label for="location">Location</label>
-                                        <input type="text" name="longitude" value="{{$dealer->longitude}}" id="longitude" hidden>
-                                        <input type="text" name="latitude" value="{{$dealer->latitude}}"  id="latitude" hidden>
-                                        <input type="text" name="district" value="{{$dealer->district}}"  id="district" hidden>
-                                        <input type="text" class="form-control bksearch" value="{{$dealer->location}}"  name="location" id="location"/>
+                                        <input type="text" name="longitude" value="{{$billboard->longitude}}" id="longitude" hidden>
+                                        <input type="text" name="latitude" value="{{$billboard->latitude}}"  id="latitude" hidden>
+                                        <input type="text" name="district" value="{{$billboard->district}}"  id="district" hidden>
+                                        <input type="text" class="form-control bksearch" value="{{$billboard->location}}"  name="location" id="location"/>
                                         <div class="bklist"></div>
                                         <div id="loading" style="display: none;">Loading...</div> <!-- Loading indicator -->
                                     </div>
@@ -122,36 +106,10 @@
                                         <div id="map" style="width: 100%; height: 400px;"></div>
                                     </div>
 
-                                    <button type="submit" class="btn btn-primary">Update Dealer</button>
+                                    <button type="submit" class="btn btn-primary">Update Billboard</button>
 
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Right column for additional content -->
-            <div class="col-lg-3" style="height: 70vh;">
-                <div class="card mt-5 mb-3" style="height: 400px;background-color: white">
-                    <div class="p-4">
-                        <div class="form-group mb-4">
-                            <div class="form-group">
-                                <label for="name">Average Sales</label>
-                                <input type="text" class="form-control" value="{{ old('average_sales', $dealer->average_sales) }}" name="average_sales">
-                            </div>
-                            <div class="form-group">
-                                <label for="name">Market Size</label>
-                                <input type="text" class="form-control" value="{{ old('market_size', $dealer->market_size) }}" name="market_size">
-                            </div>
-                            <div class="form-group">
-                                <label for="market-share">Market Share</label>
-                                <input type="text" class="form-control" value="{{ old('market_share', $dealer->market_share) }}" name="market_share">
-                            </div>
-                            <div class="form-group">
-                                <label for="name">Competition Brand</label>
-                                <input type="text" class="form-control" value="{{ old('competition_brand', $dealer->competition_brand )}}" name="competition_brand">
-                            </div>
-                        </div>
-                        <!-- Additional content goes here -->
                     </div>
                 </div>
             </div>
@@ -160,19 +118,17 @@
     </div>
 
     <!-- Your existing script and styles here -->
-
-
     <script>
         bkoigl.accessToken = "{{ env('BARIKOI_API_KEY') }}"; // required
 
-        // Fetch dealer's coordinates from backend
-        const dealerLongitude = {{ $dealer->longitude ?? 90.3938010872331 }};
-        const dealerLatitude = {{ $dealer->latitude ?? 23.821600277500405 }};
-        const dealerLocation = "{{ $dealer->location ?? '' }}";
+        // Fetch billboard's coordinates from backend
+        const billboardLongitude = {{ $billboard->longitude ?? 90.3938010872331 }};
+        const billboardLatitude = {{ $billboard->latitude ?? 23.821600277500405 }};
+        const billboardLocation = "{{ $billboard->location ?? '' }}";
 
         const map = new bkoigl.Map({
             container: "map",
-            center: [dealerLongitude, dealerLatitude], // Set map center to dealer's coordinates
+            center: [billboardLongitude, billboardLatitude], // Set map center to billboard's coordinates
             zoom: 15,
         });
         map.addControl(new bkoigl.FullscreenControl());
@@ -180,15 +136,15 @@
         map.addControl(new bkoigl.ScaleControl());
 
 
-        // Initialize the marker at dealer's coordinates
+        // Initialize the marker at billboard's coordinates
         let marker = new bkoigl.Marker({ draggable: true })
-            .setLngLat([dealerLongitude, dealerLatitude])
+            .setLngLat([billboardLongitude, billboardLatitude])
             .addTo(map);
 
-        // Populate location input field with dealer's location
-        document.getElementById("location").value = dealerLocation;
-        document.getElementById("longitude").value = dealerLongitude;
-        document.getElementById("latitude").value = dealerLatitude;
+        // Populate location input field with billboard's location
+        document.getElementById("location").value = billboardLocation;
+        document.getElementById("longitude").value = billboardLongitude;
+        document.getElementById("latitude").value = billboardLatitude;
 
         // Event listener for location search
         document.getElementById("location").addEventListener("input", function () {

@@ -1,7 +1,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-    Dealers Page - Dealer
+    Billboards Page - Billboard
 @endsection
 
 @section('admin-content')
@@ -11,10 +11,10 @@
         <div class="row align-items-center">
             <div class="col-sm-6">
                 <div class="breadcrumbs-area clearfix">
-                    <h4 class="page-title pull-left">Dealers</h4>
+                    <h4 class="page-title pull-left">Billboards</h4>
                     <ul class="breadcrumbs pull-left">
                         <li><a href="{{ route('admin.dashboard') }}">Home</a></li>
-                        <li><span>Dealers</span></li>
+                        <li><span>Billboards</span></li>
                     </ul>
                 </div>
             </div>
@@ -26,7 +26,7 @@
     <!-- page title area end -->
 
     <div class="main-content-inner">
-        <form action="{{ route('admin.dealers.store') }}" method="POST"> <!-- Form starts here -->
+        <form action="{{ route('admin.billboards.store') }}" method="POST">
             @csrf
             <div class="row">
                 <!-- Left column for form inputs -->
@@ -35,7 +35,7 @@
                         <div class="col-md-12 mt-5 mb-3">
                             <div class="card">
                                 <div class="p-4">
-                                    <h4>Create Dealer</h4>
+                                    <h4>Create Billboard</h4>
 
                                     <!-- Display validation errors -->
                                     @if ($errors->any())
@@ -47,63 +47,48 @@
                                             </ul>
                                         </div>
                                     @endif
+
                                     <!-- Display success message -->
                                     @if (session('success'))
                                         <div id="flash-message" class="alert alert-success">
                                             {{ session('success') }}
                                         </div>
                                     @endif
+
+                                    <!-- Flash message fade-out script -->
                                     <script>
-                                        // Automatically hide the flash message after 5 seconds
                                         setTimeout(function() {
                                             const flashMessage = document.getElementById('flash-message');
                                             if (flashMessage) {
-                                                flashMessage.style.transition = 'opacity 0.5s ease'; // Fade-out transition
-                                                flashMessage.style.opacity = '0'; // Start fading
-
-                                                setTimeout(() => flashMessage.remove(), 500); // Remove from DOM after fade-out
+                                                flashMessage.style.transition = 'opacity 0.5s ease';
+                                                flashMessage.style.opacity = '0';
+                                                setTimeout(() => flashMessage.remove(), 500);
                                             }
-                                        }, 5000); // 5-second delay
+                                        }, 5000);
                                     </script>
 
-                                    <!-- Form Fields Start -->
+                                    <!-- Form fields -->
                                     <div class="form-group">
                                         <label for="name">Name</label>
                                         <input type="text" class="form-control" value="{{ old('name') }}" name="name" required>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="owner_name">Owner Name</label>
-                                        <input type="text" class="form-control" value="{{ old('owner_name') }}" name="owner_name" required>
-                                    </div>
 
                                     <div class="form-group">
-                                        <label for="zone">Zone</label>
-                                        <input type="text" class="form-control" value="{{ old('zone')  }}" name="zone">
+                                        <label for="size">Size<span>(Decimal)</span></label>
+                                        <input type="text" placeholder="ex:23.45 or 23 .." class="form-control" value="{{ old('size') }}" name="size">
                                     </div>
-
                                     <div class="form-group">
-                                        <label for="dealer_code">Dealer Code</label>
-                                        <input type="text" class="form-control" value="{{ old('dealer_code') }}" name="dealer_code">
+                                        <label for="brand">Brand</label>
+                                        <input type="text" class="form-control" value="{{ old('brand') }}" name="brand">
                                     </div>
-
                                     <div class="form-group">
-                                        <label for="email">Email</label>
-                                        <input type="email" class="form-control" value="email" name="email">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="website">Website</label>
-                                        <input type="text" class="form-control" value="{{ old('website') }}" name="website">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="phone">Mobile</label>
-                                        <input type="text" class="form-control" value="{{ old('mobile') }}" name="mobile">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="address">Address</label>
-                                        <input type="text" class="form-control" value="{{ old('address') }}" name="address">
+                                        <label for="type">Type</label>
+                                        <select id="type" name="type" class="form-control" style="height: 40px; font-size: 14px; color: #464A4D; border: 1px solid #dcdcdc; border-radius: 4px; background-color: #fff;">
+                                            <option value="" disabled selected>Select</option>
+                                            <option value="2 side" >2 Side</option>
+                                            <option value="unipool">Unipool</option>
+                                            <option value="neon">Neon</option>
+                                        </select>
                                     </div>
 
                                     <div class="form-group">
@@ -113,50 +98,22 @@
                                         <input type="text" name="district" id="district" hidden>
                                         <input type="text" class="form-control bksearch" name="location" id="location" />
                                         <div class="bklist"></div>
-                                        <div id="loading" style="display: none;">Loading...</div> <!-- Loading indicator -->
+                                        <div id="loading" style="display: none;">Loading...</div>
                                     </div>
 
                                     <div class="form-group">
-                                        <div id="map" style="width: 100%; height: 400px; background-color: yellow;"></div>
+                                        <div id="map" style="width: 100%; height: 400px; "></div>
                                     </div>
 
-                                    <button type="submit" class="btn btn-primary">Save Dealer</button>
-                                    <!-- Form Fields End -->
-
+                                    <button type="submit" class="btn btn-primary">Save Billboard</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right column for additional content -->
-                <div class="col-lg-3" style="height: 70vh;">
-                    <div class="card mt-5 mb-3" style="height: 400px;background-color: white">
-                        <div class="p-4">
-                            <div class="form-group mb-4">
-                                <div class="form-group">
-                                    <label for="name">Average Sales</label>
-                                    <input type="text" class="form-control" value="{{ old('average_sales') }}" name="average_sales">
-                                </div>
-                                <div class="form-group">
-                                    <label for="name">Market Size</label>
-                                    <input type="text" class="form-control" value="{{ old('market_size') }}" name="market_size">
-                                </div>
-                                <div class="form-group">
-                                    <label for="market-share">Market Share</label>
-                                    <input type="text" class="form-control" value="{{ old('market_share') }}" name="market_share">
-                                </div>
-                                <div class="form-group">
-                                    <label for="name">Competition Brand</label>
-                                    <input type="text" class="form-control" value="{{ old('competition_brand') }}" name="competition_brand">
-                                </div>
-                            </div>
-                            <!-- Additional content goes here -->
-                        </div>
-                    </div>
-                </div>
             </div>
-        </form> <!-- Form ends here -->
+        </form>
     </div>
 
     <!-- Your existing script and styles here -->
@@ -270,19 +227,19 @@
 
 
     <style>
-    .suggestion-item {
-        padding: 5px;
-        cursor: pointer;
-    }
-    .suggestion-item:hover {
-        background-color: #f0f0f0; /* Highlight on hover */
-    }
-    #loading {
-        display: none; /* Initially hidden */
-        font-size: 14px;
-        color: #888;
-        padding: 10px 0;
-    }
+        .suggestion-item {
+            padding: 5px;
+            cursor: pointer;
+        }
+        .suggestion-item:hover {
+            background-color: #f0f0f0; /* Highlight on hover */
+        }
+        #loading {
+            display: none; /* Initially hidden */
+            font-size: 14px;
+            color: #888;
+            padding: 10px 0;
+        }
 
 
     </style>

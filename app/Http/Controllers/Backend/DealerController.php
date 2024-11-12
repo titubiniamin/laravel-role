@@ -142,6 +142,7 @@ class DealerController extends Controller
     public function importShow(Request $request)
     {
 
+//        dd($request->route()->getName());
         $dealer = Dealer::all(); // Use findOrFail to throw an error if not found
 
         // Return the view with the dealer data

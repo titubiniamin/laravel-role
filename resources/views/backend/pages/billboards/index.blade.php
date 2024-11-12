@@ -39,11 +39,11 @@
         <div class="col-12 mt-5">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title float-left">{{ __('Dealers') }}</h4>
+                    <h4 class="header-title float-left">{{ __('Billboards') }}</h4>
                     <p class="float-right mb-2">
                         @if (auth()->user()->can('admin.edit'))
-                            <a class="btn btn-primary text-white" href="{{ route('admin.dealers.create') }}">
-                                {{ __('Create New Dealer') }}
+                            <a class="btn btn-primary text-white" href="{{ route('admin.billboards.create') }}">
+                                {{ __('Create New Billboard') }}
                             </a>
                         @endif
                     </p>
@@ -53,36 +53,36 @@
                         <table id="dataTable" class="text-center">
                             <thead class="bg-light text-capitalize">
                                 <tr>
-                                    <th style="width: 105px">{{ __('Sl') }}</th>
-                                    <th width="10%">{{ __('Name') }}</th>
-                                    <th width="10%">{{ __('Email') }}</th>
-                                    <th width="40%">{{ __('Mobile') }}</th>
-                                    <th width="40%">{{ __('Zone') }}</th>
-                                    <th width="40%">{{ __('Address') }}</th>
-                                    <th width="15%">{{ __('Action') }}</th>
+                                    <th>{{ __('Sl') }}</th>
+                                    <th> {{ __('Name') }}</th>
+                                    <th> {{ __('Size') }}</th>
+                                    <th> {{ __('Type') }}</th>
+                                    <th> {{ __('Brand') }}</th>
+                                    <th> {{ __('Location') }}</th>
+                                    <th>{{ __('Action') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                               @foreach ($dealers as $dealer)
+                               @foreach ($billboards as $billboard)
                                <tr>
                                     <td>{{ $loop->index+1 }}</td>
-                                    <td>{{ $dealer->name }}</td>
-                                    <td>{{ $dealer->email }}</td>
-                                    <td>{{ $dealer->mobile }}</td>
-                                    <td>{{ $dealer->zone }}</td>
-                                    <td>{{ $dealer->address }}</td>
+                                    <td>{{ $billboard->name }}</td>
+                                    <td>{{ $billboard->size }}</td>
+                                    <td>{{ $billboard->type }}</td>
+                                    <td>{{ $billboard->brand }}</td>
+                                    <td>{{ $billboard->location }}</td>
                                     <td>
-                                        @if (auth()->user()->can('dealer.edit'))
-                                            <a class="btn btn-success text-white" href="{{ route('admin.dealers.edit', $dealer->id) }}">Edit</a>
+                                        @if (auth()->user()->can('billboard.edit'))
+                                            <a class="btn btn-success text-white" href="{{ route('admin.billboards.edit', $billboard->id) }}">Edit</a>
                                         @endif
 
-                                        @if (auth()->user()->can('dealer.delete'))
+                                        @if (auth()->user()->can('billboard.delete'))
                                         <a class="btn btn-danger text-white" href="javascript:void(0);"
-                                        onclick="event.preventDefault(); if(confirm('Are you sure you want to delete?')) { document.getElementById('delete-form-{{ $dealer->id }}').submit(); }">
+                                        onclick="event.preventDefault(); if(confirm('Are you sure you want to delete?')) { document.getElementById('delete-form-{{ $billboard->id }}').submit(); }">
                                             {{ __('Delete') }}
                                         </a>
 
-                                        <form id="delete-form-{{ $dealer->id }}" action="{{ route('admin.dealers.destroy', $dealer->id) }}" method="POST" style="display: none;">
+                                        <form id="delete-form-{{ $billboard->id }}" action="{{ route('admin.billboards.destroy', $billboard->id) }}" method="POST" style="display: none;">
                                             @method('DELETE')
                                             @csrf
                                         </form>
@@ -115,12 +115,12 @@
                 responsive: true,
                 columnDefs: [
                     { width: "5%", targets: 0 },   // Sl column
-                    { width: "15%", targets: 1 },  // Name column
-                    { width: "10%", targets: 2 },  // Email column
-                    { width: "8%", targets: 3 },  // Mobile column
-                    { width: "10%", targets: 4 },  // Zone column
-                    { width: "30%", address: 4 },  // Zone column
-                    { width: "20%", targets: 5 }   // Action column
+                    { width: "25%", targets: 1 },  // Name column
+                    { width: "10%", targets: 2 },  // size column
+                    { width: "10%", targets: 3 },  // type column
+                    { width: "10%", targets: 4 },  // brand column
+                    { width: "30%", address: 5 },  // location column
+                    { width: "5%", targets: 6 }   // Action column
                 ]
             });
         }

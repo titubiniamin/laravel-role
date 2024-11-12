@@ -80,6 +80,36 @@ class RolePermissionSeeder extends Seeder
                 ]
             ],
             [
+                'group_name' => 'billboard',
+                'permissions' => [
+                    // admin Permissions
+                    'billboard.create',
+                    'billboard.view',
+                    'billboard.edit',
+                    'billboard.delete',
+                ]
+            ],
+            [
+                'group_name' => 'highwall',
+                'permissions' => [
+                    // admin Permissions
+                    'highwall.create',
+                    'highwall.view',
+                    'highwall.edit',
+                    'highwall.delete',
+                ]
+            ],
+            [
+                'group_name' => 'shopsign',
+                'permissions' => [
+                    // admin Permissions
+                    'shopsign.create',
+                    'shopsign.view',
+                    'shopsign.edit',
+                    'shopsign.delete',
+                ]
+            ],
+            [
                 'group_name' => 'role',
                 'permissions' => [
                     // role Permissions

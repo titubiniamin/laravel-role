@@ -47,6 +47,7 @@
                                 <option value="" disabled selected>Select</option>
                                 <option value="dealers" selected style="background-color: white">Dealers</option>
                                 <option value="retailers">Retailers</option>
+                                <option value="billboards">Billboards</option>
                                 <option value="all">All</option>
                             </select>
                         </div>
@@ -69,17 +70,21 @@
 
         const dealers = @json($dealers); // Pass the dealer data to JavaScript
         const retailers = @json($retailers); // Pass the retailer data to JavaScript
+        const billboards = @json($billboards); // Pass the retailer data to JavaScript
         console.log("Dealers data:", dealers);
         console.log("Retailers data:", retailers);
+        console.log("Billboards data:", billboards);
 
         // Create arrays to keep track of markers
         let dealerMarkers = [];
         let retailerMarkers = [];
+        let billboardMarkers = [];
 
         // Custom icon URLs
         const retailerIconUrl = '{{ asset('images/red.png') }}'; // Custom icon for retailers
         const dealerIconUrl = '{{ asset('images/blue.png') }}'; // Custom icon for dealers
         const centralIconUrl = '{{ asset('images/branch-icon.png') }}'; // Custom icon for central point
+        const billboardIconUrl = '{{ asset('images/billboard.png') }}'; // Custom icon for central point
 
         // Central point coordinates (you can adjust this)
         const centralCoordinates = [90.3938010872331, 23.821600277500405];
@@ -116,7 +121,7 @@
                     <div class="maplibregl-popup-content">
                         <div>
                             <span>
-                                <div><span class="popup-label">Branch Name: </span>${dealer.name || "N/A"}</div>
+                                <div><span class="popup-label">Dealer Name: </span>${dealer.name || "N/A"}</div>
                                 <div><span class="popup-label">Address: </span>${dealer.location || "N/A"}</div>
                                 <div><span class="popup-label">Distance from Central Point: </span>${distance} km</div>
                                 ${dealer.average_sales ? `<div><span class="popup-label">Average Sales: </span>${dealer.average_sales}</div>` : ''}
@@ -183,15 +188,74 @@
             return markerElement;
         }
 
+        // Function to add markers for billboards on the map with custom icon and hover functionality
+        function addBillboardMarkers(billboards) {
+            billboards.forEach(billboard => {
+                const longitude = parseFloat(billboard.longitude);
+                const latitude = parseFloat(billboard.latitude);
+
+                if (!isNaN(longitude) && !isNaN(latitude)) {
+                    const distance = calculateDistance(centralCoordinates[1], centralCoordinates[0], latitude, longitude).toFixed(2);
+                    let popupContent = `
+            <div class="maplibregl-popup-content">
+                <div>
+                    <span>
+                        <div><span class="popup-label">Billboard Name: </span>${billboard.name || "N/A"}</div>
+                        <div><span class="popup-label">Location: </span>${billboard.location || "N/A"}</div>
+                        <div><span class="popup-label">Distance from Central Point: </span>${distance} km</div>
+                    </span>
+                </div>
+            </div>
+            `;
+
+                    const marker = new bkoigl.Marker({ element: createCustomMarkerElement(billboardIconUrl) }) // Use custom icon for billboards
+                        .setLngLat([longitude, latitude])
+                        .setPopup(new bkoigl.Popup().setHTML(popupContent))
+                        .addTo(map);
+
+                    billboardMarkers.push(marker); // Store the marker in the array
+
+                    // Hover functionality to show the name on hover
+                    marker.getElement().addEventListener('mouseenter', () => {
+                        const tooltip = document.createElement('div');
+                        tooltip.classList.add('tooltip');
+                        tooltip.textContent = billboard.name || 'Billboard'; // Set the tooltip content to the billboard name
+                        tooltip.style.position = 'absolute';
+                        tooltip.style.backgroundColor = '#333';
+                        tooltip.style.color = '#fff';
+                        tooltip.style.padding = '5px 10px';
+                        tooltip.style.borderRadius = '4px';
+                        tooltip.style.zIndex = '1000';
+                        tooltip.style.top = '-20px';
+                        tooltip.style.left = '50%';
+                        tooltip.style.transform = 'translateX(-50%)';
+
+                        // Append tooltip to the body or map container
+                        map.getContainer().appendChild(tooltip);
+
+                        // Remove the tooltip when the mouse leaves the marker
+                        marker.getElement().addEventListener('mouseleave', () => {
+                            if (tooltip) {
+                                tooltip.remove();
+                            }
+                        });
+                    });
+                }
+            });
+        }
+
+
         // Function to update markers based on the dropdown selection
         function updateMarkers() {
             // Remove existing markers from the map
             dealerMarkers.forEach(marker => marker.remove());
             retailerMarkers.forEach(marker => marker.remove());
+            billboardMarkers.forEach(marker => marker.remove());
 
             // Clear the marker arrays
             dealerMarkers = [];
             retailerMarkers = [];
+            billboardMarkers = [];
 
             const selectedValue = document.getElementById('select-view').value;
 
@@ -199,11 +263,15 @@
                 addDealerMarkers(dealers);
             } else if (selectedValue === 'retailers') {
                 addRetailerMarkers(retailers);
+            } else if (selectedValue === 'billboards') {
+                addBillboardMarkers(billboards); // Show billboards when selected
             } else if (selectedValue === 'all') {
                 addDealerMarkers(dealers);
                 addRetailerMarkers(retailers);
+                addBillboardMarkers(billboards); // Show all markers
             }
         }
+
 
         // Add Central Point and Marker on Map Load
         map.on("load", () => {

@@ -28,10 +28,10 @@
 
                     <!-- Dealer Menu Section -->
                     <!-- Dealer Menu Section -->
-                    @if ($usr->can('dealer.create') || $usr->can('dealer.view') || $usr->can('dealer.edit') || $usr->can('dealer.delete'))
+                    @if ($usr->can('dealer.create') || $usr->can('dealer.view') || $usr->can('dealer.edit') || $usr->can('dealer.delete')|| $usr->can('dealer.import-show')||$usr->can('dealer.import'))
                         <li>
                             <a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-briefcase"></i><span>Dealers</span></a>
-                            <ul class="collapse {{ Route::is('admin.dealers.create') || Route::is('admin.dealers.index') || Route::is('admin.dealers.edit') || Route::is('admin.dealers.show') ? 'in' : '' }}">
+                            <ul class="collapse {{ Route::is('admin.dealers.create') || Route::is('admin.dealers.index') || Route::is('admin.dealers.edit') || Route::is('admin.dealers.show') || Route::is('admin.dealers.import-show') ? 'in' : '' }}">
                                 @if ($usr->can('dealer.view'))
                                     <li class="{{ Route::is('admin.dealers.index') || Route::is('admin.dealers.edit') ? 'active' : '' }}">
                                         <a href="{{ route('admin.dealers.index') }}">All Dealers</a>
@@ -54,11 +54,11 @@
                         </li>
                     @endif
                     <!-- Retailer Menu Section-->
-                    @if ($usr->can('retailer.create') || $usr->can('retailer.view') || $usr->can('retailer.edit') || $usr->can('retailer.delete'))
+                    @if ($usr->can('retailer.create') || $usr->can('retailer.view') || $usr->can('retailer.edit') || $usr->can('retailer.delete')||$usr->can('dealer.import-show')||$usr->can('dealer.import'))
                         <li>
                             <a href="javascript:void(0)" aria-expanded="true"><i
                                     class="fa fa-tag"></i><span>Retailers</span></a>
-                            <ul class="collapse {{ Route::is('admin.retailers.create') || Route::is('admin.retailers.index') || Route::is('admin.retailers.edit') || Route::is('admin.retailers.show') ? 'in' : '' }}">
+                            <ul class="collapse {{ Route::is('admin.retailers.create') || Route::is('admin.retailers.index') || Route::is('admin.retailers.edit') || Route::is('admin.retailers.show') ||Route::is('admin.retailers.show') || Route::is('admin.retailers.import-show') ? 'in' : '' }}">
                                 @if ($usr->can('retailer.view'))
                                     <li class="{{ Route::is('admin.retailers.index') || Route::is('admin.retailers.edit') ? 'active' : '' }}">
                                         <a href="{{ route('admin.retailers.index') }}">All Retailers</a>
@@ -83,7 +83,7 @@
                     <!--Retailer End-->
 
                     <!-- Central Point Menu Section-->
-                    @if ($usr->can('central-point.create') || $usr->can('central-point.view') || $usr->can('central-point.edit') || $usr->can('central-point.delete'))
+                    @if ($usr->can('billboard.create') || $usr->can('central-point.view') || $usr->can('central-point.edit') || $usr->can('central-point.delete'))
                         <li>
                             <a href="javascript:void(0)" aria-expanded="true"><i
                                     class="fa fa-map-pin"></i><span>Central Point</span></a>
@@ -103,6 +103,28 @@
                         </li>
                     @endif
                     <!--Central End-->
+
+                        <!-- Billboard Menu Section-->
+                        @if ($usr->can('billboard.create') || $usr->can('billboard.view') || $usr->can('billboard.edit') || $usr->can('billboard.delete'))
+                            <li>
+                                <a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-sign"></i><span>Billboard</span></a>
+                                <ul class="collapse {{ Route::is('admin.billboards.create') || Route::is('admin.billboards.index') || Route::is('admin.billboards.edit') || Route::is('admin.billboards.show') ? 'in' : '' }}">
+                                    @if ($usr->can('billboard.view'))
+                                        <li class="{{ Route::is('admin.billboards.index') || Route::is('admin.billboards.edit') ? 'active' : '' }}">
+                                            <a href="{{ route('admin.billboards.index') }}">All Billboards</a>
+                                        </li>
+                                    @endif
+                                    @if ($usr->can('billboard.create'))
+                                        <li class="{{ Route::is('admin.billboards.create') ? 'active' : '' }}">
+                                            <a href="{{ route('admin.billboards.create') }}">Create Billboard</a>
+                                        </li>
+                                    @endif
+
+                                </ul>
+                            </li>
+                        @endif
+                        <!--Billboard End-->
+
                     <!--Map-->
 
                     @if ($usr->can('map.analytics'))

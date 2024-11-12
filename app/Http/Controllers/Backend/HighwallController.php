@@ -1,0 +1,150 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Http\Controllers\Backend;
+
+use App\Http\Controllers\Controller;
+use App\Models\Highwall;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
+use Spatie\Permission\Models\Role;
+
+// Use this import for the Request class
+
+class HighwallController extends Controller
+{
+    public function index(): Renderable
+    {
+        $this->checkAuthorization(auth()->user(), ['highwall.view']);
+        $highwalls = Highwall::all();
+        return view('backend.pages.highwalls.index', [
+            'highwalls' => $highwalls
+        ]);
+    }
+
+    public function allHighwalls()
+    {
+        $this->checkAuthorization(auth()->user(), ['highwall.view']);
+
+//        Log::info('Fetching all highwalls');
+        $highwalls = Highwall::all()->toArray();
+//        Log::info($highwalls);
+
+        return $highwalls;
+    }
+
+
+
+    public function create(): Renderable
+    {
+        $this->checkAuthorization(auth()->user(), ['highwall.create']);
+
+        return view('backend.pages.highwalls.create');
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $this->checkAuthorization(auth()->user(), ['highwall.create']);
+
+        // Validate the request data and handle any validation errors automatically
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'nullable',
+            'longitude' => 'nullable',
+            'latitude' => 'nullable',
+            'location' => 'nullable',
+            'district' => 'nullable',
+        ]);
+        // Create the highwall with validated data
+        Highwall::create($validatedData);
+
+        // Flash success message to the session
+        session()->flash('success', 'Highwall has been created.');
+
+        // Redirect to the index route for highwalls
+        return redirect()->back();
+    }
+
+    public function edit(int $id): Renderable|RedirectResponse
+    {
+        $this->checkAuthorization(auth()->user(), ['highwall.edit']);
+
+        $highwall = Highwall::findOrFail($id);
+        return view('backend.pages.highwalls.edit', [
+            'highwall' => $highwall,
+            'roles' => Role::all(),
+        ]);
+
+    }
+
+    public function update(Request $request, int $id): RedirectResponse
+    {
+//        dd(request()->all());
+        $this->checkAuthorization(auth()->user(), ['highwall.edit']);
+
+        $highwall = Highwall::findOrFail($id);
+
+        // Validate the request data
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'nullable',
+            'longitude' => 'nullable',
+            'latitude' => 'nullable',
+            'location' => 'nullable',
+            'district' => 'nullable',
+        ]);
+//        dd('update');
+//        dd($validatedData);
+
+        // Update the highwall with validated data
+        $highwall->update($validatedData);
+
+        session()->flash('success', 'Highwall has been updated.');
+        return back();
+    }
+
+    public function destroy(int $id): RedirectResponse
+    {
+        $this->checkAuthorization(auth()->user(), ['highwall.delete']);
+
+        $highwall = Highwall::findOrFail($id);
+        $highwall->delete();
+
+        session()->flash('success', 'Highwall has been deleted.');
+        return redirect()->route('admin.highwalls.index');
+    }
+
+    public function importShow(Request $request)
+    {
+
+//        dd($request->route()->getName());
+        $highwall = Highwall::all(); // Use findOrFail to throw an error if not found
+
+        // Return the view with the highwall data
+        return view('backend.pages.highwalls.excel-import', compact('highwall'));
+    }
+
+    public function import(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'file' => 'required|mimes:xls,xlsx',
+        ]);
+
+        // Import the data from the Excel file
+        Excel::import(new HighwallsImport, $request->file('file'));
+
+        return redirect()->back()->with('success', 'Highwalls data imported successfully.');
+    }
+
+    public function export()
+    {
+        return Excel::download(new HighwallsExport, 'highwalls.xlsx');
+    }
+
+
+
+}

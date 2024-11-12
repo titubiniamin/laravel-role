@@ -41,6 +41,18 @@ class PermissionsSeeder extends Seeder
             ['name' => 'central-point.view', 'guard_name' => 'admin', 'group_name' => 'central-point', 'created_at' => now(), 'updated_at' => now()],
             ['name' => 'central-point.edit', 'guard_name' => 'admin', 'group_name' => 'central-point', 'created_at' => now(), 'updated_at' => now()],
             ['name' => 'central-point.delete', 'guard_name' => 'admin', 'group_name' => 'central-point', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'billboard.create', 'guard_name' => 'admin', 'group_name' => 'billboard', 'created_at' => null, 'updated_at' => null],
+            ['name' => 'billboard.view', 'guard_name' => 'admin', 'group_name' => 'billboard', 'created_at' => null, 'updated_at' => null],
+            ['name' => 'billboard.edit', 'guard_name' => 'admin', 'group_name' => 'billboard', 'created_at' => null, 'updated_at' => null],
+            ['name' => 'billboard.delete', 'guard_name' => 'admin', 'group_name' => 'billboard', 'created_at' => null, 'updated_at' => null],
+            ['name' => 'highwall.create', 'guard_name' => 'admin', 'group_name' => 'highwall', 'created_at' => null, 'updated_at' => null],
+            ['name' => 'highwall.view', 'guard_name' => 'admin', 'group_name' => 'highwall', 'created_at' => null, 'updated_at' => null],
+            ['name' => 'highwall.edit', 'guard_name' => 'admin', 'group_name' => 'highwall', 'created_at' => null, 'updated_at' => null],
+            ['name' => 'highwall.delete', 'guard_name' => 'admin', 'group_name' => 'highwall', 'created_at' => null, 'updated_at' => null],
+            ['name' => 'shopsign.create', 'guard_name' => 'admin', 'group_name' => 'shopsign', 'created_at' => null, 'updated_at' => null],
+            ['name' => 'shopsign.view', 'guard_name' => 'admin', 'group_name' => 'shopsign', 'created_at' => null, 'updated_at' => null],
+            ['name' => 'shopsign.edit', 'guard_name' => 'admin', 'group_name' => 'shopsign', 'created_at' => null, 'updated_at' => null],
+            ['name' => 'shopsign.delete', 'guard_name' => 'admin', 'group_name' => 'shopsign', 'created_at' => null, 'updated_at' => null],
 
         ];
 

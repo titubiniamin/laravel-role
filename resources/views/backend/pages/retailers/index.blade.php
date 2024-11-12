@@ -72,11 +72,11 @@
                                     <td>{{ $retailer->zone }}</td>
                                     <td>{{ $retailer->address }}</td>
                                     <td>
-                                        @if (auth()->user()->can('admin.edit'))
+                                        @if (auth()->user()->can('retailer.edit'))
                                             <a class="btn btn-success text-white" href="{{ route('admin.retailers.edit', $retailer->id) }}">Edit</a>
                                         @endif
 
-                                        @if (auth()->user()->can('admin.delete'))
+                                        @if (auth()->user()->can('retailer.delete'))
                                         <a class="btn btn-danger text-white" href="javascript:void(0);"
                                         onclick="event.preventDefault(); if(confirm('Are you sure you want to delete?')) { document.getElementById('delete-form-{{ $retailer->id }}').submit(); }">
                                             {{ __('Delete') }}

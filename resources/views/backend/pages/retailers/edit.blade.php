@@ -119,7 +119,7 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <div id="map" style="width: 100%; height: 400px; background-color: yellow;"></div>
+                                        <div id="map" style="width: 100%; height: 400px;"></div>
                                     </div>
 
                                     <button type="submit" class="btn btn-primary">Update Retailer</button>

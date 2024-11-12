@@ -1,121 +1,278 @@
-{{--    {{dd($dealers)}}--}}
-    <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-        rel="stylesheet"
-        href="https://cdn.barikoi.xyz/bkoi-gl-js/dist/bkoi-gl.css"
-    />
-    <script>
-        // Your Barikoi API key
-        const BARIKOI_API_KEY = 'bkoi_0f0c0e2aaed92fda43a85d29493d69776ef1c810e8f3d425f0b90fed001bef50';
+@extends('backend.layouts.master')
 
-        // Function to get and track live location
-        function trackLocation() {
-            // Check if Geolocation is available in the user's browser
-            if (navigator.geolocation) {
-                // Set up a watcher to keep updating location in real-time
-                navigator.geolocation.watchPosition(successCallback, errorCallback, {
-                    enableHighAccuracy: true,
-                    maximumAge: 10000,
-                    timeout: 5000
-                });
-            } else {
-                alert("Geolocation is not supported by this browser.");
-            }
+@section('title')
+    Dealers Page - Dealer
+@endsection
+
+@section('admin-content')
+
+    <!-- page title area start -->
+    <div class="page-title-area">
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <div class="breadcrumbs-area clearfix">
+                    <h4 class="page-title pull-left">Dealers</h4>
+                    <ul class="breadcrumbs pull-left">
+                        <li><a href="{{ route('admin.dashboard') }}">Home</a></li>
+                        <li><span>Dealers</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-sm-6 clearfix">
+                @include('backend.layouts.partials.logout')
+            </div>
+        </div>
+    </div>
+    <!-- page title area end -->
+
+    <div class="main-content-inner">
+        <form action="{{ route('admin.dealers.store') }}" method="POST"> <!-- Form starts here -->
+            @csrf
+            <div class="row">
+                <!-- Left column for form inputs -->
+                <div class="col-lg-9">
+                    <div class="row">
+                        <div class="col-md-12 mt-5 mb-3">
+                            <div class="card">
+                                <div class="p-4">
+                                    <h4>Create Dealer</h4>
+
+                                    <!-- Display validation errors -->
+                                    @if ($errors->any())
+                                        <div class="alert alert-danger">
+                                            <ul>
+                                                @foreach ($errors->all() as $error)
+                                                    <li>{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endif
+                                    <!-- Display success message -->
+                                    @if (session('success'))
+                                        <div id="flash-message" class="alert alert-success">
+                                            {{ session('success') }}
+                                        </div>
+                                    @endif
+                                    <script>
+                                        // Automatically hide the flash message after 5 seconds
+                                        setTimeout(function() {
+                                            const flashMessage = document.getElementById('flash-message');
+                                            if (flashMessage) {
+                                                flashMessage.style.transition = 'opacity 0.5s ease'; // Fade-out transition
+                                                flashMessage.style.opacity = '0'; // Start fading
+
+                                                setTimeout(() => flashMessage.remove(), 500); // Remove from DOM after fade-out
+                                            }
+                                        }, 5000); // 5-second delay
+                                    </script>
+
+                                    <!-- Form Fields Start -->
+                                    <div class="form-group">
+                                        <label for="name">Name</label>
+                                        <input type="text" class="form-control" value="{{ old('name') }}" name="name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="owner_name">Owner Name</label>
+                                        <input type="text" class="form-control" value="{{ old('owner_name') }}" name="owner_name" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="zone">Zone</label>
+                                        <input type="text" class="form-control" value="{{ old('zone')  }}" name="zone">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="dealer_code">Dealer Code</label>
+                                        <input type="text" class="form-control" value="{{ old('dealer_code') }}" name="dealer_code">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="email">Email</label>
+                                        <input type="email" class="form-control" value="email" name="email">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="website">Website</label>
+                                        <input type="text" class="form-control" value="{{ old('website') }}" name="website">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="phone">Mobile</label>
+                                        <input type="text" class="form-control" value="{{ old('mobile') }}" name="mobile">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="address">Address</label>
+                                        <input type="text" class="form-control" value="{{ old('address') }}" name="address">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="location">Location</label>
+                                        <input type="text" name="longitude" id="longitude" hidden>
+                                        <input type="text" name="latitude" id="latitude" hidden>
+                                        <input type="text" name="district" id="district" hidden>
+                                        <input type="text" class="form-control bksearch" name="location" id="location" />
+                                        <div class="bklist"></div>
+                                        <div id="loading" style="display: none;">Loading...</div> <!-- Loading indicator -->
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div id="map" style="width: 100%; height: 400px; background-color: yellow;"></div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">Save Dealer</button>
+                                    <!-- Form Fields End -->
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right column for additional content -->
+                <div class="col-lg-3" style="height: 70vh;">
+                    <div class="card mt-5 mb-3" style="height: 400px;background-color: white">
+                        <div class="p-4">
+                            <div class="form-group mb-4">
+                                <div class="form-group">
+                                    <label for="name">Average Sales</label>
+                                    <input type="text" class="form-control" value="{{ old('average_sales') }}" name="average_sales">
+                                </div>
+                                <div class="form-group">
+                                    <label for="name">Market Size</label>
+                                    <input type="text" class="form-control" value="{{ old('market_size') }}" name="market_size">
+                                </div>
+                                <div class="form-group">
+                                    <label for="market-share">Market Share</label>
+                                    <input type="text" class="form-control" value="{{ old('market_share') }}" name="market_share">
+                                </div>
+                                <div class="form-group">
+                                    <label for="name">Competition Brand</label>
+                                    <input type="text" class="form-control" value="{{ old('competition_brand') }}" name="competition_brand">
+                                </div>
+                            </div>
+                            <!-- Additional content goes here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form> <!-- Form ends here -->
+    </div>
+
+    <!-- Your existing script and styles here -->
+
+    <!-- Your existing script and styles here -->
+
+
+    <script>
+        bkoigl.accessToken = "{{ env('BARIKOI_API_KEY') }}";
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+                console.log(latitude)
+                console.log(longitude)
+                initializeMap(latitude, longitude);
+                fetchLocationName(latitude, longitude);
+            },
+            (error) => {
+                console.error("Error fetching location:", error);
+            },
+            { enableHighAccuracy: true } // Request high-accuracy location
+        );
+
+
+        function initializeMap(latitude, longitude) {
+            const map = new bkoigl.Map({
+                container: "map",
+                center: [longitude, latitude],
+                zoom: 15,
+            });
+
+            let marker = new bkoigl.Marker({ draggable: true })
+                .setLngLat([longitude, latitude])
+                .addTo(map);
+
+            marker.on('dragend', () => {
+                const lngLat = marker.getLngLat();
+                fetchLocationName(lngLat.lat, lngLat.lng);
+            });
         }
 
-        // Success callback function
-        function successCallback(position) {
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
-
-            // Fetch address information from Barikoi API
-            fetch(`https://barikoi.xyz/v1/api/search/reverse/geocode/${BARIKOI_API_KEY}/place?longitude=${longitude}&latitude=${latitude}`)
+        function fetchLocationName(latitude, longitude) {
+            fetch(`/api/proxy/reverse-geocode?longitude=${longitude}&latitude=${latitude}`)
                 .then(response => response.json())
                 .then(data => {
-                    console.log("Current Location Data:", data);
-                    // Display location or update the user interface as needed
+                    if (data.place && data.place.address) {
+                        document.getElementById("location").value = data.place.address;
+                        document.getElementById("longitude").value = longitude;
+                        document.getElementById("latitude").value = latitude;
+                        document.getElementById("district").value = data.place.district;
+                    }
                 })
-                .catch(error => console.error("Error fetching location data:", error));
+                .catch(error => {
+                    console.error("Error fetching address:", error);
+                });
         }
 
-        // Error callback function
-        function errorCallback(error) {
-            console.error("Error with geolocation:", error);
-        }
+        document.getElementById("location").addEventListener("input", function () {
+            let query = this.value;
+            let loadingIndicator = document.getElementById("loading");
 
-        // Start tracking
-        trackLocation();
+            if (query.length > 2) {
+                loadingIndicator.style.display = "block";
+                fetch(`/api/proxy/autocomplete?q=${query}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        loadingIndicator.style.display = "none";
+                        let suggestionList = document.querySelector('.bklist');
+                        suggestionList.innerHTML = '';
 
-    </script>
-    <script src="https://cdn.barikoi.xyz/bkoi-gl-js/dist/bkoi-gl.js"></script>
-    <style>
-        body,
-        #map {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-        }
-    </style>
-    <title>Add Marker To Map</title>
-</head>
-<body>
-<div id="map"></div>
-
-<script>
-    bkoigl.accessToken = "bkoi_0f0c0e2aaed92fda43a85d29493d69776ef1c810e8f3d425f0b90fed001bef50"; // required
-    const map = new bkoigl.Map({
-        container: "map",
-        center: [90.3938010872331, 23.821600277500405],
-        zoom: 12,
-    });
-
-    const dealers = @json($dealers); // Pass the dealer data to JavaScript
-    console.log("Dealers data:", dealers); // Check dealer data in console
-    console.log("Dealers data:", dealers);
-
-    // Function to add markers for dealers on the map
-    function addMarkers(dealers) {
-        if (!Array.isArray(dealers)) {
-            console.error("Expected dealers to be an array");
-            return;
-        }
-
-        dealers.forEach(dealer => {
-            const longitude = parseFloat(dealer.longitude);
-            const latitude = parseFloat(dealer.latitude);
-
-            // Log parsed values and their types
-            console.log("Parsed Longitude:", longitude, "Type:", typeof longitude);
-            console.log("Parsed Latitude:", latitude, "Type:", typeof latitude);
-
-            // Ensure coordinates are valid
-            if (!isNaN(longitude) && !isNaN(latitude)) {
-                console.log('this is'+longitude)
-                console.log('this is'+latitude)
-                const marker = new bkoigl.Marker()
-                    .setLngLat([longitude, latitude])
-                    .setPopup(new bkoigl.Popup().setText(dealer.name))
-                    .addTo(map);
+                        data.places.forEach(place => {
+                            let suggestionItem = document.createElement('div');
+                            suggestionItem.textContent = place.address;
+                            suggestionItem.className = 'suggestion-item';
+                            suggestionItem.onclick = function () {
+                                marker.setLngLat([place.longitude, place.latitude]);
+                                map.flyTo({ center: [place.longitude, place.latitude], zoom: 15 });
+                                suggestionList.innerHTML = '';
+                                document.getElementById("location").value = place.address;
+                                document.getElementById("longitude").value = place.longitude;
+                                document.getElementById("latitude").value = place.latitude;
+                                document.getElementById("district").value = place.district;
+                            };
+                            suggestionList.appendChild(suggestionItem);
+                        });
+                    })
+                    .catch(error => {
+                        loadingIndicator.style.display = "none";
+                        console.error("Error fetching data:", error);
+                    });
             } else {
-                console.error("Invalid coordinates for dealer:", dealer);
+                document.querySelector('.bklist').innerHTML = '';
+                loadingIndicator.style.display = "none";
             }
         });
-    }
+
+        document.addEventListener("DOMContentLoaded", getCurrentLocation);
+    </script>
+
+    <style>
+        .suggestion-item {
+            padding: 5px;
+            cursor: pointer;
+        }
+        .suggestion-item:hover {
+            background-color: #f0f0f0; /* Highlight on hover */
+        }
+        #loading {
+            display: none; /* Initially hidden */
+            font-size: 14px;
+            color: #888;
+            padding: 10px 0;
+        }
 
 
-    // Add Marker on Map Load
-    map.on("load", () => {
-        addMarkers(dealers); // Call the addMarkers function to place dealer markers on the map
-    });
-</script>
-
-</body>
-</html>
+    </style>
+@endsection

@@ -12,10 +12,12 @@ class MapAnalyticsController extends Controller
         $this->checkAuthorization(auth()->user(), 'map.analytics');
         $dealers = \App\Models\Dealer::all()->toArray(); // Get dealers as an array
         $retailers = \App\Models\Retailer::all()->toArray(); // Get dealers as an array
+        $billboards = \App\Models\Billboard::all()->toArray(); // Get dealers as an array
 
         return view('backend.pages.map-analytics.map-analytics',[
             'dealers' => $dealers,
             'retailers' => $retailers,
+            'billboards' => $billboards,
         ]);
     }
 }

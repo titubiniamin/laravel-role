@@ -24,12 +24,12 @@ class DealersImport implements ToModel, WithHeadingRow
             return $dealer;
         } else {
             // If retailer doesn't exist, create a new record with all fields
-            return Retailer::create([
+            return Dealer::create([
                 'id'                => $row['id'],
                 'name'              => $row['name'],
                 'owner_name'        => $row['owner_name'],
                 'zone'              => $row['zone'],
-                'retailer_code'     => $row['retailer_code'],
+                'dealer_code'     => $row['dealer_code'],
                 'email'             => $row['email'],
                 'website'           => $row['website'],
                 'mobile'            => $row['mobile'],

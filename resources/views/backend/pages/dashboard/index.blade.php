@@ -45,7 +45,7 @@ Dashboard Page - Admin Panel
             <div class="col-md-6 mt-md-5 mb-3">
                 <div class="card">
                     <div class="seo-fact sbg2">
-                        <a href="{{ route('admin.admins.index') }}">
+                        <a href="{{ route('admin.retailers.index') }}">
                             <div class="p-4 d-flex justify-content-between align-items-center">
                                 <div class="seofct-icon"><i class="fa fa-user"></i> Retailers</div>
                                 <h2>{{ $total_retailers }}</h2>
