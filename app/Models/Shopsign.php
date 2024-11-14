@@ -16,6 +16,9 @@ class Shopsign extends Model
         'longitude',
         'latitude',
         'location',
-        'district'
+        'district',
+        'image',
+        'start_date',
+        'end_date',
     ];
 }

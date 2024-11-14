@@ -1,7 +1,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-    Billboards Page - Billboard
+    Highwalls Page - Highwall
 @endsection
 
 @section('admin-content')
@@ -11,10 +11,10 @@
         <div class="row align-items-center">
             <div class="col-sm-6">
                 <div class="breadcrumbs-area clearfix">
-                    <h4 class="page-title pull-left">Billboards</h4>
+                    <h4 class="page-title pull-left">Highwalls</h4>
                     <ul class="breadcrumbs pull-left">
                         <li><a href="{{ route('admin.dashboard') }}">Home</a></li>
-                        <li><span>Billboards</span></li>
+                        <li><span>Highwalls</span></li>
                     </ul>
                 </div>
             </div>
@@ -26,14 +26,14 @@
     <!-- page title area end -->
 
     <div class="main-content-inner">
-        <form action="{{ route('admin.billboards.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.highwalls.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="row">
                 <!-- Left column for form inputs -->
                 <div class="col-lg-9">
                     <div class="card mt-5 mb-3">
                         <div class="p-4">
-                            <h4>Create Billboard</h4>
+                            <h4>Create Highwall</h4>
 
                             <!-- Display validation errors -->
                             @if ($errors->any())
@@ -59,10 +59,7 @@
                                 <input type="text" class="form-control" value="{{ old('name') }}" name="name" required>
                             </div>
 
-                            <div class="form-group">
-                                <label for="size">Size<span>(Square Feet)</span></label>
-                                <input type="text" placeholder="ex:23.45 or 23 .." class="form-control" value="{{ old('size') }}" name="size">
-                            </div>
+
 
                             <div class="form-group">
                                 <label for="brand">Brand</label>
@@ -78,9 +75,8 @@
                                 <label for="type">Type</label>
                                 <select id="type" name="type" class="form-control">
                                     <option value="" disabled selected>Select</option>
-                                    <option value="single_side">Single Side</option>
-                                    <option value="unipool">Unipool</option>
-                                    <option value="neon">Neon</option>
+                                    <option value="high_raise">High Raise</option>
+                                    <option value="cold_store">Cold Store</option>
                                 </select>
                             </div>
 
@@ -110,7 +106,7 @@
                                 <div id="map" style="width: 100%; height: 400px;"></div>
                             </div>
 
-                            <button type="submit" class="btn btn-primary">Save Billboard</button>
+                            <button type="submit" class="btn btn-primary">Save Highwall</button>
                         </div>
                     </div>
                 </div>

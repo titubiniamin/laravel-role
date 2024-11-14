@@ -1,0 +1,762 @@
+diff --git a/resources/views/backend/layouts/partials/sidebar.blade.php b/resources/views/backend/layouts/partials/sidebar.blade.php
+index a7f3beae..08ea5e64 100644
+--- a/resources/views/backend/layouts/partials/sidebar.blade.php
++++ b/resources/views/backend/layouts/partials/sidebar.blade.php
+@@ -124,6 +124,26 @@
+                             </li>
+                         @endif
+                         <!--Billboard End-->
++                        <!-- Highwall Menu Section-->
++                        @if ($usr->can('highwall.create') || $usr->can('highwall.view') || $usr->can('highwall.edit') || $usr->can('highwall.delete'))
++                            <li>
++                                <a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-square"></i><span>Highwall</span></a>
++                                <ul class="collapse {{ Route::is('admin.highwalls.create') || Route::is('admin.highwalls.index') || Route::is('admin.highwalls.edit') || Route::is('admin.highwalls.show') ? 'in' : '' }}">
++                                    @if ($usr->can('highwall.view'))
++                                        <li class="{{ Route::is('admin.highwalls.index') || Route::is('admin.highwalls.edit') ? 'active' : '' }}">
++                                            <a href="{{ route('admin.highwalls.index') }}">All Highwall</a>
++                                        </li>
++                                    @endif
++                                    @if ($usr->can('highwall.create'))
++                                        <li class="{{ Route::is('admin.highwalls.create') ? 'active' : '' }}">
++                                            <a href="{{ route('admin.highwalls.create') }}">Create Highwall</a>
++                                        </li>
++                                    @endif
++
++                                </ul>
++                            </li>
++                        @endif
++                        <!--Billboard End-->
+ 
+                     <!--Map-->
+ 
+diff --git a/resources/views/backend/pages/billboards/create.blade.php b/resources/views/backend/pages/billboards/create.blade.php
+index c87ffc4a..eebdc1e0 100644
+--- a/resources/views/backend/pages/billboards/create.blade.php
++++ b/resources/views/backend/pages/billboards/create.blade.php
+@@ -74,7 +74,7 @@
+                                     </div>
+ 
+                                     <div class="form-group">
+-                                        <label for="size">Size<span>(Decimal)</span></label>
++                                        <label for="size">Size<span>(Square Feet)</span></label>
+                                         <input type="text" placeholder="ex:23.45 or 23 .." class="form-control" value="{{ old('size') }}" name="size">
+                                     </div>
+                                     <div class="form-group">
+diff --git a/resources/views/backend/pages/highwalls/create.blade.php b/resources/views/backend/pages/highwalls/create.blade.php
+new file mode 100644
+index 00000000..63a92f85
+--- /dev/null
++++ b/resources/views/backend/pages/highwalls/create.blade.php
+@@ -0,0 +1,243 @@
++@extends('backend.layouts.master')
++
++@section('title')
++    Highwalls Page - Highwall
++@endsection
++
++@section('admin-content')
++
++    <!-- page title area start -->
++    <div class="page-title-area">
++        <div class="row align-items-center">
++            <div class="col-sm-6">
++                <div class="breadcrumbs-area clearfix">
++                    <h4 class="page-title pull-left">Highwalls</h4>
++                    <ul class="breadcrumbs pull-left">
++                        <li><a href="{{ route('admin.dashboard') }}">Home</a></li>
++                        <li><span>Highwalls</span></li>
++                    </ul>
++                </div>
++            </div>
++            <div class="col-sm-6 clearfix">
++                @include('backend.layouts.partials.logout')
++            </div>
++        </div>
++    </div>
++    <!-- page title area end -->
++
++    <div class="main-content-inner">
++        <form action="{{ route('admin.highwalls.store') }}" method="POST">
++            @csrf
++            <div class="row">
++                <!-- Left column for form inputs -->
++                <div class="col-lg-9">
++                    <div class="row">
++                        <div class="col-md-12 mt-5 mb-3">
++                            <div class="card">
++                                <div class="p-4">
++                                    <h4>Create Highwall</h4>
++
++                                    <!-- Display validation errors -->
++                                    @if ($errors->any())
++                                        <div class="alert alert-danger">
++                                            <ul>
++                                                @foreach ($errors->all() as $error)
++                                                    <li>{{ $error }}</li>
++                                                @endforeach
++                                            </ul>
++                                        </div>
++                                    @endif
++
++                                    <!-- Display success message -->
++                                    @if (session('success'))
++                                        <div id="flash-message" class="alert alert-success">
++                                            {{ session('success') }}
++                                        </div>
++                                    @endif
++
++                                    <!-- Flash message fade-out script -->
++                                    <script>
++                                        setTimeout(function() {
++                                            const flashMessage = document.getElementById('flash-message');
++                                            if (flashMessage) {
++                                                flashMessage.style.transition = 'opacity 0.5s ease';
++                                                flashMessage.style.opacity = '0';
++                                                setTimeout(() => flashMessage.remove(), 500);
++                                            }
++                                        }, 5000);
++                                    </script>
++
++                                    <!-- Form fields -->
++                                    <div class="form-group">
++                                        <label for="name">Name</label>
++                                        <input type="text" class="form-control" value="{{ old('name') }}" name="name" required>
++                                    </div>
++
++
++                                    <div class="form-group">
++                                        <label for="brand">Brand</label>
++                                        <input type="text" class="form-control" value="{{ old('brand') }}" name="brand">
++                                    </div>
++                                    <div class="form-group">
++                                        <label for="type">Type</label>
++                                        <select id="type" name="type" class="form-control" style="height: 40px; font-size: 14px; color: #464A4D; border: 1px solid #dcdcdc; border-radius: 4px; background-color: #fff;">
++                                            <option value="" disabled selected>Select</option>
++                                            <option value="2 side" >2 Side</option>
++                                            <option value="unipool">Unipool</option>
++                                            <option value="neon">Neon</option>
++                                        </select>
++                                    </div>
++
++                                    <div class="form-group">
++                                        <label for="location">Location</label>
++                                        <input type="text" name="longitude" id="longitude" hidden>
++                                        <input type="text" name="latitude" id="latitude" hidden>
++                                        <input type="text" name="district" id="district" hidden>
++                                        <input type="text" class="form-control bksearch" name="location" id="location" />
++                                        <div class="bklist"></div>
++                                        <div id="loading" style="display: none;">Loading...</div>
++                                    </div>
++
++                                    <div class="form-group">
++                                        <div id="map" style="width: 100%; height: 400px; "></div>
++                                    </div>
++
++                                    <button type="submit" class="btn btn-primary">Save Highwall</button>
++                                </div>
++                            </div>
++                        </div>
++                    </div>
++                </div>
++
++            </div>
++        </form>
++    </div>
++
++    <!-- Your existing script and styles here -->
++
++    <!-- Your existing script and styles here -->
++
++
++    <script>
++        bkoigl.accessToken = "{{ env('BARIKOI_API_KEY') }}";
++
++        let map, marker;
++
++        // Use geolocation to show the current location on map load
++        navigator.geolocation.getCurrentPosition(
++            (position) => {
++                const latitude = position.coords.latitude;
++                const longitude = position.coords.longitude;
++                console.log("Initial location:", latitude, longitude);
++
++                initializeMap(latitude, longitude);
++                fetchLocationName(latitude, longitude);
++            },
++            (error) => {
++                console.error("Error fetching location:", error);
++                // Fallback coordinates if geolocation fails
++                initializeMap(23.821600277500405, 90.3938010872331);
++            },
++            { enableHighAccuracy: true } // Request high-accuracy location
++        );
++
++        function initializeMap(latitude, longitude) {
++            map = new bkoigl.Map({
++                container: "map",
++                center: [longitude, latitude],
++                zoom: 15,
++            });
++
++            map.addControl(new bkoigl.FullscreenControl());
++            map.addControl(new bkoigl.NavigationControl());
++            map.addControl(new bkoigl.ScaleControl());
++
++            // Initialize a draggable marker
++            marker = new bkoigl.Marker({ draggable: true })
++                .setLngLat([longitude, latitude])
++                .addTo(map);
++
++            // Update input fields when the marker is dragged
++            marker.on('dragend', () => {
++                const lngLat = marker.getLngLat();
++                fetchLocationName(lngLat.lat, lngLat.lng);
++            });
++        }
++
++        function fetchLocationName(latitude, longitude) {
++            fetch(`/api/proxy/reverse-geocode?longitude=${longitude}&latitude=${latitude}`)
++                .then(response => response.json())
++                .then(data => {
++                    if (data.place && data.place.address) {
++                        document.getElementById("location").value = data.place.address;
++                        document.getElementById("longitude").value = longitude;
++                        document.getElementById("latitude").value = latitude;
++                        document.getElementById("district").value = data.place.district;
++                    }
++                })
++                .catch(error => {
++                    console.error("Error fetching address:", error);
++                });
++        }
++
++        document.getElementById("location").addEventListener("input", function () {
++            let query = this.value;
++            let loadingIndicator = document.getElementById("loading");
++
++            if (query.length > 2) {
++                loadingIndicator.style.display = "block";
++                fetch(`/api/proxy/autocomplete?q=${query}`)
++                    .then(response => response.json())
++                    .then(data => {
++                        loadingIndicator.style.display = "none";
++                        let suggestionList = document.querySelector('.bklist');
++                        suggestionList.innerHTML = '';
++
++                        if (data.places) {
++                            data.places.forEach(place => {
++                                let suggestionItem = document.createElement('div');
++                                suggestionItem.textContent = place.address;
++                                suggestionItem.className = 'suggestion-item';
++                                suggestionItem.onclick = function () {
++                                    marker.setLngLat([place.longitude, place.latitude]);
++                                    map.flyTo({ center: [place.longitude, place.latitude], zoom: 15 });
++                                    suggestionList.innerHTML = '';
++                                    document.getElementById("location").value = place.address;
++                                    document.getElementById("longitude").value = place.longitude;
++                                    document.getElementById("latitude").value = place.latitude;
++                                    document.getElementById("district").value = place.district;
++                                };
++                                suggestionList.appendChild(suggestionItem);
++                            });
++                        }
++                    })
++                    .catch(error => {
++                        loadingIndicator.style.display = "none";
++                        console.error("Error fetching data:", error);
++                    });
++            } else {
++                document.querySelector('.bklist').innerHTML = '';
++                loadingIndicator.style.display = "none";
++            }
++        });
++    </script>
++
++
++    <style>
++        .suggestion-item {
++            padding: 5px;
++            cursor: pointer;
++        }
++        .suggestion-item:hover {
++            background-color: #f0f0f0; /* Highlight on hover */
++        }
++        #loading {
++            display: none; /* Initially hidden */
++            font-size: 14px;
++            color: #888;
++            padding: 10px 0;
++        }
++
++
++    </style>
++@endsection
+diff --git a/resources/views/backend/pages/highwalls/edit.blade.php b/resources/views/backend/pages/highwalls/edit.blade.php
+new file mode 100644
+index 00000000..357e25b3
+--- /dev/null
++++ b/resources/views/backend/pages/highwalls/edit.blade.php
+@@ -0,0 +1,229 @@
++@extends('backend.layouts.master')
++
++@section('title')
++    Edit Page - Highwall
++@endsection
++
++@section('admin-content')
++
++    <!-- page title area start -->
++    <div class="page-title-area">
++        <div class="row align-items-center">
++            <div class="col-sm-6">
++                <div class="breadcrumbs-area clearfix">
++                    <h4 class="page-title pull-left">Highwalls</h4>
++                    <ul class="breadcrumbs pull-left">
++                        <li><a href="{{ route('admin.dashboard') }}">Home</a></li>
++                        <li><span>Highwalls</span></li>
++                    </ul>
++                </div>
++            </div>
++            <div class="col-sm-6 clearfix">
++                @include('backend.layouts.partials.logout')
++            </div>
++        </div>
++    </div>
++    <!-- page title area end -->
++
++    <div class="main-content-inner">
++        <form action="{{ route('admin.highwalls.update',$highwall->id) }}" method="POST">
++            @csrf
++            @method('PUT')
++        <div class="row">
++            <!--Left Column-->
++            <div class="col-lg-9">
++                <div class="row">
++                    <div class="col-md-12 mt-5 mb-3">
++                        <div class="card">
++                            <div class="p-4">
++                                <h4>Update Highwall</h4>
++
++                                <!-- Display validation errors -->
++                                @if ($errors->any())
++                                    <div class="alert alert-danger">
++                                        <ul>
++                                            @foreach ($errors->all() as $error)
++                                                <li>{{ $error }}</li>
++                                            @endforeach
++                                        </ul>
++                                    </div>
++                                @endif
++                                <!-- Display success message -->
++                                @if (session('success'))
++                                    <div id="flash-message" class="alert alert-success">
++                                        {{ session('success') }}
++                                    </div>
++                                @endif
++                                <script>
++                                    // Automatically hide the flash message after 5 seconds
++                                    setTimeout(function() {
++                                        const flashMessage = document.getElementById('flash-message');
++                                        if (flashMessage) {
++                                            flashMessage.style.transition = 'opacity 0.5s ease'; // Fade-out transition
++                                            flashMessage.style.opacity = '0'; // Start fading
++
++                                            setTimeout(() => flashMessage.remove(), 500); // Remove from DOM after fade-out
++                                        }
++                                    }, 5000); // 5-second delay
++                                </script>
++
++
++
++                                    <div class="form-group">
++                                        <label for="name">Name</label>
++                                        <input type="text" class="form-control" value="{{ old('name', $highwall->name) }}" name="name" required>
++                                    </div>
++
++                                <div class="form-group">
++                                    <label for="brand">Brand</label>
++                                    <input type="text" class="form-control" value="{{ old('brand',$highwall->brand) }}" name="brand">
++                                </div>
++                                <div class="form-group">
++                                    <label for="type">Type</label>
++{{--                                    @dd($highwall->type)--}}
++                                    <select id="type" name="type" class="form-control" style="height: 40px; font-size: 14px; color: #464A4D; border: 1px solid #dcdcdc; border-radius: 4px; background-color: #fff;">
++                                        <option value="" disabled selected>Select</option>
++                                        <option value="2 side" {{ $highwall->type == '2 side' ? 'selected' : '' }}>2 Side</option>
++                                        <option value="unipool" {{ $highwall->type == 'unipool' ? 'selected' : '' }}>Unipool</option>
++                                        <option value="neon" {{ $highwall->type == 'neon' ? 'selected' : '' }}>Neon</option>
++                                    </select>
++                                </div>
++
++                                    <div class="form-group">
++                                        <label for="location">Location</label>
++                                        <input type="text" name="longitude" value="{{$highwall->longitude}}" id="longitude" hidden>
++                                        <input type="text" name="latitude" value="{{$highwall->latitude}}"  id="latitude" hidden>
++                                        <input type="text" name="district" value="{{$highwall->district}}"  id="district" hidden>
++                                        <input type="text" class="form-control bksearch" value="{{$highwall->location}}"  name="location" id="location"/>
++                                        <div class="bklist"></div>
++                                        <div id="loading" style="display: none;">Loading...</div> <!-- Loading indicator -->
++                                    </div>
++
++                                    <div class="form-group">
++                                        <div id="map" style="width: 100%; height: 400px;"></div>
++                                    </div>
++
++                                    <button type="submit" class="btn btn-primary">Update Highwall</button>
++
++                            </div>
++                        </div>
++                    </div>
++                </div>
++            </div>
++        </div>
++        </form>
++    </div>
++
++    <!-- Your existing script and styles here -->
++    <script>
++        bkoigl.accessToken = "{{ env('BARIKOI_API_KEY') }}"; // required
++
++        // Fetch highwall's coordinates from backend
++        const highwallLongitude = {{ $highwall->longitude ?? 90.3938010872331 }};
++        const highwallLatitude = {{ $highwall->latitude ?? 23.821600277500405 }};
++        const highwallLocation = "{{ $highwall->location ?? '' }}";
++
++        const map = new bkoigl.Map({
++            container: "map",
++            center: [highwallLongitude, highwallLatitude], // Set map center to highwall's coordinates
++            zoom: 15,
++        });
++        map.addControl(new bkoigl.FullscreenControl());
++        map.addControl(new bkoigl.NavigationControl());
++        map.addControl(new bkoigl.ScaleControl());
++
++
++        // Initialize the marker at highwall's coordinates
++        let marker = new bkoigl.Marker({ draggable: true })
++            .setLngLat([highwallLongitude, highwallLatitude])
++            .addTo(map);
++
++        // Populate location input field with highwall's location
++        document.getElementById("location").value = highwallLocation;
++        document.getElementById("longitude").value = highwallLongitude;
++        document.getElementById("latitude").value = highwallLatitude;
++
++        // Event listener for location search
++        document.getElementById("location").addEventListener("input", function () {
++            let query = this.value;
++            let loadingIndicator = document.getElementById("loading");
++
++            if (query.length > 2) {
++                loadingIndicator.style.display = "block"; // Show loading indicator
++                fetch(`/api/proxy/autocomplete?q=${query}`)
++                    .then(response => response.json())
++                    .then(data => {
++                        loadingIndicator.style.display = "none"; // Hide loading indicator
++                        if (data.places) {
++                            let suggestions = data.places;
++                            let suggestionList = document.querySelector('.bklist');
++                            suggestionList.innerHTML = ''; // Clear previous suggestions
++
++                            suggestions.forEach(place => {
++                                let suggestionItem = document.createElement('div');
++                                suggestionItem.textContent = place.address;
++                                suggestionItem.className = 'suggestion-item';
++                                suggestionItem.onclick = function () {
++                                    marker.setLngLat([place.longitude, place.latitude]);
++                                    map.flyTo({ center: [place.longitude, place.latitude], zoom: 15 });
++                                    suggestionList.innerHTML = '';
++                                    document.getElementById("location").value = place.address;
++                                    document.getElementById("longitude").value = place.longitude;
++                                    document.getElementById("latitude").value = place.latitude;
++                                    document.getElementById("district").value = place.district;
++                                };
++                                suggestionList.appendChild(suggestionItem);
++                            });
++                        }
++                    })
++                    .catch(error => {
++                        loadingIndicator.style.display = "none"; // Hide loading indicator on error
++                        console.error('Error fetching data:', error);
++                    });
++            } else {
++                document.querySelector('.bklist').innerHTML = ''; // Clear suggestions if query is too short
++                loadingIndicator.style.display = "none"; // Hide loading indicator if no query
++            }
++        });
++
++        // Event listener for marker drag end to update coordinates and address
++        marker.on('dragend', function() {
++            const lngLat = marker.getLngLat();
++            const longitude = lngLat.lng;
++            const latitude = lngLat.lat;
++
++            fetch(`/api/proxy/reverse-geocode?longitude=${longitude}&latitude=${latitude}`)
++                .then(response => response.json())
++                .then(data => {
++                    if (data.place && data.place.address) {
++                        const locationInput = document.getElementById("location");
++                        locationInput.value = data.place.address;
++                        document.getElementById("longitude").value = longitude;
++                        document.getElementById("latitude").value = latitude;
++                    }
++                })
++                .catch(error => {
++                    console.error('Error fetching address:', error);
++                });
++        });
++    </script>
++
++
++    <style>
++        .suggestion-item {
++            padding: 5px;
++            cursor: pointer;
++        }
++        .suggestion-item:hover {
++            background-color: #f0f0f0; /* Highlight on hover */
++        }
++        #loading {
++            display: none; /* Initially hidden */
++            font-size: 14px;
++            color: #888;
++            padding: 10px 0;
++        }
++
++
++    </style>
++@endsection
+diff --git a/resources/views/backend/pages/highwalls/excel-import.blade.php b/resources/views/backend/pages/highwalls/excel-import.blade.php
+new file mode 100644
+index 00000000..c160fef4
+--- /dev/null
++++ b/resources/views/backend/pages/highwalls/excel-import.blade.php
+@@ -0,0 +1,81 @@
++@extends('backend.layouts.master')
++
++@section('title')
++    Dealers Page - Dealer
++@endsection
++
++@section('admin-content')
++    <!-- Page title area start -->
++    <div class="page-title-area">
++        <div class="row align-items-center">
++            <div class="col-sm-6">
++                <div class="breadcrumbs-area clearfix">
++                    <h4 class="page-title pull-left">Dealers</h4>
++                    <ul class="breadcrumbs pull-left">
++                        <li><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
++                        <li><a href="{{ route('admin.dealers.index') }}">Dealers</a></li>
++                        <li><span>Excel Import</span></li>
++                    </ul>
++                </div>
++            </div>
++            <div class="col-sm-6 clearfix">
++                @include('backend.layouts.partials.logout')
++            </div>
++        </div>
++    </div>
++    <!-- Page title area end -->
++
++    <div class="main-content-inner">
++        <!-- Existing success message display -->
++        @if (session('success'))
++            <div id="flash-message" class="alert alert-success">
++                {{ session('success') }}
++            </div>
++        @endif
++
++        <form action="{{ route('admin.dealers.import') }}" method="POST" enctype="multipart/form-data">
++            @csrf
++            <div class="row">
++                <div class="col-lg-12">
++                    <div class="row">
++                        <div class="col-md-12 mt-5 mb-3">
++                            <div class="card">
++                                <div class="p-4">
++                                    <h4>Import Dealers</h4>
++
++                                    <!-- Existing error handling and success message code here -->
++
++                                    <!-- Sample File Download Button -->
++                                    <div class="mb-3">
++                                        <a href="{{ route('admin.dealers.sample-excel') }}" class="btn btn-secondary">Download Sample Excel</a>
++                                    </div>
++
++                                    <!-- File Upload Field -->
++                                    <div class="form-group">
++                                        <label for="file">Upload Dealer Data (Excel)</label>
++                                        <input type="file" class="form-control" name="file" accept=".xls,.xlsx" required>
++                                    </div>
++
++                                    <button type="submit" class="btn btn-primary">Import Dealers</button>
++                                </div>
++                            </div>
++                        </div>
++                    </div>
++                </div>
++            </div>
++        </form>
++    </div>
++    <script>
++        // Automatically hide the flash message after 5 seconds
++        setTimeout(function() {
++            const flashMessage = document.getElementById('flash-message');
++            if (flashMessage) {
++                flashMessage.style.transition = 'opacity 0.5s ease'; // Fade-out transition
++                flashMessage.style.opacity = '0'; // Start fading
++
++                setTimeout(() => flashMessage.remove(), 500); // Remove from DOM after fade-out
++            }
++        }, 5000); // 5-second delay
++    </script>
++
++@endsection
+diff --git a/resources/views/backend/pages/highwalls/index.blade.php b/resources/views/backend/pages/highwalls/index.blade.php
+new file mode 100644
+index 00000000..19f363d4
+--- /dev/null
++++ b/resources/views/backend/pages/highwalls/index.blade.php
+@@ -0,0 +1,127 @@
++@extends('backend.layouts.master')
++
++@section('title')
++    {{ __('Users - User Panel') }}
++@endsection
++
++@section('styles')
++    <!-- Start datatable css -->
++    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
++    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.18/css/dataTables.bootstrap4.min.css">
++    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap.min.css">
++    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.jqueryui.min.css">
++@endsection
++
++@section('admin-content')
++
++<!-- page title area start -->
++<div class="page-title-area">
++    <div class="row align-items-center">
++        <div class="col-sm-6">
++            <div class="breadcrumbs-area clearfix">
++                <h4 class="page-title pull-left">{{ __('Users') }}</h4>
++                <ul class="breadcrumbs pull-left">
++                    <li><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
++                    <li><span>{{ __('All Users') }}</span></li>
++                </ul>
++            </div>
++        </div>
++        <div class="col-sm-6 clearfix">
++            @include('backend.layouts.partials.logout')
++        </div>
++    </div>
++</div>
++<!-- page title area end -->
++
++<div class="main-content-inner">
++    <div class="row">
++        <!-- data table start -->
++        <div class="col-12 mt-5">
++            <div class="card">
++                <div class="card-body">
++                    <h4 class="header-title float-left">{{ __('Highwalls') }}</h4>
++                    <p class="float-right mb-2">
++                        @if (auth()->user()->can('admin.edit'))
++                            <a class="btn btn-primary text-white" href="{{ route('admin.highwalls.create') }}">
++                                {{ __('Create New Highwall') }}
++                            </a>
++                        @endif
++                    </p>
++                    <div class="clearfix"></div>
++                    <div class="data-tables">
++                        @include('backend.layouts.partials.messages')
++                        <table id="dataTable" class="text-center">
++                            <thead class="bg-light text-capitalize">
++                                <tr>
++                                    <th>{{ __('Sl') }}</th>
++                                    <th> {{ __('Name') }}</th>
++                                    <th> {{ __('Type') }}</th>
++                                    <th> {{ __('Brand') }}</th>
++                                    <th> {{ __('Location') }}</th>
++                                    <th>{{ __('Action') }}</th>
++                                </tr>
++                            </thead>
++                            <tbody>
++                               @foreach ($highwalls as $highwall)
++                               <tr>
++                                    <td>{{ $loop->index+1 }}</td>
++                                    <td>{{ $highwall->name }}</td>
++                                    <td>{{ $highwall->type }}</td>
++                                    <td>{{ $ighwall->brand }}</td>
++                                    <td>{{ $highwall->location }}</td>
++                                    <td>
++                                        @if (auth()->user()->can('ighwall.edit'))
++                                            <a class="btn btn-success text-white" href="{{ route('admin.ighwalls.edit', $highwall->id) }}">Edit</a>
++                                        @endif
++
++                                        @if (auth()->user()->can('highwall.delete'))
++                                        <a class="btn btn-danger text-white" href="javascript:void(0);"
++                                        onclick="event.preventDefault(); if(confirm('Are you sure you want to delete?')) { document.getElementById('delete-form-{{ $highwall->id }}').submit(); }">
++                                            {{ __('Delete') }}
++                                        </a>
++
++                                        <form id="delete-form-{{ $highwall->id }}" action="{{ route('admin.highwalls.destroy', $highwall->id) }}" method="POST" style="display: none;">
++                                            @method('DELETE')
++                                            @csrf
++                                        </form>
++                                        @endif
++                                    </td>
++                                </tr>
++                               @endforeach
++                            </tbody>
++                        </table>
++                    </div>
++                </div>
++            </div>
++        </div>
++        <!-- data table end -->
++    </div>
++</div>
++@endsection
++
++@section('scripts')
++     <!-- Start datatable js -->
++     <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
++     <script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
++     <script src="https://cdn.datatables.net/1.10.18/js/dataTables.bootstrap4.min.js"></script>
++     <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
++     <script src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap.min.js"></script>
++
++     <script>
++        if ($('#dataTable').length) {
++            $('#dataTable').DataTable({
++                responsive: true,
++                columnDefs: [
++                    { width: "5%", targets: 0 },   // Sl column
++                    { width: "25%", targets: 1 },  // Name column
++                    { width: "10%", targets: 3 },  // type column
++                    { width: "10%", targets: 4 },  // brand column
++                    { width: "30%", address: 5 },  // location column
++                    { width: "5%", targets: 6 }   // Action column
++                ]
++            });
++        }
++     </script>
++
++
++@endsection
+diff --git a/resources/views/backend/pages/map-analytics/map-analytics.blade.php b/resources/views/backend/pages/map-analytics/map-analytics.blade.php
+index 82291a28..1e041327 100644
+--- a/resources/views/backend/pages/map-analytics/map-analytics.blade.php
++++ b/resources/views/backend/pages/map-analytics/map-analytics.blade.php
+@@ -201,6 +201,9 @@
+                 <div>
+                     <span>
+                         <div><span class="popup-label">Billboard Name: </span>${billboard.name || "N/A"}</div>
++                        <div><span class="popup-label">Size: </span>${billboard.size || "N/A"}</div>
++                        <div><span class="popup-label">Type: </span>${billboard.type || "N/A"}</div>
++                        <div><span class="popup-label">Brand: </span>${billboard.brand || "N/A"}</div>
+                         <div><span class="popup-label">Location: </span>${billboard.location || "N/A"}</div>
+                         <div><span class="popup-label">Distance from Central Point: </span>${distance} km</div>
+                     </span>

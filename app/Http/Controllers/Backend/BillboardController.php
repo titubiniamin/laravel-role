@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\Permission\Models\Role;
 
@@ -60,9 +61,23 @@ class BillboardController extends Controller
             'latitude' => 'nullable',
             'location' => 'nullable',
             'district' => 'nullable',
+            'image'=>'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date',
         ]);
+
+        if ($request->hasFile('image')) {
+            // Generate a unique name for the image
+            $uniqueName = uniqid() . '_' . time() . '.' . $request->file('image')->getClientOriginalExtension();
+
+            // Store the new image with the unique name
+            $imagePath = $request->file('image')->storeAs('billboard_images', $uniqueName, 'public');
+            $validatedData['image'] = $imagePath;
+        }
         // Create the billboard with validated data
         Billboard::create($validatedData);
+
+
 
         // Flash success message to the session
         session()->flash('success', 'Billboard has been created.');
@@ -86,11 +101,10 @@ class BillboardController extends Controller
 
     public function update(Request $request, int $id): RedirectResponse
     {
-//        dd(request()->all());
         $this->checkAuthorization(auth()->user(), ['billboard.edit']);
 
         $billboard = Billboard::findOrFail($id);
-//dd($billboard);
+
         // Validate the request data
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
@@ -101,13 +115,37 @@ class BillboardController extends Controller
             'latitude' => 'nullable',
             'location' => 'nullable',
             'district' => 'nullable',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date',
         ]);
 
+        // Check if a new image has been uploaded
+        if ($request->hasFile('image')) {
+            // Delete the old image if it exists
+            if ($billboard->image) {
+                Storage::delete('public/' . $billboard->image);
+            }
+
+            // Generate a unique name for the new image
+            $uniqueName = uniqid() . '_' . time() . '.' . $request->file('image')->getClientOriginalExtension();
+
+            // Store the new image and get its path
+            $imagePath = $request->file('image')->storeAs('billboard_images', $uniqueName, 'public');
+
+            // Add the new image path to the validated data
+            $validatedData['image'] = $imagePath;
+        }
+
+        // Update the billboard with the validated data
         $billboard->update($validatedData);
 
+        // Flash success message to the session
         session()->flash('success', 'Billboard has been updated.');
+
         return back();
     }
+
 
     public function destroy(int $id): RedirectResponse
     {

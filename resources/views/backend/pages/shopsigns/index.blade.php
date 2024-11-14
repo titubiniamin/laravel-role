@@ -1,7 +1,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-    {{ __('Users - User Panel') }}
+    {{ __('Shop Sign - User Panel') }}
 @endsection
 
 @section('styles')
@@ -39,11 +39,11 @@
         <div class="col-12 mt-5">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title float-left">{{ __('Billboards') }}</h4>
+                    <h4 class="header-title float-left">{{ __('Shop Signs') }}</h4>
                     <p class="float-right mb-2">
                         @if (auth()->user()->can('admin.edit'))
-                            <a class="btn btn-primary text-white" href="{{ route('admin.billboards.create') }}">
-                                {{ __('Create New Billboard') }}
+                            <a class="btn btn-primary text-white" href="{{ route('admin.shopsigns.create') }}">
+                                {{ __('Create New Shop Sign') }}
                             </a>
                         @endif
                     </p>
@@ -65,44 +65,42 @@
                                 </tr>
                             </thead>
                             <tbody>
-                               @foreach ($billboards as $billboard)
+                               @foreach ($shopsigns as $shopsign)
                                <tr>
                                     <td>{{ $loop->index+1 }}</td>
-                                    <td>{{ $billboard->name }}</td>
-                                    <td>{{ $billboard->size }}</td>
+                                    <td>{{ $shopsign->name }}</td>
+                                    <td>{{ $shopsign->size }}</td>
                                    <td>
-                                       @if($billboard->type === 'single_side')
-                                           {{ __('Single Side') }}
-                                       @elseif($billboard->type === 'unipool')
-                                           {{ __('Unipool') }}
-                                       @elseif($billboard->type === 'neon')
-                                           {{ __('Nion') }}
+                                       @if($shopsign->type === 'non_lit')
+                                           {{ __('Non Lit') }}
+                                       @elseif($shopsign->type === 'lightbox')
+                                           {{ __('Light Box') }}
                                        @endif
                                    </td>
                                    <td>
-                                       @if($billboard->brand === 'fresh_super_cement')
+                                       @if($shopsign->brand === 'fresh_super_cement')
                                            {{ __('Fresh Super Cement') }}
-                                       @elseif($billboard->brand === 'dhalai_special_cement')
+                                       @elseif($shopsign->brand === 'dhalai_special_cement')
                                            {{ __('Dhalai Special Cement') }}
-                                       @elseif($billboard->brand === 'meghnacem_delux_cement')
+                                       @elseif($shopsign->brand === 'meghnacem_delux_cement')
                                            {{__('Meghnacem Deluxe Cement')}}
                                        @endif
                                    </td>
-                                    <td>{{ $billboard->location }}</td>
-                                    <td>{{ $billboard->start_date }}</td>
-                                    <td>{{ $billboard->end_date }}</td>
+                                    <td>{{ $shopsign->location }}</td>
+                                    <td>{{ $shopsign->start_date }}</td>
+                                    <td>{{ $shopsign->end_date }}</td>
                                     <td>
-                                        @if (auth()->user()->can('billboard.edit'))
-                                            <a class="btn btn-success text-white" href="{{ route('admin.billboards.edit', $billboard->id) }}">Edit</a>
+                                        @if (auth()->user()->can('shopsign.edit'))
+                                            <a class="btn btn-success text-white" href="{{ route('admin.shopsigns.edit', $shopsign->id) }}">Edit</a>
                                         @endif
 
-                                        @if (auth()->user()->can('billboard.delete'))
+                                        @if (auth()->user()->can('shopsign.delete'))
                                         <a class="btn btn-danger text-white" href="javascript:void(0);"
-                                        onclick="event.preventDefault(); if(confirm('Are you sure you want to delete?')) { document.getElementById('delete-form-{{ $billboard->id }}').submit(); }">
+                                        onclick="event.preventDefault(); if(confirm('Are you sure you want to delete?')) { document.getElementById('delete-form-{{ $shopsign->id }}').submit(); }">
                                             {{ __('Delete') }}
                                         </a>
 
-                                        <form id="delete-form-{{ $billboard->id }}" action="{{ route('admin.billboards.destroy', $billboard->id) }}" method="POST" style="display: none;">
+                                        <form id="delete-form-{{ $shopsign->id }}" action="{{ route('admin.shopsigns.destroy', $shopsign->id) }}" method="POST" style="display: none;">
                                             @method('DELETE')
                                             @csrf
                                         </form>
@@ -136,7 +134,7 @@
                 columnDefs: [
                     { width: "5%", targets: 0 },   // Sl column
                     { width: "20%", targets: 1 },  // Name column
-                    { width: "6%", targets: 2 },  // size column
+                    { width: "7%", targets: 2 },  // size column
                     { width: "10%", targets: 3 },  // type column
                     { width: "10%", targets: 4 },  // brand column
                     { width: "30%", targets: 5 },  // location column

@@ -14,12 +14,15 @@ return new class extends Migration
         Schema::create('highwalls', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('type',['2 side','unipool','neon'])->nullable();
-            $table->string('brand')->nullable();
+            $table->enum('type',['high_raise','cold_store'])->nullable();
+            $table->enum('brand',['fresh_super_cement','dhalai_special_cement','meghnacem_delux_cement'])->nullable();
             $table->text('location')->nullable();
             $table->text('district')->nullable();
             $table->double('longitude')->nullable();
             $table->double('latitude')->nullable();
+            $table->string('image')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->timestamps();
         });
     }

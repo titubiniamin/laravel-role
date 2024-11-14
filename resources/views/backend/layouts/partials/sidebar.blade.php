@@ -107,7 +107,7 @@
                         <!-- Billboard Menu Section-->
                         @if ($usr->can('billboard.create') || $usr->can('billboard.view') || $usr->can('billboard.edit') || $usr->can('billboard.delete'))
                             <li>
-                                <a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-sign"></i><span>Billboard</span></a>
+                                <a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-map-signs"></i><span>Billboard</span></a>
                                 <ul class="collapse {{ Route::is('admin.billboards.create') || Route::is('admin.billboards.index') || Route::is('admin.billboards.edit') || Route::is('admin.billboards.show') ? 'in' : '' }}">
                                     @if ($usr->can('billboard.view'))
                                         <li class="{{ Route::is('admin.billboards.index') || Route::is('admin.billboards.edit') ? 'active' : '' }}">
@@ -124,6 +124,46 @@
                             </li>
                         @endif
                         <!--Billboard End-->
+                        <!-- ShopSign Menu Section-->
+                        @if ($usr->can('shopsign.create') || $usr->can('shopsign.view') || $usr->can('shopsign.edit') || $usr->can('shopsign.delete'))
+                            <li>
+                                <a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-delicious"></i><span>Shop Sign</span></a>
+                                <ul class="collapse {{ Route::is('admin.shopsigns.create') || Route::is('admin.shopsigns.index') || Route::is('admin.shopsigns.edit') || Route::is('admin.shopsigns.show') ? 'in' : '' }}">
+                                    @if ($usr->can('shopsign.view'))
+                                        <li class="{{ Route::is('admin.shopsigns.index') || Route::is('admin.shopsigns.edit') ? 'active' : '' }}">
+                                            <a href="{{ route('admin.shopsigns.index') }}">All Shop Signs</a>
+                                        </li>
+                                    @endif
+                                    @if ($usr->can('shopsign.create'))
+                                        <li class="{{ Route::is('admin.shopsigns.create') ? 'active' : '' }}">
+                                            <a href="{{ route('admin.shopsigns.create') }}">Create Shop Sign</a>
+                                        </li>
+                                    @endif
+
+                                </ul>
+                            </li>
+                        @endif
+                        <!--Shopsign End-->
+                        <!-- Highwall Menu Section-->
+                        @if ($usr->can('highwall.create') || $usr->can('highwall.view') || $usr->can('highwall.edit') || $usr->can('highwall.delete'))
+                            <li>
+                                <a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-align-justify"></i><span>Highwall</span></a>
+                                <ul class="collapse {{ Route::is('admin.ighwalls.create') || Route::is('admin.highwalls.index') || Route::is('admin.highwalls.edit') || Route::is('admin.highwalls.show') ? 'in' : '' }}">
+                                    @if ($usr->can('highwall.view'))
+                                        <li class="{{ Route::is('admin.highwalls.index') || Route::is('admin.highwalls.edit') ? 'active' : '' }}">
+                                            <a href="{{ route('admin.highwalls.index') }}">All Highwalls</a>
+                                        </li>
+                                    @endif
+                                    @if ($usr->can('highwall.create'))
+                                        <li class="{{ Route::is('admin.highwalls.create') ? 'active' : '' }}">
+                                            <a href="{{ route('admin.highwalls.create') }}">Create Highwall</a>
+                                        </li>
+                                    @endif
+
+                                </ul>
+                            </li>
+                        @endif
+                        <!--Highwall End-->
 
                     <!--Map-->
 

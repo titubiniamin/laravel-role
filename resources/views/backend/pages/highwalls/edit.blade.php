@@ -1,7 +1,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-    Edit Page - Billboard
+    Edit Page - Highwall
 @endsection
 
 @section('admin-content')
@@ -11,10 +11,10 @@
         <div class="row align-items-center">
             <div class="col-sm-6">
                 <div class="breadcrumbs-area clearfix">
-                    <h4 class="page-title pull-left">Billboards</h4>
+                    <h4 class="page-title pull-left">Highwalls</h4>
                     <ul class="breadcrumbs pull-left">
                         <li><a href="{{ route('admin.dashboard') }}">Home</a></li>
-                        <li><span>Billboards</span></li>
+                        <li><span>Highwalls</span></li>
                     </ul>
                 </div>
             </div>
@@ -26,7 +26,7 @@
     <!-- page title area end -->
 
     <div class="main-content-inner">
-        <form action="{{ route('admin.billboards.update',$billboard->id) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.highwalls.update',$highwall->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
         <div class="row">
@@ -36,7 +36,7 @@
                     <div class="col-md-12 mt-5 mb-3">
                         <div class="card">
                             <div class="p-4">
-                                <h4>Update Billboard</h4>
+                                <h4>Update Highwall</h4>
 
                                 <!-- Display validation errors -->
                                 @if ($errors->any())
@@ -71,31 +71,27 @@
 
                                     <div class="form-group">
                                         <label for="name">Name</label>
-                                        <input type="text" class="form-control" value="{{ old('name', $billboard->name) }}" name="name" required>
+                                        <input type="text" class="form-control" value="{{ old('name', $highwall->name) }}" name="name" required>
                                     </div>
-                                <div class="form-group">
-                                    <label for="size">Size</label>
-                                    <input type="text" class="form-control" value="{{ old('size',$billboard->size) }}" name="size">
-                                </div>
+
 
                                 <div class="form-group">
                                     <label for="brand">Brand</label>
                                     <select id="brand" name="brand" class="form-control">
                                         <option value="" disabled selected>Select</option>
-                                        <option value="fresh_super_cement" {{ $billboard->brand == 'fresh_super_cement' ? 'selected' : '' }}>Fresh Super Cement</option>
-                                        <option value="dhalai_special_cement" {{$billboard->brand=='dhalai_special_cement'? 'selected':''}}>Dhalai Special Cement</option>
-                                        <option value="meghnacem_delux_cement" {{$billboard->brand=='meghnacem_delux_cement'?'selected':''}}>Meghnacem Delux Cement</option>
+                                        <option value="fresh_super_cement" {{ $highwall->brand == 'fresh_super_cement' ? 'selected' : '' }}>Fresh Super Cement</option>
+                                        <option value="dhalai_special_cement" {{$highwall->brand=='dhalai_special_cement'? 'selected':''}}>Dhalai Special Cement</option>
+                                        <option value="meghnacem_delux_cement" {{$highwall->brand=='meghnacem_delux_cement'?'selected':''}}>Meghnacem Delux Cement</option>
                                     </select>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="type">Type</label>
-{{--                                    @dd($billboard->type)--}}
+{{--                                    @dd($highwall->type)--}}
                                     <select id="type" name="type" class="form-control" style="height: 40px; font-size: 14px; color: #464A4D; border: 1px solid #dcdcdc; border-radius: 4px; background-color: #fff;">
                                         <option value="" disabled selected>Select</option>
-                                        <option value="single_side" {{ $billboard->type == 'single_side' ? 'selected' : '' }}>Single Side</option>
-                                        <option value="unipool" {{ $billboard->type == 'unipool' ? 'selected' : '' }}>Unipool</option>
-                                        <option value="neon" {{ $billboard->type == 'neon' ? 'selected' : '' }}>Neon</option>
+                                        <option value="high_raise" {{ $highwall->type == 'high_raise' ? 'selected' : '' }}>Single Side</option>
+                                        <option value="cold_store" {{ $highwall->type == 'cold_store' ? 'selected' : '' }}>Unipool</option>
                                     </select>
                                 </div>
 
@@ -103,20 +99,20 @@
                                 <div class="form-group row">
                                     <div class="col-md-6">
                                         <label for="start_date">Start Date</label>
-                                        <input type="date" class="form-control" name="start_date" id="start_date" value="{{ old('start_date', $billboard->start_date) }}" >
+                                        <input type="date" class="form-control" name="start_date" id="start_date" value="{{ old('start_date', $highwall->start_date) }}" >
                                     </div>
                                     <div class="col-md-6">
                                         <label for="end_date">End Date</label>
-                                        <input type="date" class="form-control" name="end_date" id="end_date" value="{{ old('end_date', $billboard->end_date) }}" >
+                                        <input type="date" class="form-control" name="end_date" id="end_date" value="{{ old('end_date', $highwall->end_date) }}" >
                                     </div>
                                 </div>
 
                                     <div class="form-group">
                                         <label for="location">Location</label>
-                                        <input type="text" name="longitude" value="{{$billboard->longitude}}" id="longitude" hidden>
-                                        <input type="text" name="latitude" value="{{$billboard->latitude}}"  id="latitude" hidden>
-                                        <input type="text" name="district" value="{{$billboard->district}}"  id="district" hidden>
-                                        <input type="text" class="form-control bksearch" value="{{$billboard->location}}"  name="location" id="location"/>
+                                        <input type="text" name="longitude" value="{{$highwall->longitude}}" id="longitude" hidden>
+                                        <input type="text" name="latitude" value="{{$highwall->latitude}}"  id="latitude" hidden>
+                                        <input type="text" name="district" value="{{$highwall->district}}"  id="district" hidden>
+                                        <input type="text" class="form-control bksearch" value="{{$highwall->location}}"  name="location" id="location"/>
                                         <div class="bklist"></div>
                                         <div id="loading" style="display: none;">Loading...</div> <!-- Loading indicator -->
                                     </div>
@@ -125,7 +121,7 @@
                                         <div id="map" style="width: 100%; height: 400px;"></div>
                                     </div>
 
-                                    <button type="submit" class="btn btn-primary">Update Billboard</button>
+                                    <button type="submit" class="btn btn-primary">Update Highwall</button>
 
                             </div>
                         </div>
@@ -141,7 +137,7 @@
                             <label for="image">Select Image</label>
                             <input type="file" class="form-control-file" id="image" name="image" accept="image/*" onchange="previewImage(event)">
                             <div class="mt-3">
-                                <img id="image-preview" src="{{ asset('storage/' . $billboard->image) }}" alt="Billboard Image" style="width: 100%; max-height: 200px; object-fit: cover; display: block;">
+                                <img id="image-preview" src="{{ asset('storage/' . $highwall->image) }}" alt="Highwall Image" style="width: 100%; max-height: 200px; object-fit: cover; display: block;">
                             </div>
                         </div>
                     </div>
@@ -156,14 +152,14 @@
     <script>
         bkoigl.accessToken = "{{ env('BARIKOI_API_KEY') }}"; // required
 
-        // Fetch billboard's coordinates from backend
-        const billboardLongitude = {{ $billboard->longitude ?? 90.3938010872331 }};
-        const billboardLatitude = {{ $billboard->latitude ?? 23.821600277500405 }};
-        const billboardLocation = "{{ $billboard->location ?? '' }}";
+        // Fetch highwall's coordinates from backend
+        const highwallLongitude = {{ $highwall->longitude ?? 90.3938010872331 }};
+        const highwallLatitude = {{ $highwall->latitude ?? 23.821600277500405 }};
+        const highwallLocation = "{{ $highwall->location ?? '' }}";
 
         const map = new bkoigl.Map({
             container: "map",
-            center: [billboardLongitude, billboardLatitude], // Set map center to billboard's coordinates
+            center: [highwallLongitude, highwallLatitude], // Set map center to highwall's coordinates
             zoom: 15,
         });
         map.addControl(new bkoigl.FullscreenControl());
@@ -171,15 +167,15 @@
         map.addControl(new bkoigl.ScaleControl());
 
 
-        // Initialize the marker at billboard's coordinates
+        // Initialize the marker at highwall's coordinates
         let marker = new bkoigl.Marker({ draggable: true })
-            .setLngLat([billboardLongitude, billboardLatitude])
+            .setLngLat([highwallLongitude, highwallLatitude])
             .addTo(map);
 
-        // Populate location input field with billboard's location
-        document.getElementById("location").value = billboardLocation;
-        document.getElementById("longitude").value = billboardLongitude;
-        document.getElementById("latitude").value = billboardLatitude;
+        // Populate location input field with highwall's location
+        document.getElementById("location").value = highwallLocation;
+        document.getElementById("longitude").value = highwallLongitude;
+        document.getElementById("latitude").value = highwallLatitude;
 
         // Event listener for location search
         document.getElementById("location").addEventListener("input", function () {

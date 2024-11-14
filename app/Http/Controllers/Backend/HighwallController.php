@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\Permission\Models\Role;
 
@@ -53,11 +54,24 @@ class HighwallController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'type' => 'nullable',
+            'brand' => 'nullable',
             'longitude' => 'nullable',
             'latitude' => 'nullable',
             'location' => 'nullable',
             'district' => 'nullable',
+            'image'=>'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date',
         ]);
+
+        if ($request->hasFile('image')) {
+            // Generate a unique name for the image
+            $uniqueName = uniqid() . '_' . time() . '.' . $request->file('image')->getClientOriginalExtension();
+
+            // Store the new image with the unique name
+            $imagePath = $request->file('image')->storeAs('highwall_images', $uniqueName, 'public');
+            $validatedData['image'] = $imagePath;
+        }
         // Create the highwall with validated data
         Highwall::create($validatedData);
 
@@ -91,14 +105,32 @@ class HighwallController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'type' => 'nullable',
+            'brand' => 'nullable',
             'longitude' => 'nullable',
             'latitude' => 'nullable',
             'location' => 'nullable',
             'district' => 'nullable',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date',
         ]);
 //        dd('update');
 //        dd($validatedData);
+        if ($request->hasFile('image')) {
+            // Delete the old image if it exists
+            if ($highwall->image) {
+                Storage::delete('public/' . $highwall->image);
+            }
 
+            // Generate a unique name for the new image
+            $uniqueName = uniqid() . '_' . time() . '.' . $request->file('image')->getClientOriginalExtension();
+
+            // Store the new image and get its path
+            $imagePath = $request->file('image')->storeAs('billboard_images', $uniqueName, 'public');
+
+            // Add the new image path to the validated data
+            $validatedData['image'] = $imagePath;
+        }
         // Update the highwall with validated data
         $highwall->update($validatedData);
 

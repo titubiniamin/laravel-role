@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\Permission\Models\Role;
 
@@ -47,6 +48,7 @@ class ShopsignController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+
         $this->checkAuthorization(auth()->user(), ['shopsign.create']);
 
         // Validate the request data and handle any validation errors automatically
@@ -54,11 +56,24 @@ class ShopsignController extends Controller
             'name' => 'required|string|max:255',
             'size' => 'nullable',
             'type' => 'nullable',
+            'brand' => 'nullable',
             'longitude' => 'nullable',
             'latitude' => 'nullable',
             'location' => 'nullable',
             'district' => 'nullable',
+            'image'=>'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date',
         ]);
+        Log::info('Submitted Type: ' . $request->input('type'));
+        if ($request->hasFile('image')) {
+            // Generate a unique name for the image
+            $uniqueName = uniqid() . '_' . time() . '.' . $request->file('image')->getClientOriginalExtension();
+
+            // Store the new image with the unique name
+            $imagePath = $request->file('image')->storeAs('shopsign_images', $uniqueName, 'public');
+            $validatedData['image'] = $imagePath;
+        }
         // Create the shopsign with validated data
         Shopsign::create($validatedData);
 
@@ -93,13 +108,32 @@ class ShopsignController extends Controller
             'name' => 'required|string|max:255',
             'size' => 'nullable',
             'type' => 'nullable',
+            'brand' => 'nullable',
             'longitude' => 'nullable',
             'latitude' => 'nullable',
             'location' => 'nullable',
             'district' => 'nullable',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date',
         ]);
 //        dd('update');
 //        dd($validatedData);
+        if ($request->hasFile('image')) {
+            // Delete the old image if it exists
+            if ($shopsign->image) {
+                Storage::delete('public/' . $shopsign->image);
+            }
+
+            // Generate a unique name for the new image
+            $uniqueName = uniqid() . '_' . time() . '.' . $request->file('image')->getClientOriginalExtension();
+
+            // Store the new image and get its path
+            $imagePath = $request->file('image')->storeAs('shopsign_images', $uniqueName, 'public');
+
+            // Add the new image path to the validated data
+            $validatedData['image'] = $imagePath;
+        }
 
         // Update the shopsign with validated data
         $shopsign->update($validatedData);

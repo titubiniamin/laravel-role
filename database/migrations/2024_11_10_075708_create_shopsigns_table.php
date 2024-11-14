@@ -15,12 +15,15 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->double('size')->nullable();
-            $table->enum('type',['2 side','unipool','neon'])->nullable();
-            $table->string('brand')->nullable();
+            $table->enum('type',['non_lit','lightbox'])->nullable();
+            $table->enum('brand',['fresh_super_cement','dhalai_special_cement','meghnacem_delux_cement'])->nullable();
             $table->text('location')->nullable();
             $table->text('district')->nullable();
             $table->double('longitude')->nullable();
             $table->double('latitude')->nullable();
+            $table->string('image')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->timestamps();
         });
     }

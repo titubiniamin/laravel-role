@@ -1,7 +1,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-    {{ __('Users - User Panel') }}
+    {{ __('Highwall - User Panel') }}
 @endsection
 
 @section('styles')
@@ -39,11 +39,11 @@
         <div class="col-12 mt-5">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title float-left">{{ __('Billboards') }}</h4>
+                    <h4 class="header-title float-left">{{ __('Highwalls') }}</h4>
                     <p class="float-right mb-2">
                         @if (auth()->user()->can('admin.edit'))
-                            <a class="btn btn-primary text-white" href="{{ route('admin.billboards.create') }}">
-                                {{ __('Create New Billboard') }}
+                            <a class="btn btn-primary text-white" href="{{ route('admin.highwalls.create') }}">
+                                {{ __('Create New Highwall') }}
                             </a>
                         @endif
                     </p>
@@ -55,7 +55,6 @@
                                 <tr>
                                     <th>{{ __('Sl') }}</th>
                                     <th> {{ __('Name') }}</th>
-                                    <th> {{ __('Size') }}</th>
                                     <th> {{ __('Type') }}</th>
                                     <th> {{ __('Brand') }}</th>
                                     <th> {{ __('Location') }}</th>
@@ -65,44 +64,41 @@
                                 </tr>
                             </thead>
                             <tbody>
-                               @foreach ($billboards as $billboard)
+                               @foreach ($highwalls as $highwall)
                                <tr>
                                     <td>{{ $loop->index+1 }}</td>
-                                    <td>{{ $billboard->name }}</td>
-                                    <td>{{ $billboard->size }}</td>
-                                   <td>
-                                       @if($billboard->type === 'single_side')
-                                           {{ __('Single Side') }}
-                                       @elseif($billboard->type === 'unipool')
-                                           {{ __('Unipool') }}
-                                       @elseif($billboard->type === 'neon')
-                                           {{ __('Nion') }}
-                                       @endif
-                                   </td>
-                                   <td>
-                                       @if($billboard->brand === 'fresh_super_cement')
-                                           {{ __('Fresh Super Cement') }}
-                                       @elseif($billboard->brand === 'dhalai_special_cement')
-                                           {{ __('Dhalai Special Cement') }}
-                                       @elseif($billboard->brand === 'meghnacem_delux_cement')
-                                           {{__('Meghnacem Deluxe Cement')}}
-                                       @endif
-                                   </td>
-                                    <td>{{ $billboard->location }}</td>
-                                    <td>{{ $billboard->start_date }}</td>
-                                    <td>{{ $billboard->end_date }}</td>
+                                    <td>{{ $highwall->name }}</td>
                                     <td>
-                                        @if (auth()->user()->can('billboard.edit'))
-                                            <a class="btn btn-success text-white" href="{{ route('admin.billboards.edit', $billboard->id) }}">Edit</a>
+                                        @if($highwall->type === 'cold_store')
+                                            {{ __('Cold Store') }}
+                                        @elseif($highwall->type === 'high_raise')
+                                            {{ __('High Raise') }}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($highwall->brand === 'fresh_super_cement')
+                                            {{ __('Fresh Super Cement') }}
+                                        @elseif($highwall->brand === 'dhalai_special_cement')
+                                            {{ __('Dhalai Special Cement') }}
+                                        @elseif($highwall->brand === 'meghnacem_delux_cement')
+                                            {{__('Meghnacem Deluxe Cement')}}
+                                        @endif
+                                    </td>
+                                    <td>{{ $highwall->location }}</td>
+                                    <td>{{ $highwall->start_date }}</td>
+                                    <td>{{ $highwall->end_date }}</td>
+                                    <td>
+                                        @if (auth()->user()->can('highwall.edit'))
+                                            <a class="btn btn-success text-white" href="{{ route('admin.highwalls.edit', $highwall->id) }}">Edit</a>
                                         @endif
 
-                                        @if (auth()->user()->can('billboard.delete'))
+                                        @if (auth()->user()->can('highwall.delete'))
                                         <a class="btn btn-danger text-white" href="javascript:void(0);"
-                                        onclick="event.preventDefault(); if(confirm('Are you sure you want to delete?')) { document.getElementById('delete-form-{{ $billboard->id }}').submit(); }">
+                                        onclick="event.preventDefault(); if(confirm('Are you sure you want to delete?')) { document.getElementById('delete-form-{{ $highwall->id }}').submit(); }">
                                             {{ __('Delete') }}
                                         </a>
 
-                                        <form id="delete-form-{{ $billboard->id }}" action="{{ route('admin.billboards.destroy', $billboard->id) }}" method="POST" style="display: none;">
+                                        <form id="delete-form-{{ $highwall->id }}" action="{{ route('admin.highwalls.destroy', $highwall->id) }}" method="POST" style="display: none;">
                                             @method('DELETE')
                                             @csrf
                                         </form>
@@ -136,13 +132,12 @@
                 columnDefs: [
                     { width: "5%", targets: 0 },   // Sl column
                     { width: "20%", targets: 1 },  // Name column
-                    { width: "6%", targets: 2 },  // size column
-                    { width: "10%", targets: 3 },  // type column
-                    { width: "10%", targets: 4 },  // brand column
-                    { width: "30%", targets: 5 },  // location column
-                    { width: "10%", targets: 6 },  // start column
-                    { width: "10%", targets: 7 },  // end column
-                    { width: "5%", targets: 8 }   // Action column
+                    { width: "10%", targets: 2 },  // type column
+                    { width: "10%", targets: 3 },  // brand column
+                    { width: "30%", targets: 4 },  // location column
+                    { width: "10%", targets: 5 },  // start column
+                    { width: "10%", targets: 6 },  // end column
+                    { width: "5%", targets: 7 }   // Action column
                 ]
             });
         }
