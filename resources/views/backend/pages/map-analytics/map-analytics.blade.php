@@ -85,7 +85,7 @@
         const centralIconUrl = '{{ asset('images/pharmacy.png') }}'; // Branch icon for central points
         const dealerIconUrl = '{{ asset('images/red.png') }}'; // Red icon for dealers
         const retailerIconUrl = '{{ asset('images/blue.png') }}'; // Blue icon for retailers
-        const billboardIconUrl = '{{ asset('images/billboard.png') }}'; // Blue icon for retailers
+        const billboardIconUrl = '{{ asset('images/billboard.png') }}'; // Blue icon for billboards
 
         let centralPointsLayer = []; // Layer for central points
         let dealerMarkersLayer = []; // Layer for dealer markers
@@ -117,7 +117,7 @@
             });
         }
 
-        // Function to add dealers for the selected district
+        // Function to add markers for the selected data type (dealers, retailers, billboards)
         function addDistrictMarkers(dataType, district) {
             let filteredData = [];
             if (dataType === 'dealers') {
@@ -167,6 +167,13 @@
                 { type: 'billboards', label: 'Billboards', count: billboardsByDistrict[district] || 0 }
             ];
 
+            // Add the "All" option to the dropdown
+            const allOption = document.createElement('option');
+            allOption.value = 'all';
+            allOption.textContent = `All (${dealersByDistrict[district] + retailersByDistrict[district] + billboardsByDistrict[district]})`;
+            dataTypeSelect.appendChild(allOption);
+
+            // Add the individual options for dealers, retailers, and billboards
             options.forEach(option => {
                 const opt = document.createElement('option');
                 opt.value = option.type;
@@ -177,21 +184,23 @@
 
         // Event listener for central point selection
         document.getElementById('select-central-point').addEventListener('change', function() {
-            const selectedOption = this.options[this.selectedIndex];
-            const district = selectedOption.getAttribute('data-district');
-            const lat = parseFloat(selectedOption.getAttribute('data-lat'));
-            const lng = parseFloat(selectedOption.getAttribute('data-lng'));
+            const selectedCentralPoint = this.value;
+            const lat = parseFloat(this.options[this.selectedIndex].dataset.lat);  // Ensure lat is a number
+            const lng = parseFloat(this.options[this.selectedIndex].dataset.lng);  // Ensure lng is a number
+            const district = this.options[this.selectedIndex].dataset.district;
 
-            // Clear all previous markers for data types and reset dropdown
-            clearDataTypeMarkers();
-            populateDataTypeDropdown(district);
-
-            // Fly to the selected central point location
+            // Use flyTo for a smooth transition
             map.flyTo({
                 center: [lng, lat],
-                essential: true,
-                zoom: 10
+                zoom: 12, // Adjust zoom level as needed
+                essential: true // Ensures that the animation runs even in non-interactive contexts (like on page load)
             });
+
+            // Clear existing markers for data types
+            clearDataTypeMarkers();
+
+            // Populate the data type dropdown based on the selected district
+            populateDataTypeDropdown(district);
         });
 
         // Event listener for data type selection
@@ -200,12 +209,18 @@
             const selectedDistrict = document.getElementById('select-central-point').value;
             const district = document.querySelector(`#select-central-point option[value="${selectedDistrict}"]`).getAttribute('data-district');
 
-            // Clear all markers for the selected data type
             clearDataTypeMarkers();
-            addDistrictMarkers(selectedType, district); // Add markers for the selected data type and district
+
+            if (selectedType === 'all') {
+                addDistrictMarkers('dealers', district);
+                addDistrictMarkers('retailers', district);
+                addDistrictMarkers('billboards', district);
+            } else {
+                addDistrictMarkers(selectedType, district);
+            }
         });
 
-        // Function to clear data type markers (dealers, retailers, and billboards)
+        // Function to clear all markers for the selected data type
         function clearDataTypeMarkers() {
             dealerMarkersLayer.forEach(marker => marker.remove());
             retailerMarkersLayer.forEach(marker => marker.remove());
@@ -215,7 +230,7 @@
             billboardMarkersLayer = [];
         }
 
-        // Add central points to the map on load
+        // Initialize the map with central points
         addCentralPoints();
     </script>
 @endsection
