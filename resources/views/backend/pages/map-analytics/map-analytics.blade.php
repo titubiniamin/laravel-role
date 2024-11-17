@@ -119,6 +119,20 @@
         }
 
         // Function to add markers for the selected data type (dealers, retailers, billboards)
+        // Define calculateDistance function first
+        function calculateDistance(lat1, lng1, lat2, lng2) {
+            const R = 6371; // Earth's radius in kilometers
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLng = (lng2 - lng1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLng / 2) * Math.sin(dLng / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            const distance = R * c; // Distance in kilometers
+            return distance;
+        }
+
+        // Add district markers after defining the function
         function addDistrictMarkers(dataType, district) {
             let filteredData = [];
             if (dataType === 'dealers') {
@@ -134,13 +148,47 @@
                 const iconUrl = dataType === 'dealers' ? dealerIconUrl :
                     dataType === 'retailers' ? retailerIconUrl : billboardIconUrl;
                 const marker = new bkoigl.Marker({ element: createCustomMarkerElement(iconUrl) })
-                    .setLngLat([point.longitude, point.latitude])
-                    .setPopup(new bkoigl.Popup().setHTML(`
-                        <div><strong>${point.name}</strong></div>
-                        <div>Location: ${point.location || 'N/A'}</div>
-                    `))
+                    .setLngLat([point.longitude, point.latitude]);
+
+                // Add a click event listener to calculate and show distance
+                marker.getElement().addEventListener('click', function() {
+                    const selectedCentralPointId = document.getElementById('select-central-point').value;
+                    if (selectedCentralPointId && selectedCentralPointId !== 'all') {
+                        const selectedCentralPoint = centralPoints.find(point => point.id == selectedCentralPointId);
+                        const distance = calculateDistance(
+                            selectedCentralPoint.latitude, selectedCentralPoint.longitude,
+                            point.latitude, point.longitude
+                        );
+
+                        // Update the popup content dynamically with distance and styling
+                        const popupContent = `
+    <div style="background-color: lightblue; padding: 10px;">
+        <div><strong>${point.name}</strong></div>
+        <div><strong>Location:</strong> ${point.location || 'N/A'}</div>
+        <div><strong>Distance from ${selectedCentralPoint.name}:</strong> ${distance.toFixed(2)} km</div>
+        ${point.average_sales ? `<div><strong>Average Sales:</strong> ${point.average_sales}</div>` : ''}
+        ${point.market_size ? `<div><strong>Market Size:</strong> ${point.market_size}</div>` : ''}
+        ${point.market_share ? `<div><strong>Market Share:</strong> ${point.market_share}</div>` : ''}
+        ${point.competition_brand ? `<div><strong>Competition Brand:</strong> ${point.competition_brand}</div>` : ''}
+    </div>
+`;
+
+
+                        // Set the popup content and show it
+                        marker.setPopup(new bkoigl.Popup().setHTML(popupContent)).addTo(map);
+                    }
+                });
+
+                // Set initial popup without distance (optional)
+                marker.setPopup(new bkoigl.Popup().setHTML(`
+            <div style="background-color: lightblue; padding: 10px;">
+                <div><strong>${point.name}</strong></div>
+                <div><strong>Location:</strong> ${point.location || 'N/A'}</div>
+            </div>
+        `))
                     .addTo(map);
 
+                // Add the marker to the appropriate layer
                 if (dataType === 'dealers') {
                     dealerMarkersLayer.push(marker);
                 } else if (dataType === 'retailers') {
@@ -150,6 +198,9 @@
                 }
             });
         }
+
+
+
 
         // Function to populate the data type dropdown based on the selected district
         // Function to populate the data type dropdown based on the selected district
@@ -247,7 +298,7 @@
             // Fly to the selected central point and zoom in
             map.flyTo({
                 center: [lng, lat],
-                zoom: 12, // Adjust zoom level as needed
+                zoom: 11, // Adjust zoom level as needed
                 essential: true // Ensures that the animation runs even in non-interactive contexts
             });
 
