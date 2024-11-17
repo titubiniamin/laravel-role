@@ -43,7 +43,8 @@
                         <div class="form-group mb-4">
                             <label for="select-central-point" class="form-label" style="font-weight: 500; font-size: 14px; color: #464A4D;">Select Central Point</label>
                             <select id="select-central-point" class="form-control" style="height: 40px; font-size: 14px; color: #464A4D; border: 1px solid #dcdcdc; border-radius: 4px; background-color: #fff;">
-                                <option value="" disabled selected>Select Central Point</option>
+                                <option value="" disabled selected>Select</option> <!-- Added this line for "All Central Points" option -->
+                                <option value="all">All Central Points</option> <!-- Added this line for "All Central Points" option -->
                                 @foreach ($centralPoints as $centralPoint)
                                     <option value="{{ $centralPoint['id'] }}" data-lat="{{ $centralPoint['latitude'] }}" data-lng="{{ $centralPoint['longitude'] }}" data-district="{{ $centralPoint['district'] }}">
                                         {{ $centralPoint['name'] }}
@@ -121,11 +122,11 @@
         function addDistrictMarkers(dataType, district) {
             let filteredData = [];
             if (dataType === 'dealers') {
-                filteredData = dealers.filter(dealer => dealer.district === district);
+                filteredData = district ? dealers.filter(dealer => dealer.district === district) : dealers;
             } else if (dataType === 'retailers') {
-                filteredData = retailers.filter(retailer => retailer.district === district);
+                filteredData = district ? retailers.filter(retailer => retailer.district === district) : retailers;
             } else if (dataType === 'billboards') {
-                filteredData = billboards.filter(billboard => billboard.district === district);
+                filteredData = district ? billboards.filter(billboard => billboard.district === district) : billboards;
             }
 
             // Add filtered markers to the map
@@ -151,6 +152,11 @@
         }
 
         // Function to populate the data type dropdown based on the selected district
+        // Function to populate the data type dropdown based on the selected district
+        // Function to populate the data type dropdown based on the selected district
+        // Function to populate the data type dropdown based on the selected district
+        // Function to populate the data type dropdown based on the selected district
+        // Function to populate the data type dropdown based on the selected district
         function populateDataTypeDropdown(district) {
             const dataTypeSelect = document.getElementById('select-data-type');
             dataTypeSelect.innerHTML = ''; // Clear existing options
@@ -161,39 +167,88 @@
             defaultOption.selected = true;
             dataTypeSelect.appendChild(defaultOption);
 
-            const options = [
-                { type: 'dealers', label: 'Dealers', count: dealersByDistrict[district] || 0 },
-                { type: 'retailers', label: 'Retailers', count: retailersByDistrict[district] || 0 },
-                { type: 'billboards', label: 'Billboards', count: billboardsByDistrict[district] || 0 }
-            ];
+            let dealersCount, retailersCount, billboardsCount;
 
-            // Add the "All" option to the dropdown
+            if (district === 'all' || district === '') {
+                // Calculate counts for all data types across all districts
+                dealersCount = dealers.length;
+                retailersCount = retailers.length;
+                billboardsCount = billboards.length;
+            } else {
+                // Calculate counts for the selected district only
+                dealersCount = dealersByDistrict[district] || 0;
+                retailersCount = retailersByDistrict[district] || 0;
+                billboardsCount = billboardsByDistrict[district] || 0;
+            }
+
+            // Ensure all counts are valid numbers (prevent NaN)
+            dealersCount = Number(dealersCount) || 0;
+            retailersCount = Number(retailersCount) || 0;
+            billboardsCount = Number(billboardsCount) || 0;
+
+            // Calculate total count
+            const totalCount = dealersCount + retailersCount + billboardsCount;
+
+            // Add the "All" option to the dropdown with the updated total count
             const allOption = document.createElement('option');
             allOption.value = 'all';
-            allOption.textContent = `All (${dealersByDistrict[district] + retailersByDistrict[district] + billboardsByDistrict[district]})`;
+            allOption.textContent = `All (${totalCount})`;
             dataTypeSelect.appendChild(allOption);
 
-            // Add the individual options for dealers, retailers, and billboards
+            // Add individual options for dealers, retailers, and billboards
+            const options = [
+                { type: 'dealers', label: 'Dealers', count: dealersCount },
+                { type: 'retailers', label: 'Retailers', count: retailersCount },
+                { type: 'billboards', label: 'Billboards', count: billboardsCount }
+            ];
+
             options.forEach(option => {
-                const opt = document.createElement('option');
-                opt.value = option.type;
-                opt.textContent = `${option.label} (${option.count})`;
-                dataTypeSelect.appendChild(opt);
+                const dataOption = document.createElement('option');
+                dataOption.value = option.type;
+                dataOption.textContent = `${option.label} (${option.count})`;
+                dataTypeSelect.appendChild(dataOption);
             });
         }
+
+
+
+
+
 
         // Event listener for central point selection
         document.getElementById('select-central-point').addEventListener('change', function() {
             const selectedCentralPoint = this.value;
+
+            // If "All" is selected in the central point dropdown
+            if (selectedCentralPoint === 'all') {
+                map.flyTo({
+                    center: [90.3938010872331, 23.821600277500405], // Center of the country/region
+                    zoom: 6.5, // Adjust zoom level to show all points
+                    essential: true // Ensures the animation runs even in non-interactive contexts (like page load)
+                });
+
+                // Clear existing markers for data types
+                clearDataTypeMarkers();
+
+                // Show all markers (dealers, retailers, billboards)
+                addDistrictMarkers('dealers', '');  // Empty district to show all
+                addDistrictMarkers('retailers', '');
+                addDistrictMarkers('billboards', '');
+
+                // Populate the data type dropdown with updated counts
+                populateDataTypeDropdown('');
+                return;
+            }
+
             const lat = parseFloat(this.options[this.selectedIndex].dataset.lat);  // Ensure lat is a number
             const lng = parseFloat(this.options[this.selectedIndex].dataset.lng);  // Ensure lng is a number
             const district = this.options[this.selectedIndex].dataset.district;
 
-            // Use flyTo for a smooth transition
+            // Fly to the selected central point and zoom in
             map.flyTo({
                 center: [lng, lat],
                 zoom: 12, // Adjust zoom level as needed
-                essential: true // Ensures that the animation runs even in non-interactive contexts (like on page load)
+                essential: true // Ensures that the animation runs even in non-interactive contexts
             });
 
             // Clear existing markers for data types
@@ -205,22 +260,25 @@
 
         // Event listener for data type selection
         document.getElementById('select-data-type').addEventListener('change', function() {
-            const selectedType = this.value;
-            const selectedDistrict = document.getElementById('select-central-point').value;
-            const district = document.querySelector(`#select-central-point option[value="${selectedDistrict}"]`).getAttribute('data-district');
+            const selectedDataType = this.value;
+            const selectedCentralPoint = document.getElementById('select-central-point').value;
 
-            clearDataTypeMarkers();
+            // If "All" is selected in the data type dropdown
+            if (selectedDataType === 'all') {
+                const district = selectedCentralPoint === 'all' ? '' : document.querySelector(`#select-central-point option[value="${selectedCentralPoint}"]`).getAttribute('data-district');
 
-            if (selectedType === 'all') {
+                // Show all markers (dealers, retailers, billboards)
                 addDistrictMarkers('dealers', district);
                 addDistrictMarkers('retailers', district);
                 addDistrictMarkers('billboards', district);
             } else {
-                addDistrictMarkers(selectedType, district);
+                const district = selectedCentralPoint === 'all' ? '' : document.querySelector(`#select-central-point option[value="${selectedCentralPoint}"]`).getAttribute('data-district');
+                clearDataTypeMarkers();
+                addDistrictMarkers(selectedDataType, district);
             }
         });
 
-        // Function to clear all markers for the selected data type
+        // Function to clear all data type markers from the map
         function clearDataTypeMarkers() {
             dealerMarkersLayer.forEach(marker => marker.remove());
             retailerMarkersLayer.forEach(marker => marker.remove());
@@ -232,5 +290,6 @@
 
         // Initialize the map with central points
         addCentralPoints();
+        populateDataTypeDropdown('');
     </script>
 @endsection
