@@ -202,9 +202,6 @@
                     <span>
                         <div><span class="popup-label">Billboard Name: </span>${billboard.name || "N/A"}</div>
                         <div><span class="popup-label">Location: </span>${billboard.location || "N/A"}</div>
-                        <div><span class="popup-label">Size: </span>${billboard.size || "N/A"}</div>
-                        <div><span class="popup-label">Type: </span>${billboard.type || "N/A"}</div>
-                        <div><span class="popup-label">Brand: </span>${billboard.brand || "N/A"}</div>
                         <div><span class="popup-label">Distance from Central Point: </span>${distance} km</div>
                     </span>
                 </div>

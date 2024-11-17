@@ -35,11 +35,21 @@ class CentralPointController extends Controller
     public function store(Request $request)
     {
         $this->checkAuthorization(auth()->user(), ['central-point.create']);
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'location' => 'required|string',
+            'longitude' => 'required|numeric',
+            'latitude' => 'required|numeric',
+            'district' => 'required|string|unique:central_points,district',
+        ]);
 
+        // Create the new CentralPoint record
         CentralPoint::create($request->all());
+
+        // Flash success message to the session
         session()->flash('success', 'Central Point has been created.');
 
-        // Redirect to the index route for dealers
+        // Redirect back to the previous page or a specific route
         return redirect()->back();
     }
 
@@ -56,7 +66,8 @@ class CentralPointController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $centralPoint=CentralPoint::find($id);
+        return view('backend.pages.central-point.edit', ['centralPoint'=>$centralPoint]);
     }
 
     /**
@@ -64,7 +75,23 @@ class CentralPointController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $centralPoint=CentralPoint::findOrfail($id);
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'location' => 'required|string',
+            'longitude' => 'required|numeric',
+            'latitude' => 'required|numeric',
+            'district' => 'required|string|unique:central_points,district,' . $centralPoint->id,
+        ]);
+
+        // Update the CentralPoint record
+        $update = $centralPoint->update($request->all());
+
+        // Flash success message to the session
+        session()->flash('success', 'Central Point has been updated.');
+
+        // Redirect back to the previous page or a specific route
+        return back();
     }
 
     /**
