@@ -46,6 +46,11 @@
                                 {{ __('Create New Highwall') }}
                             </a>
                         @endif
+                            @if(auth()->user()->can('highwall.export'))
+                                <a class="btn btn-warning text-white" href="{{ route('admin.highwalls.export') }}">
+                                    {{ __('Export Highwall') }}
+                                </a>
+                            @endif
                     </p>
                     <div class="clearfix"></div>
                     <div class="data-tables">

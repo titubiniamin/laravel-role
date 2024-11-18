@@ -46,11 +46,11 @@
                                 {{ __('Create New Billboard') }}
                             </a>
                         @endif
-{{--                        @if(auth()->user()->can('billboard.export'))--}}
+                        @if(auth()->user()->can('billboard.export'))
                             <a class="btn btn-warning text-white" href="{{ route('admin.billboards.export') }}">
                                 {{ __('Export Billboard') }}
                             </a>
-{{--                        @endif--}}
+                        @endif
                     </p>
                     <div class="clearfix"></div>
                     <div class="data-tables">

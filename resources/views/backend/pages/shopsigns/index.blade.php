@@ -46,6 +46,11 @@
                                 {{ __('Create New Shop Sign') }}
                             </a>
                         @endif
+                            @if(auth()->user()->can('shopsign.export'))
+                                <a class="btn btn-warning text-white" href="{{ route('admin.shopsigns.export') }}">
+                                    {{ __('Export Shopsign') }}
+                                </a>
+                            @endif
                     </p>
                     <div class="clearfix"></div>
                     <div class="data-tables">

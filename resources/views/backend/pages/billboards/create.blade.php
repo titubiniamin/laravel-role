@@ -88,11 +88,11 @@
                             <div class="form-group row">
                                 <div class="col-md-6">
                                     <label for="start_date">Start Date</label>
-                                    <input type="date" class="form-control" name="start_date" id="start_date" value="{{ old('start_date') }}" required>
+                                    <input type="date" class="form-control" name="start_date" id="start_date" value="{{ old('start_date') }}">
                                 </div>
                                 <div class="col-md-6">
                                     <label for="end_date">End Date</label>
-                                    <input type="date" class="form-control" name="end_date" id="end_date" value="{{ old('end_date') }}" required>
+                                    <input type="date" class="form-control" name="end_date" id="end_date" value="{{ old('end_date') }}">
                                 </div>
                             </div>
 

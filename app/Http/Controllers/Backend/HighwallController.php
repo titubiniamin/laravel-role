@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Backend;
 
+use App\Exports\HighwallsExport;
 use App\Http\Controllers\Controller;
 use App\Models\Highwall;
 use Illuminate\Http\RedirectResponse;
