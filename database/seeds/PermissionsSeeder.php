@@ -45,14 +45,17 @@ class PermissionsSeeder extends Seeder
             ['name' => 'billboard.view', 'guard_name' => 'admin', 'group_name' => 'billboard', 'created_at' => null, 'updated_at' => null],
             ['name' => 'billboard.edit', 'guard_name' => 'admin', 'group_name' => 'billboard', 'created_at' => null, 'updated_at' => null],
             ['name' => 'billboard.delete', 'guard_name' => 'admin', 'group_name' => 'billboard', 'created_at' => null, 'updated_at' => null],
+            ['name' => 'billboard.export', 'guard_name' => 'admin', 'group_name' => 'billboard', 'created_at' => null, 'updated_at' => null],
             ['name' => 'highwall.create', 'guard_name' => 'admin', 'group_name' => 'highwall', 'created_at' => null, 'updated_at' => null],
             ['name' => 'highwall.view', 'guard_name' => 'admin', 'group_name' => 'highwall', 'created_at' => null, 'updated_at' => null],
             ['name' => 'highwall.edit', 'guard_name' => 'admin', 'group_name' => 'highwall', 'created_at' => null, 'updated_at' => null],
             ['name' => 'highwall.delete', 'guard_name' => 'admin', 'group_name' => 'highwall', 'created_at' => null, 'updated_at' => null],
+            ['name' => 'highwall.export', 'guard_name' => 'admin', 'group_name' => 'highwall', 'created_at' => null, 'updated_at' => null],
             ['name' => 'shopsign.create', 'guard_name' => 'admin', 'group_name' => 'shopsign', 'created_at' => null, 'updated_at' => null],
             ['name' => 'shopsign.view', 'guard_name' => 'admin', 'group_name' => 'shopsign', 'created_at' => null, 'updated_at' => null],
             ['name' => 'shopsign.edit', 'guard_name' => 'admin', 'group_name' => 'shopsign', 'created_at' => null, 'updated_at' => null],
             ['name' => 'shopsign.delete', 'guard_name' => 'admin', 'group_name' => 'shopsign', 'created_at' => null, 'updated_at' => null],
+            ['name' => 'shopsign.export', 'guard_name' => 'admin', 'group_name' => 'shopsign', 'created_at' => null, 'updated_at' => null],
 
         ];
 

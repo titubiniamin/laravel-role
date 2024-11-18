@@ -87,6 +87,7 @@ class RolePermissionSeeder extends Seeder
                     'billboard.view',
                     'billboard.edit',
                     'billboard.delete',
+                    'billboard.export',
                 ]
             ],
             [
@@ -97,6 +98,7 @@ class RolePermissionSeeder extends Seeder
                     'highwall.view',
                     'highwall.edit',
                     'highwall.delete',
+                    'highwall.export',
                 ]
             ],
             [
@@ -107,6 +109,7 @@ class RolePermissionSeeder extends Seeder
                     'shopsign.view',
                     'shopsign.edit',
                     'shopsign.delete',
+                    'shopsign.export',
                 ]
             ],
             [

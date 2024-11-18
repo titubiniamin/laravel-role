@@ -54,6 +54,7 @@
                             <thead class="bg-light text-capitalize">
                                 <tr>
                                     <th>{{ __('Sl') }}</th>
+                                    <th>{{ __('Image') }}</th>
                                     <th> {{ __('Name') }}</th>
                                     <th> {{ __('Size') }}</th>
                                     <th> {{ __('Type') }}</th>
@@ -68,6 +69,14 @@
                                @foreach ($shopsigns as $shopsign)
                                <tr>
                                     <td>{{ $loop->index+1 }}</td>
+                                   <td>
+                                       @if($shopsign == null || empty($shopsign->image))
+                                           <img id="image-preview" src="{{ asset('storage/blank.jpg') }}" alt="Shop Sign Image" style="width: 100%; max-height: 200px; object-fit: cover; display: block;">
+                                       @else
+                                           <img id="image-preview" src="{{ asset('storage/' . $shopsign->image) }}" alt="Shop Sign Image" style="width: 100%; max-height: 200px; object-fit: cover; display: block;">
+                                       @endif
+
+                                   </td>
                                     <td>{{ $shopsign->name }}</td>
                                     <td>{{ $shopsign->size }}</td>
                                    <td>
@@ -133,14 +142,15 @@
                 responsive: true,
                 columnDefs: [
                     { width: "5%", targets: 0 },   // Sl column
-                    { width: "20%", targets: 1 },  // Name column
-                    { width: "7%", targets: 2 },  // size column
-                    { width: "10%", targets: 3 },  // type column
-                    { width: "10%", targets: 4 },  // brand column
-                    { width: "30%", targets: 5 },  // location column
-                    { width: "10%", targets: 6 },  // start column
-                    { width: "10%", targets: 7 },  // end column
-                    { width: "5%", targets: 8 }   // Action column
+                    { width: "5%", targets: 1 },   // image column
+                    { width: "20%", targets: 2 },  // Name column
+                    { width: "7%", targets: 3 },  // size column
+                    { width: "10%", targets: 4 },  // type column
+                    { width: "10%", targets: 5 },  // brand column
+                    { width: "30%", targets: 6 },  // location column
+                    { width: "10%", targets: 7 },  // start column
+                    { width: "10%", targets: 8 },  // end column
+                    { width: "5%", targets: 9 }   // Action column
                 ]
             });
         }

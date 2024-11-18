@@ -54,6 +54,7 @@
                             <thead class="bg-light text-capitalize">
                                 <tr>
                                     <th>{{ __('Sl') }}</th>
+                                    <th>{{ __('Image') }}</th>
                                     <th> {{ __('Name') }}</th>
                                     <th> {{ __('Type') }}</th>
                                     <th> {{ __('Brand') }}</th>
@@ -67,6 +68,14 @@
                                @foreach ($highwalls as $highwall)
                                <tr>
                                     <td>{{ $loop->index+1 }}</td>
+                                   <td>
+                                       @if($highwall == null || empty($highwall->image))
+                                           <img id="image-preview" src="{{ asset('storage/blank.jpg') }}" alt="Highwall Image" style="width: 100%; max-height: 200px; object-fit: cover; display: block;">
+                                       @else
+                                           <img id="image-preview" src="{{ asset('storage/' . $highwall->image) }}" alt="Highwall Image" style="width: 100%; max-height: 200px; object-fit: cover; display: block;">
+                                       @endif
+
+                                   </td>
                                     <td>{{ $highwall->name }}</td>
                                     <td>
                                         @if($highwall->type === 'cold_store')
@@ -131,13 +140,14 @@
                 responsive: true,
                 columnDefs: [
                     { width: "5%", targets: 0 },   // Sl column
-                    { width: "20%", targets: 1 },  // Name column
-                    { width: "10%", targets: 2 },  // type column
-                    { width: "10%", targets: 3 },  // brand column
-                    { width: "30%", targets: 4 },  // location column
-                    { width: "10%", targets: 5 },  // start column
-                    { width: "10%", targets: 6 },  // end column
-                    { width: "5%", targets: 7 }   // Action column
+                    { width: "5%", targets: 1 },   // image column
+                    { width: "20%", targets: 2 },  // Name column
+                    { width: "10%", targets: 3 },  // type column
+                    { width: "10%", targets: 4 },  // brand column
+                    { width: "30%", targets: 5 },  // location column
+                    { width: "10%", targets: 6 },  // start column
+                    { width: "10%", targets: 7 },  // end column
+                    { width: "5%", targets: 8 }   // Action column
                 ]
             });
         }

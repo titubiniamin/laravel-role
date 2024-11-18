@@ -41,11 +41,16 @@
                 <div class="card-body">
                     <h4 class="header-title float-left">{{ __('Billboards') }}</h4>
                     <p class="float-right mb-2">
-                        @if (auth()->user()->can('admin.edit'))
+                        @if (auth()->user()->can('billboard.create'))
                             <a class="btn btn-primary text-white" href="{{ route('admin.billboards.create') }}">
                                 {{ __('Create New Billboard') }}
                             </a>
                         @endif
+{{--                        @if(auth()->user()->can('billboard.export'))--}}
+                            <a class="btn btn-warning text-white" href="{{ route('admin.billboards.export') }}">
+                                {{ __('Export Billboard') }}
+                            </a>
+{{--                        @endif--}}
                     </p>
                     <div class="clearfix"></div>
                     <div class="data-tables">
@@ -54,6 +59,7 @@
                             <thead class="bg-light text-capitalize">
                                 <tr>
                                     <th>{{ __('Sl') }}</th>
+                                    <th>{{ __('Image') }}</th>
                                     <th> {{ __('Name') }}</th>
                                     <th> {{ __('Size') }}</th>
                                     <th> {{ __('Type') }}</th>
@@ -68,6 +74,14 @@
                                @foreach ($billboards as $billboard)
                                <tr>
                                     <td>{{ $loop->index+1 }}</td>
+                                    <td>
+                                        @if($billboard == null || empty($billboard->image))
+                                            <img id="image-preview" src="{{ asset('storage/blank.jpg') }}" alt="Billboard Image" style="width: 100%; max-height: 200px; object-fit: cover; display: block;">
+                                        @else
+                                            <img id="image-preview" src="{{ asset('storage/' . $billboard->image) }}" alt="Billboard Image" style="width: 100%; max-height: 200px; object-fit: cover; display: block;">
+                                        @endif
+
+                                    </td>
                                     <td>{{ $billboard->name }}</td>
                                     <td>{{ $billboard->size }}</td>
                                    <td>
@@ -135,14 +149,15 @@
                 responsive: true,
                 columnDefs: [
                     { width: "5%", targets: 0 },   // Sl column
-                    { width: "20%", targets: 1 },  // Name column
-                    { width: "6%", targets: 2 },  // size column
-                    { width: "10%", targets: 3 },  // type column
-                    { width: "10%", targets: 4 },  // brand column
-                    { width: "30%", targets: 5 },  // location column
-                    { width: "10%", targets: 6 },  // start column
-                    { width: "10%", targets: 7 },  // end column
-                    { width: "5%", targets: 8 }   // Action column
+                    { width: "5%", targets: 1 },   // image column
+                    { width: "20%", targets: 2 },  // Name column
+                    { width: "6%", targets: 3 },  // size column
+                    { width: "10%", targets: 4 },  // type column
+                    { width: "10%", targets: 5 },  // brand column
+                    { width: "30%", targets: 6 },  // location column
+                    { width: "10%", targets: 7 },  // start column
+                    { width: "10%", targets: 8 },  // end column
+                    { width: "5%", targets: 9 }   // Action column
                 ]
             });
         }

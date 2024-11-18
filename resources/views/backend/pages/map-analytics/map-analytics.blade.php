@@ -3,7 +3,6 @@
 @section('title')
     Map Analytics - Dealer
 @endsection
-
 @section('admin-content')
     <!-- page title area start -->
     <div class="page-title-area">
@@ -65,6 +64,7 @@
     </div>
 
     <script>
+
         bkoigl.accessToken = "{{ env('BARIKOI_API_KEY') }}"; // Pass the environment variable to JavaScript
         const map = new bkoigl.Map({
             container: "map",
@@ -79,19 +79,30 @@
         const dealers = @json($dealers);
         const retailers = @json($retailers);
         const billboards = @json($billboards);
+        const shopsigns=@json($shopsigns);
+        const highwalls=@json($highwalls);
         const dealersByDistrict = @json($dealersByDistrict);
         const retailersByDistrict = @json($retailersByDistrict);
         const billboardsByDistrict = @json($billboardsByDistrict);
+        const shopsignsByDistrict=@json($shopsignsByDistrict);
+        const highwallsByDistrict=@json($highwallsByDistrict);
 
+        console.log('dhaka'+shopsignsByDistrict['Dhaka']);
         const centralIconUrl = '{{ asset('images/pharmacy.png') }}'; // Branch icon for central points
         const dealerIconUrl = '{{ asset('images/red.png') }}'; // Red icon for dealers
         const retailerIconUrl = '{{ asset('images/blue.png') }}'; // Blue icon for retailers
-        const billboardIconUrl = '{{ asset('images/billboard.png') }}'; // Blue icon for billboards
+        const billboardIconUrl = '{{ asset('images/billboard.png') }}'; // Blue icon for retailers
+        const shopsignIconUrl = '{{ asset('images/billboard.png') }}'; // Blue icon for retailers
+        const highwallIconUrl = '{{ asset('images/3415475.png') }}'; // Blue icon for retailers
+        console.log('this is shopu'+shopsignsByDistrict)
+        console.log('this is high'+billboardsByDistrict)
 
         let centralPointsLayer = []; // Layer for central points
         let dealerMarkersLayer = []; // Layer for dealer markers
         let retailerMarkersLayer = []; // Layer for retailer markers
         let billboardMarkersLayer = []; // Layer for billboard markers
+        let shopsignMarkerLayer=[];
+        let highwallMarkerLayer=[];
 
         // Function to create a custom marker element
         function createCustomMarkerElement(iconUrl) {
@@ -99,6 +110,7 @@
             markerElement.className = 'marker';
             markerElement.style.backgroundImage = `url(${iconUrl})`;
             markerElement.style.backgroundSize = 'contain';
+            markerElement.style.backgroundRepeat = 'no-repeat'; // Prevent the image from repeating
             markerElement.style.width = '30px';
             markerElement.style.height = '30px';
             return markerElement;
@@ -133,6 +145,26 @@
         }
 
         // Add district markers after defining the function
+
+
+        // Add icon URLs for different billboard brandshttp://127.0.0.1:8000/images/pharmacy.png
+        const billboardIcons = {
+            'fresh_super_cement': '{{ asset('images/billboard-blue-1.png') }}',
+            'dhalai_special_cement': '{{ asset('images/billboard-purple-1.png') }}',
+            'meghnacem_delux_cement': '{{ asset('images/billboard-green-1.png') }}'
+        };
+        const shopsignIcons={
+            'fresh_super_cement':'{{asset('images/shop-blue.png')}}',
+            'dhalai_special_cement':'{{asset('images/shop-purple.png')}}',
+            'meghnacem_delux_cement': '{{ asset('images/shop-green.png') }}'
+        }
+        const highwallIcons={
+            'fresh_super_cement':'{{asset('images/highwall-blue.png')}}',
+            'dhalai_special_cement':'{{asset('images/highwall-purple.png')}}',
+            'meghnacem_delux_cement': '{{ asset('images/highwall-green.png') }}'
+        }
+
+        // Modify addDistrictMarkers function to use specific icons based on brand
         function addDistrictMarkers(dataType, district) {
             let filteredData = [];
             if (dataType === 'dealers') {
@@ -141,16 +173,30 @@
                 filteredData = district ? retailers.filter(retailer => retailer.district === district) : retailers;
             } else if (dataType === 'billboards') {
                 filteredData = district ? billboards.filter(billboard => billboard.district === district) : billboards;
+            }else if(dataType === 'shopsigns'){
+                filteredData = district ? shopsigns.filter(shopsign => shopsign.district === district) : shopsigns;
+            }else if(dataType === 'highwalls'){
+                filteredData = district ? highwalls.filter(highwall => highwall.district === district) : highwalls;
             }
-
             // Add filtered markers to the map
             filteredData.forEach(point => {
-                const iconUrl = dataType === 'dealers' ? dealerIconUrl :
-                    dataType === 'retailers' ? retailerIconUrl : billboardIconUrl;
+                let iconUrl;
+                if (dataType === 'billboards') {
+                    // Choose the icon based on the brand
+                    iconUrl = billboardIcons[point.brand] || billboardIconUrl; // Default to general icon if brand not matched
+                } else if(dataType === 'shopsigns'){
+                    iconUrl = shopsignIcons[point.brand] || shopsignIconUrl;
+                } else if(dataType === 'highwalls'){
+                    iconUrl = highwallIcons[point.brand] || highwallIconurl
+                }
+                else {
+                    iconUrl = dataType === 'dealers' ? dealerIconUrl : retailerIconUrl;
+                }
+
                 const marker = new bkoigl.Marker({ element: createCustomMarkerElement(iconUrl) })
                     .setLngLat([point.longitude, point.latitude]);
 
-                // Add a click event listener to calculate and show distance
+                // Add popup and click event logic as before
                 marker.getElement().addEventListener('click', function() {
                     const selectedCentralPointId = document.getElementById('select-central-point').value;
                     if (selectedCentralPointId && selectedCentralPointId !== 'all') {
@@ -160,53 +206,45 @@
                             point.latitude, point.longitude
                         );
 
-                        // Update the popup content dynamically with distance and styling
                         const popupContent = `
-    <div style="background-color: lightblue; padding: 10px;">
-        <div><strong>${point.name}</strong></div>
-        <div><strong>Location:</strong> ${point.location || 'N/A'}</div>
-        <div><strong>Distance from ${selectedCentralPoint.name}:</strong> ${distance.toFixed(2)} km</div>
-        ${point.average_sales ? `<div><strong>Average Sales:</strong> ${point.average_sales}</div>` : ''}
-        ${point.market_size ? `<div><strong>Market Size:</strong> ${point.market_size}</div>` : ''}
-        ${point.market_share ? `<div><strong>Market Share:</strong> ${point.market_share}</div>` : ''}
-        ${point.competition_brand ? `<div><strong>Competition Brand:</strong> ${point.competition_brand}</div>` : ''}
-    </div>
-`;
+                    <div style="background-color: lightblue; padding: 10px;">
+                        <div><strong>${point.name}</strong></div>
+                        <div><strong>Location:</strong> ${point.location || 'N/A'}</div>
+                        <div><strong>Distance from ${selectedCentralPoint.name}:</strong> ${distance.toFixed(2)} km</div>
+                        ${point.average_sales ? `<div><strong>Average Sales:</strong> ${point.average_sales}</div>` : ''}
+                        ${point.market_size ? `<div><strong>Market Size:</strong> ${point.market_size}</div>` : ''}
+                        ${point.market_share ? `<div><strong>Market Share:</strong> ${point.market_share}</div>` : ''}
+                        ${point.competition_brand ? `<div><strong>Competition Brand:</strong> ${point.competition_brand}</div>` : ''}
+                    </div>
+                `;
 
-
-                        // Set the popup content and show it
                         marker.setPopup(new bkoigl.Popup().setHTML(popupContent)).addTo(map);
                     }
                 });
 
-                // Set initial popup without distance (optional)
                 marker.setPopup(new bkoigl.Popup().setHTML(`
             <div style="background-color: lightblue; padding: 10px;">
                 <div><strong>${point.name}</strong></div>
                 <div><strong>Location:</strong> ${point.location || 'N/A'}</div>
             </div>
-        `))
-                    .addTo(map);
+        `)).addTo(map);
 
-                // Add the marker to the appropriate layer
                 if (dataType === 'dealers') {
                     dealerMarkersLayer.push(marker);
                 } else if (dataType === 'retailers') {
                     retailerMarkersLayer.push(marker);
                 } else if (dataType === 'billboards') {
                     billboardMarkersLayer.push(marker);
+                } else if (dataType === 'shopsigns') {
+                    shopsignMarkerLayer.push(marker);
+                } else if (dataType === 'highwalls') {
+                    highwallMarkerLayer.push(marker);
                 }
             });
+            console.log(shopsignsByDistrict[district] || 0)
         }
 
 
-
-
-        // Function to populate the data type dropdown based on the selected district
-        // Function to populate the data type dropdown based on the selected district
-        // Function to populate the data type dropdown based on the selected district
-        // Function to populate the data type dropdown based on the selected district
-        // Function to populate the data type dropdown based on the selected district
         // Function to populate the data type dropdown based on the selected district
         function populateDataTypeDropdown(district) {
             const dataTypeSelect = document.getElementById('select-data-type');
@@ -218,27 +256,35 @@
             defaultOption.selected = true;
             dataTypeSelect.appendChild(defaultOption);
 
-            let dealersCount, retailersCount, billboardsCount;
+            let dealersCount, retailersCount, billboardsCount,shopsignsCount, highwallsCount;
 
             if (district === 'all' || district === '') {
                 // Calculate counts for all data types across all districts
                 dealersCount = dealers.length;
                 retailersCount = retailers.length;
                 billboardsCount = billboards.length;
+                shopsignsCount = shopsigns.length;
+                highwallsCount = highwalls.length;
             } else {
                 // Calculate counts for the selected district only
                 dealersCount = dealersByDistrict[district] || 0;
                 retailersCount = retailersByDistrict[district] || 0;
                 billboardsCount = billboardsByDistrict[district] || 0;
+                shopsignsCount = shopsignsByDistrict[district] || 0;
+                highwallsCount = highwallsByDistrict[district] || 0;
+                console.log('this is calculated '+shopsignsCount)
             }
 
             // Ensure all counts are valid numbers (prevent NaN)
             dealersCount = Number(dealersCount) || 0;
             retailersCount = Number(retailersCount) || 0;
             billboardsCount = Number(billboardsCount) || 0;
+            shopsignsCount = Number(shopsignsCount) || 0;
+            highwallsCount = Number(highwallsCount) || 0;
+
 
             // Calculate total count
-            const totalCount = dealersCount + retailersCount + billboardsCount;
+            const totalCount = dealersCount + retailersCount + billboardsCount + shopsignsCount + highwallsCount;
 
             // Add the "All" option to the dropdown with the updated total count
             const allOption = document.createElement('option');
@@ -250,7 +296,9 @@
             const options = [
                 { type: 'dealers', label: 'Dealers', count: dealersCount },
                 { type: 'retailers', label: 'Retailers', count: retailersCount },
-                { type: 'billboards', label: 'Billboards', count: billboardsCount }
+                { type: 'billboards', label: 'Billboards', count: billboardsCount },
+                { type: 'shopsigns', label: 'Shop Signs', count: shopsignsCount },
+                { type: 'highwalls', label: 'Highwalls', count: highwallsCount }
             ];
 
             options.forEach(option => {
@@ -285,6 +333,8 @@
                 addDistrictMarkers('dealers', '');  // Empty district to show all
                 addDistrictMarkers('retailers', '');
                 addDistrictMarkers('billboards', '');
+                addDistrictMarkers('shopsigns', '');
+                addDistrictMarkers('highwalls', '');
 
                 // Populate the data type dropdown with updated counts
                 populateDataTypeDropdown('');
@@ -322,6 +372,8 @@
                 addDistrictMarkers('dealers', district);
                 addDistrictMarkers('retailers', district);
                 addDistrictMarkers('billboards', district);
+                addDistrictMarkers('shopsigns', district);
+                addDistrictMarkers('highwalls', district);
             } else {
                 const district = selectedCentralPoint === 'all' ? '' : document.querySelector(`#select-central-point option[value="${selectedCentralPoint}"]`).getAttribute('data-district');
                 clearDataTypeMarkers();
@@ -334,9 +386,13 @@
             dealerMarkersLayer.forEach(marker => marker.remove());
             retailerMarkersLayer.forEach(marker => marker.remove());
             billboardMarkersLayer.forEach(marker => marker.remove());
+            shopsignMarkerLayer.forEach(marker => marker.remove());
+            highwallMarkerLayer.forEach(marker => marker.remove());
             dealerMarkersLayer = [];
             retailerMarkersLayer = [];
             billboardMarkersLayer = [];
+            shopsignMarkersLayer=[];
+            highwalldMarkersLayer=[];
         }
 
         // Initialize the map with central points

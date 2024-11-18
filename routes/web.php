@@ -71,9 +71,12 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::get('all-retailers', [RetailerController::class,'allDealers'])->name('allRetailers');
     Route::get('map-analytics', [MapAnalyticsController::class, 'mapAnalytics'])->name('map.analytics');
     Route::resource('central-points',CentralPointController::class);
-    Route::resource('billboards',BillboardController::class);
-    Route::resource('highwalls',HighwallController::class);
-    Route::resource('shopsigns',ShopsignController::class);
+    Route::resource('billboards',BillboardController::class)->except(['show']);
+    Route::get('billboards/export',[BillboardController::class,'export'])->name('billboards.export');
+    Route::resource('highwalls',HighwallController::class)->except(['show']);
+    Route::get('highwalls/export',[HighwallController::class,'export'])->name('highwalls.export');
+    Route::resource('shopsigns',ShopsignController::class)->except(['show']);
+    Route::get('shopsigns/export',[ShopsignController::class,'export'])->name('shopsigns.export');
 })->middleware('auth:admin');
 Route::get('/test',[TestController::class,'index'])->name('test');
 //Route::get('/api/proxy/autocomplete', [ApiProxyController::class, 'fetchAutocomplete']);

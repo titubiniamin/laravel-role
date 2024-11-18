@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Backend;
 
+use App\Exports\BillboardsExport;
 use App\Http\Controllers\Controller;
 use App\Models\Billboard;
 use Illuminate\Http\RedirectResponse;
@@ -156,6 +157,10 @@ class BillboardController extends Controller
 
         session()->flash('success', 'Billboard has been deleted.');
         return redirect()->route('admin.billboards.index');
+    }
+
+    public function export(){
+        return Excel::download(new BillboardsExport, 'billboards.xlsx');
     }
 
 
