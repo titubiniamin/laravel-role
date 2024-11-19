@@ -53,10 +53,11 @@
                         @endif
                     </p>
                     <div class="clearfix"></div>
-                    <div class="data-tables">
-                        @include('backend.layouts.partials.messages')
-                        <table id="dataTable" class="text-center">
-                            <thead class="bg-light text-capitalize">
+                    <div class="table-responsive">
+                        <div class="data-tables">
+                            @include('backend.layouts.partials.messages')
+                            <table id="dataTable" class="text-center">
+                                <thead class="bg-light text-capitalize">
                                 <tr>
                                     <th>{{ __('Sl') }}</th>
                                     <th>{{ __('Image') }}</th>
@@ -69,64 +70,66 @@
                                     <th> {{ __('End Date') }}</th>
                                     <th>{{ __('Action') }}</th>
                                 </tr>
-                            </thead>
-                            <tbody>
-                               @foreach ($billboards as $billboard)
-                               <tr>
-                                    <td>{{ $loop->index+1 }}</td>
-                                    <td>
-                                        @if($billboard == null || empty($billboard->image))
-                                            <img id="image-preview" src="{{ asset('storage/blank.jpg') }}" alt="Billboard Image" style="width: 100%; max-height: 200px; object-fit: cover; display: block;">
-                                        @else
-                                            <img id="image-preview" src="{{ asset('storage/' . $billboard->image) }}" alt="Billboard Image" style="width: 100%; max-height: 200px; object-fit: cover; display: block;">
-                                        @endif
+                                </thead>
+                                <tbody>
+                                @foreach ($billboards as $billboard)
+                                    <tr>
+                                        <td>{{ $loop->index+1 }}</td>
+                                        <td>
+                                            @if($billboard == null || empty($billboard->image))
+                                                <img id="image-preview" src="{{ asset('storage/blank.jpg') }}" alt="Billboard Image" style="width: 100%; max-height: 200px; object-fit: cover; display: block;">
+                                            @else
+                                                <img id="image-preview" src="{{ asset('storage/' . $billboard->image) }}" alt="Billboard Image" style="width: 100%; max-height: 200px; object-fit: cover; display: block;">
+                                            @endif
 
-                                    </td>
-                                    <td>{{ $billboard->name }}</td>
-                                    <td>{{ $billboard->size }}</td>
-                                   <td>
-                                       @if($billboard->type === 'single_side')
-                                           {{ __('Single Side') }}
-                                       @elseif($billboard->type === 'unipool')
-                                           {{ __('Unipool') }}
-                                       @elseif($billboard->type === 'neon')
-                                           {{ __('Nion') }}
-                                       @endif
-                                   </td>
-                                   <td>
-                                       @if($billboard->brand === 'fresh_super_cement')
-                                           {{ __('Fresh Super Cement') }}
-                                       @elseif($billboard->brand === 'dhalai_special_cement')
-                                           {{ __('Dhalai Special Cement') }}
-                                       @elseif($billboard->brand === 'meghnacem_delux_cement')
-                                           {{__('Meghnacem Deluxe Cement')}}
-                                       @endif
-                                   </td>
-                                    <td>{{ $billboard->location }}</td>
-                                    <td>{{ $billboard->start_date }}</td>
-                                    <td>{{ $billboard->end_date }}</td>
-                                    <td>
-                                        @if (auth()->user()->can('billboard.edit'))
-                                            <a class="btn btn-success text-white" href="{{ route('admin.billboards.edit', $billboard->id) }}">Edit</a>
-                                        @endif
+                                        </td>
+                                        <td>{{ $billboard->name }}</td>
+                                        <td>{{ $billboard->size }}</td>
+                                        <td>
+                                            @if($billboard->type === 'single_side')
+                                                {{ __('Single Side') }}
+                                            @elseif($billboard->type === 'unipool')
+                                                {{ __('Unipool') }}
+                                            @elseif($billboard->type === 'neon')
+                                                {{ __('Nion') }}
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($billboard->brand === 'fresh_super_cement')
+                                                {{ __('Fresh Super Cement') }}
+                                            @elseif($billboard->brand === 'dhalai_special_cement')
+                                                {{ __('Dhalai Special Cement') }}
+                                            @elseif($billboard->brand === 'meghnacem_delux_cement')
+                                                {{__('Meghnacem Deluxe Cement')}}
+                                            @endif
+                                        </td>
+                                        <td>{{ $billboard->location }}</td>
+                                        <td>{{ $billboard->start_date }}</td>
+                                        <td>{{ $billboard->end_date }}</td>
+                                        <td>
+                                            @if (auth()->user()->can('billboard.edit'))
+                                                <a class="btn btn-success text-white" href="{{ route('admin.billboards.edit', $billboard->id) }}">Edit</a>
+                                            @endif
 
-                                        @if (auth()->user()->can('billboard.delete'))
-                                        <a class="btn btn-danger text-white" href="javascript:void(0);"
-                                        onclick="event.preventDefault(); if(confirm('Are you sure you want to delete?')) { document.getElementById('delete-form-{{ $billboard->id }}').submit(); }">
-                                            {{ __('Delete') }}
-                                        </a>
+                                            @if (auth()->user()->can('billboard.delete'))
+                                                <a class="btn btn-danger text-white" href="javascript:void(0);"
+                                                   onclick="event.preventDefault(); if(confirm('Are you sure you want to delete?')) { document.getElementById('delete-form-{{ $billboard->id }}').submit(); }">
+                                                    {{ __('Delete') }}
+                                                </a>
 
-                                        <form id="delete-form-{{ $billboard->id }}" action="{{ route('admin.billboards.destroy', $billboard->id) }}" method="POST" style="display: none;">
-                                            @method('DELETE')
-                                            @csrf
-                                        </form>
-                                        @endif
-                                    </td>
-                                </tr>
-                               @endforeach
-                            </tbody>
-                        </table>
+                                                <form id="delete-form-{{ $billboard->id }}" action="{{ route('admin.billboards.destroy', $billboard->id) }}" method="POST" style="display: none;">
+                                                    @method('DELETE')
+                                                    @csrf
+                                                </form>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+
                 </div>
             </div>
         </div>

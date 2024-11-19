@@ -48,10 +48,11 @@
                         @endif
                     </p>
                     <div class="clearfix"></div>
-                    <div class="data-tables">
-                        @include('backend.layouts.partials.messages')
-                        <table id="dataTable" class="text-center">
-                            <thead class="bg-light text-capitalize">
+                    <div class="table-responsive">
+                        <div class="data-tables">
+                            @include('backend.layouts.partials.messages')
+                            <table id="dataTable" class="text-center">
+                                <thead class="bg-light text-capitalize">
                                 <tr>
                                     <th style="width: 105px">{{ __('Sl') }}</th>
                                     <th width="10%">{{ __('Name') }}</th>
@@ -61,38 +62,40 @@
                                     <th width="40%">{{ __('Address') }}</th>
                                     <th width="15%">{{ __('Action') }}</th>
                                 </tr>
-                            </thead>
-                            <tbody>
-                               @foreach ($dealers as $dealer)
-                               <tr>
-                                    <td>{{ $loop->index+1 }}</td>
-                                    <td>{{ $dealer->name }}</td>
-                                    <td>{{ $dealer->email }}</td>
-                                    <td>{{ $dealer->mobile }}</td>
-                                    <td>{{ $dealer->zone }}</td>
-                                    <td>{{ $dealer->address }}</td>
-                                    <td>
-                                        @if (auth()->user()->can('dealer.edit'))
-                                            <a class="btn btn-success text-white" href="{{ route('admin.dealers.edit', $dealer->id) }}">Edit</a>
-                                        @endif
+                                </thead>
+                                <tbody>
+                                @foreach ($dealers as $dealer)
+                                    <tr>
+                                        <td>{{ $loop->index+1 }}</td>
+                                        <td>{{ $dealer->name }}</td>
+                                        <td>{{ $dealer->email }}</td>
+                                        <td>{{ $dealer->mobile }}</td>
+                                        <td>{{ $dealer->zone }}</td>
+                                        <td>{{ $dealer->address }}</td>
+                                        <td>
+                                            @if (auth()->user()->can('dealer.edit'))
+                                                <a class="btn btn-success text-white" href="{{ route('admin.dealers.edit', $dealer->id) }}">Edit</a>
+                                            @endif
 
-                                        @if (auth()->user()->can('dealer.delete'))
-                                        <a class="btn btn-danger text-white" href="javascript:void(0);"
-                                        onclick="event.preventDefault(); if(confirm('Are you sure you want to delete?')) { document.getElementById('delete-form-{{ $dealer->id }}').submit(); }">
-                                            {{ __('Delete') }}
-                                        </a>
+                                            @if (auth()->user()->can('dealer.delete'))
+                                                <a class="btn btn-danger text-white" href="javascript:void(0);"
+                                                   onclick="event.preventDefault(); if(confirm('Are you sure you want to delete?')) { document.getElementById('delete-form-{{ $dealer->id }}').submit(); }">
+                                                    {{ __('Delete') }}
+                                                </a>
 
-                                        <form id="delete-form-{{ $dealer->id }}" action="{{ route('admin.dealers.destroy', $dealer->id) }}" method="POST" style="display: none;">
-                                            @method('DELETE')
-                                            @csrf
-                                        </form>
-                                        @endif
-                                    </td>
-                                </tr>
-                               @endforeach
-                            </tbody>
-                        </table>
+                                                <form id="delete-form-{{ $dealer->id }}" action="{{ route('admin.dealers.destroy', $dealer->id) }}" method="POST" style="display: none;">
+                                                    @method('DELETE')
+                                                    @csrf
+                                                </form>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+
                 </div>
             </div>
         </div>

@@ -162,22 +162,34 @@
         let map, marker;
 
         // Use geolocation to show the current location on map load
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const latitude = position.coords.latitude;
-                const longitude = position.coords.longitude;
-                console.log("Initial location:", latitude, longitude);
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    console.log("Initial location:", latitude, longitude);
 
-                initializeMap(latitude, longitude);
-                fetchLocationName(latitude, longitude);
-            },
-            (error) => {
-                console.error("Error fetching location:", error);
-                // Fallback coordinates if geolocation fails
-                initializeMap(23.821600277500405, 90.3938010872331);
-            },
-            { enableHighAccuracy: true } // Request high-accuracy location
-        );
+                    initializeMap(latitude, longitude);
+                    fetchLocationName(latitude, longitude);
+                },
+                (error) => {
+                    console.error("Error fetching location:", error);
+                    // Handle the error and provide fallback coordinates or message
+                    if (error.code === error.PERMISSION_DENIED) {
+                        alert("Location access denied. Please enable location services.");
+                    } else if (error.code === error.POSITION_UNAVAILABLE) {
+                        alert("Position unavailable. Try again later.");
+                    } else if (error.code === error.TIMEOUT) {
+                        alert("Location request timed out. Please try again.");
+                    }
+                    // Fallback coordinates if geolocation fails
+                    initializeMap(23.821600277500405, 90.3938010872331);
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000, // Timeout after 10 seconds
+                    maximumAge: 0 // Do not use cached location
+                }
+            );
 
         function initializeMap(latitude, longitude) {
             map = new bkoigl.Map({

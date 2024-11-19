@@ -53,10 +53,11 @@
                             @endif
                     </p>
                     <div class="clearfix"></div>
-                    <div class="data-tables">
-                        @include('backend.layouts.partials.messages')
-                        <table id="dataTable" class="text-center">
-                            <thead class="bg-light text-capitalize">
+                    <div class="table-responsive">
+                        <div class="data-tables">
+                            @include('backend.layouts.partials.messages')
+                            <table id="dataTable" class="text-center">
+                                <thead class="bg-light text-capitalize">
                                 <tr>
                                     <th>{{ __('Sl') }}</th>
                                     <th>{{ __('Image') }}</th>
@@ -69,62 +70,64 @@
                                     <th> {{ __('End Date') }}</th>
                                     <th>{{ __('Action') }}</th>
                                 </tr>
-                            </thead>
-                            <tbody>
-                               @foreach ($shopsigns as $shopsign)
-                               <tr>
-                                    <td>{{ $loop->index+1 }}</td>
-                                   <td>
-                                       @if($shopsign == null || empty($shopsign->image))
-                                           <img id="image-preview" src="{{ asset('storage/blank.jpg') }}" alt="Shop Sign Image" style="width: 100%; max-height: 200px; object-fit: cover; display: block;">
-                                       @else
-                                           <img id="image-preview" src="{{ asset('storage/' . $shopsign->image) }}" alt="Shop Sign Image" style="width: 100%; max-height: 200px; object-fit: cover; display: block;">
-                                       @endif
+                                </thead>
+                                <tbody>
+                                @foreach ($shopsigns as $shopsign)
+                                    <tr>
+                                        <td>{{ $loop->index+1 }}</td>
+                                        <td>
+                                            @if($shopsign == null || empty($shopsign->image))
+                                                <img id="image-preview" src="{{ asset('storage/blank.jpg') }}" alt="Shop Sign Image" style="width: 100%; max-height: 200px; object-fit: cover; display: block;">
+                                            @else
+                                                <img id="image-preview" src="{{ asset('storage/' . $shopsign->image) }}" alt="Shop Sign Image" style="width: 100%; max-height: 200px; object-fit: cover; display: block;">
+                                            @endif
 
-                                   </td>
-                                    <td>{{ $shopsign->name }}</td>
-                                    <td>{{ $shopsign->size }}</td>
-                                   <td>
-                                       @if($shopsign->type === 'non_lit')
-                                           {{ __('Non Lit') }}
-                                       @elseif($shopsign->type === 'lightbox')
-                                           {{ __('Light Box') }}
-                                       @endif
-                                   </td>
-                                   <td>
-                                       @if($shopsign->brand === 'fresh_super_cement')
-                                           {{ __('Fresh Super Cement') }}
-                                       @elseif($shopsign->brand === 'dhalai_special_cement')
-                                           {{ __('Dhalai Special Cement') }}
-                                       @elseif($shopsign->brand === 'meghnacem_delux_cement')
-                                           {{__('Meghnacem Deluxe Cement')}}
-                                       @endif
-                                   </td>
-                                    <td>{{ $shopsign->location }}</td>
-                                    <td>{{ $shopsign->start_date }}</td>
-                                    <td>{{ $shopsign->end_date }}</td>
-                                    <td>
-                                        @if (auth()->user()->can('shopsign.edit'))
-                                            <a class="btn btn-success text-white" href="{{ route('admin.shopsigns.edit', $shopsign->id) }}">Edit</a>
-                                        @endif
+                                        </td>
+                                        <td>{{ $shopsign->name }}</td>
+                                        <td>{{ $shopsign->size }}</td>
+                                        <td>
+                                            @if($shopsign->type === 'non_lit')
+                                                {{ __('Non Lit') }}
+                                            @elseif($shopsign->type === 'lightbox')
+                                                {{ __('Light Box') }}
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($shopsign->brand === 'fresh_super_cement')
+                                                {{ __('Fresh Super Cement') }}
+                                            @elseif($shopsign->brand === 'dhalai_special_cement')
+                                                {{ __('Dhalai Special Cement') }}
+                                            @elseif($shopsign->brand === 'meghnacem_delux_cement')
+                                                {{__('Meghnacem Deluxe Cement')}}
+                                            @endif
+                                        </td>
+                                        <td>{{ $shopsign->location }}</td>
+                                        <td>{{ $shopsign->start_date }}</td>
+                                        <td>{{ $shopsign->end_date }}</td>
+                                        <td>
+                                            @if (auth()->user()->can('shopsign.edit'))
+                                                <a class="btn btn-success text-white" href="{{ route('admin.shopsigns.edit', $shopsign->id) }}">Edit</a>
+                                            @endif
 
-                                        @if (auth()->user()->can('shopsign.delete'))
-                                        <a class="btn btn-danger text-white" href="javascript:void(0);"
-                                        onclick="event.preventDefault(); if(confirm('Are you sure you want to delete?')) { document.getElementById('delete-form-{{ $shopsign->id }}').submit(); }">
-                                            {{ __('Delete') }}
-                                        </a>
+                                            @if (auth()->user()->can('shopsign.delete'))
+                                                <a class="btn btn-danger text-white" href="javascript:void(0);"
+                                                   onclick="event.preventDefault(); if(confirm('Are you sure you want to delete?')) { document.getElementById('delete-form-{{ $shopsign->id }}').submit(); }">
+                                                    {{ __('Delete') }}
+                                                </a>
 
-                                        <form id="delete-form-{{ $shopsign->id }}" action="{{ route('admin.shopsigns.destroy', $shopsign->id) }}" method="POST" style="display: none;">
-                                            @method('DELETE')
-                                            @csrf
-                                        </form>
-                                        @endif
-                                    </td>
-                                </tr>
-                               @endforeach
-                            </tbody>
-                        </table>
+                                                <form id="delete-form-{{ $shopsign->id }}" action="{{ route('admin.shopsigns.destroy', $shopsign->id) }}" method="POST" style="display: none;">
+                                                    @method('DELETE')
+                                                    @csrf
+                                                </form>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+
                 </div>
             </div>
         </div>

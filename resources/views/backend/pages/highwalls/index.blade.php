@@ -53,10 +53,11 @@
                             @endif
                     </p>
                     <div class="clearfix"></div>
-                    <div class="data-tables">
-                        @include('backend.layouts.partials.messages')
-                        <table id="dataTable" class="text-center">
-                            <thead class="bg-light text-capitalize">
+                    <div class="table-responsive">
+                        <div class="data-tables">
+                            @include('backend.layouts.partials.messages')
+                            <table id="dataTable" class="text-center">
+                                <thead class="bg-light text-capitalize">
                                 <tr>
                                     <th>{{ __('Sl') }}</th>
                                     <th>{{ __('Image') }}</th>
@@ -68,61 +69,63 @@
                                     <th> {{ __('End Date') }}</th>
                                     <th>{{ __('Action') }}</th>
                                 </tr>
-                            </thead>
-                            <tbody>
-                               @foreach ($highwalls as $highwall)
-                               <tr>
-                                    <td>{{ $loop->index+1 }}</td>
-                                   <td>
-                                       @if($highwall == null || empty($highwall->image))
-                                           <img id="image-preview" src="{{ asset('storage/blank.jpg') }}" alt="Highwall Image" style="width: 100%; max-height: 200px; object-fit: cover; display: block;">
-                                       @else
-                                           <img id="image-preview" src="{{ asset('storage/' . $highwall->image) }}" alt="Highwall Image" style="width: 100%; max-height: 200px; object-fit: cover; display: block;">
-                                       @endif
+                                </thead>
+                                <tbody>
+                                @foreach ($highwalls as $highwall)
+                                    <tr>
+                                        <td>{{ $loop->index+1 }}</td>
+                                        <td>
+                                            @if($highwall == null || empty($highwall->image))
+                                                <img id="image-preview" src="{{ asset('storage/blank.jpg') }}" alt="Highwall Image" style="width: 100%; max-height: 200px; object-fit: cover; display: block;">
+                                            @else
+                                                <img id="image-preview" src="{{ asset('storage/' . $highwall->image) }}" alt="Highwall Image" style="width: 100%; max-height: 200px; object-fit: cover; display: block;">
+                                            @endif
 
-                                   </td>
-                                    <td>{{ $highwall->name }}</td>
-                                    <td>
-                                        @if($highwall->type === 'cold_store')
-                                            {{ __('Cold Store') }}
-                                        @elseif($highwall->type === 'high_raise')
-                                            {{ __('High Raise') }}
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if($highwall->brand === 'fresh_super_cement')
-                                            {{ __('Fresh Super Cement') }}
-                                        @elseif($highwall->brand === 'dhalai_special_cement')
-                                            {{ __('Dhalai Special Cement') }}
-                                        @elseif($highwall->brand === 'meghnacem_delux_cement')
-                                            {{__('Meghnacem Deluxe Cement')}}
-                                        @endif
-                                    </td>
-                                    <td>{{ $highwall->location }}</td>
-                                    <td>{{ $highwall->start_date }}</td>
-                                    <td>{{ $highwall->end_date }}</td>
-                                    <td>
-                                        @if (auth()->user()->can('highwall.edit'))
-                                            <a class="btn btn-success text-white" href="{{ route('admin.highwalls.edit', $highwall->id) }}">Edit</a>
-                                        @endif
+                                        </td>
+                                        <td>{{ $highwall->name }}</td>
+                                        <td>
+                                            @if($highwall->type === 'cold_store')
+                                                {{ __('Cold Store') }}
+                                            @elseif($highwall->type === 'high_raise')
+                                                {{ __('High Raise') }}
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($highwall->brand === 'fresh_super_cement')
+                                                {{ __('Fresh Super Cement') }}
+                                            @elseif($highwall->brand === 'dhalai_special_cement')
+                                                {{ __('Dhalai Special Cement') }}
+                                            @elseif($highwall->brand === 'meghnacem_delux_cement')
+                                                {{__('Meghnacem Deluxe Cement')}}
+                                            @endif
+                                        </td>
+                                        <td>{{ $highwall->location }}</td>
+                                        <td>{{ $highwall->start_date }}</td>
+                                        <td>{{ $highwall->end_date }}</td>
+                                        <td>
+                                            @if (auth()->user()->can('highwall.edit'))
+                                                <a class="btn btn-success text-white" href="{{ route('admin.highwalls.edit', $highwall->id) }}">Edit</a>
+                                            @endif
 
-                                        @if (auth()->user()->can('highwall.delete'))
-                                        <a class="btn btn-danger text-white" href="javascript:void(0);"
-                                        onclick="event.preventDefault(); if(confirm('Are you sure you want to delete?')) { document.getElementById('delete-form-{{ $highwall->id }}').submit(); }">
-                                            {{ __('Delete') }}
-                                        </a>
+                                            @if (auth()->user()->can('highwall.delete'))
+                                                <a class="btn btn-danger text-white" href="javascript:void(0);"
+                                                   onclick="event.preventDefault(); if(confirm('Are you sure you want to delete?')) { document.getElementById('delete-form-{{ $highwall->id }}').submit(); }">
+                                                    {{ __('Delete') }}
+                                                </a>
 
-                                        <form id="delete-form-{{ $highwall->id }}" action="{{ route('admin.highwalls.destroy', $highwall->id) }}" method="POST" style="display: none;">
-                                            @method('DELETE')
-                                            @csrf
-                                        </form>
-                                        @endif
-                                    </td>
-                                </tr>
-                               @endforeach
-                            </tbody>
-                        </table>
+                                                <form id="delete-form-{{ $highwall->id }}" action="{{ route('admin.highwalls.destroy', $highwall->id) }}" method="POST" style="display: none;">
+                                                    @method('DELETE')
+                                                    @csrf
+                                                </form>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+
                 </div>
             </div>
         </div>

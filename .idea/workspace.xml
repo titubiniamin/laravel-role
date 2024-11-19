@@ -5,11 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bcfb50fb-0433-4508-9edf-567089383540" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/backend/assets/css/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/backend/assets/css/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/backend/layouts/partials/header.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/backend/layouts/partials/header.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/backend/layouts/partials/sidebar.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/backend/layouts/partials/sidebar.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/backend/pages/billboards/create.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/backend/pages/billboards/create.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/backend/pages/billboards/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/backend/pages/billboards/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/backend/pages/central-point/create.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/backend/pages/central-point/create.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/backend/pages/central-point/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/backend/pages/central-point/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/backend/pages/dealers/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/backend/pages/dealers/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/backend/pages/highwalls/create.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/backend/pages/highwalls/create.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/backend/pages/highwalls/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/backend/pages/highwalls/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/backend/pages/retailers/create.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/backend/pages/retailers/create.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/backend/pages/retailers/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/backend/pages/retailers/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/backend/pages/shopsigns/create.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/backend/pages/shopsigns/create.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/backend/pages/shopsigns/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/backend/pages/shopsigns/index.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
