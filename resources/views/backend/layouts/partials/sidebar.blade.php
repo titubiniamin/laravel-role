@@ -2,7 +2,9 @@
 @php
     use Illuminate\Support\Facades\Auth;$usr = Auth::guard('admin')->user();
 @endphp
-<div class="sidebar-menu">
+    <!-- Main Content -->
+
+<div class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <div class="logo">
             <a href="{{ route('admin.dashboard') }}">
@@ -221,5 +223,108 @@
         </div>
     </div>
 </div>
+<style>
+    body {
+        display: flex;
+        overflow-x: hidden; /* Prevent horizontal scroll */
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+        width: 280px;
+        height: 100vh;
+        background-color: black;
+        position: fixed;
+        left: 0;
+        top: 0;
+        padding-top: 20px;
+        transition: transform 0.3s ease;
+        z-index: 1000;
+    }
+
+    .sidebar a {
+        padding: 10px 15px;
+        display: block;
+        color: #ddd;
+        text-decoration: none;
+    }
+
+    .sidebar a:hover {
+        background-color: #4c4c4c;
+    }
+
+    .content {
+        margin-left: 250px; /* Space for sidebar */
+        padding: 20px;
+        transition: margin-left 0.3s ease;
+    }
+
+    .navbar-toggler {
+        margin-left: 0px;
+        margin-top: 0px;
+        float: left;
+        margin-bottom: 15px;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 756px) {
+        .sidebar {
+            transform: translateX(-100%); /* Hide the sidebar by default */
+        }
+
+        .sidebar.open {
+            transform: translateX(0); /* Show the sidebar */
+        }
+
+        .content {
+            margin-left: 0; /* No margin for content when sidebar is hidden */
+        }
+    }
+    .header-area {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding:0px;
+    }
+
+    .notification-area {
+        display: flex;
+        align-items: center;
+    }
+
+    .notification-area li {
+        margin-left: 15px; /* Adjust spacing between icons */
+    }
+
+    .navbar-toggler {
+        margin-right: auto; /* Moves the button to the left */
+    }
+
+    /* Ensuring the notification box aligns correctly */
+    .bell-notify-box {
+        position: absolute;
+        right: 0;
+        top: 40px; /* Adjust based on your design */
+        width: 250px; /* Adjust the width */
+    }
+
+</style>
+<script>
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('open');
+    }
+
+    // Optional: Close the sidebar when clicking outside
+    document.addEventListener('click', function(event) {
+        const sidebar = document.getElementById('sidebar');
+        const toggleButton = document.querySelector('.navbar-toggler');
+
+        if (!sidebar.contains(event.target) && !toggleButton.contains(event.target)) {
+            sidebar.classList.remove('open');
+        }
+    });
+</script>
+
 
 <!-- sidebar menu area end -->
