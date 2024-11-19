@@ -148,7 +148,7 @@
                         @if ($usr->can('highwall.create') || $usr->can('highwall.view') || $usr->can('highwall.edit') || $usr->can('highwall.delete'))
                             <li>
                                 <a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-align-justify"></i><span>Highwall</span></a>
-                                <ul class="collapse {{ Route::is('admin.ighwalls.create') || Route::is('admin.highwalls.index') || Route::is('admin.highwalls.edit') || Route::is('admin.highwalls.show') ? 'in' : '' }}">
+                                <ul class="collapse {{ Route::is('admin.highwalls.create') || Route::is('admin.highwalls.index') || Route::is('admin.highwalls.edit') || Route::is('admin.highwalls.show') ? 'in' : '' }}">
                                     @if ($usr->can('highwall.view'))
                                         <li class="{{ Route::is('admin.highwalls.index') || Route::is('admin.highwalls.edit') ? 'active' : '' }}">
                                             <a href="{{ route('admin.highwalls.index') }}">All Highwalls</a>
@@ -221,4 +221,5 @@
         </div>
     </div>
 </div>
+
 <!-- sidebar menu area end -->

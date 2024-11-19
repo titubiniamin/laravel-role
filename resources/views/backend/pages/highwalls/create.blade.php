@@ -1,7 +1,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-    Highwalls Page - Highwall
+    Highwall Page - Shop Sign
 @endsection
 
 @section('admin-content')
@@ -11,10 +11,10 @@
         <div class="row align-items-center">
             <div class="col-sm-6">
                 <div class="breadcrumbs-area clearfix">
-                    <h4 class="page-title pull-left">Highwalls</h4>
+                    <h4 class="page-title pull-left">Highwall</h4>
                     <ul class="breadcrumbs pull-left">
                         <li><a href="{{ route('admin.dashboard') }}">Home</a></li>
-                        <li><span>Highwalls</span></li>
+                        <li><span>Highwall</span></li>
                     </ul>
                 </div>
             </div>
@@ -60,7 +60,6 @@
                             </div>
 
 
-
                             <div class="form-group">
                                 <label for="brand">Brand</label>
                                 <select id="brand" name="brand" class="form-control">
@@ -85,7 +84,7 @@
                                 <div class="col-md-6">
                                     <label for="start_date">Start Date</label>
                                     <input type="date" class="form-control" name="start_date" id="start_date" value="{{ old('start_date') }}" >
-
+                                </div>
                                 <div class="col-md-6">
                                     <label for="end_date">End Date</label>
                                     <input type="date" class="form-control" name="end_date" id="end_date" value="{{ old('end_date') }}" >
@@ -138,22 +137,22 @@
 
     <script>
 
-            function previewImage(event) {
+        function previewImage(event) {
             const imagePreview = document.getElementById('imagePreview');
             const file = event.target.files[0];
 
             if (file) {
-            const reader = new FileReader();
-            reader.onload = function() {
-            imagePreview.src = reader.result;
-            imagePreview.style.display = 'block';
-        }
-            reader.readAsDataURL(file);
-        }
+                const reader = new FileReader();
+                reader.onload = function() {
+                    imagePreview.src = reader.result;
+                    imagePreview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
         }
 
 
-    bkoigl.accessToken = "{{ env('BARIKOI_API_KEY') }}";
+        bkoigl.accessToken = "{{ env('BARIKOI_API_KEY') }}";
 
         let map, marker;
 
@@ -254,32 +253,32 @@
                 loadingIndicator.style.display = "none";
             }
         });
-            document.addEventListener('DOMContentLoaded', function () {
-                const startDateInput = document.getElementById('start_date');
-                const endDateInput = document.getElementById('end_date');
+        document.addEventListener('DOMContentLoaded', function () {
+            const startDateInput = document.getElementById('start_date');
+            const endDateInput = document.getElementById('end_date');
 
-                // Function to update the end date min value based on start date
-                function updateEndDateMin() {
-                    const startDate = startDateInput.value;
-                    if (startDate) {
-                        // Set end date min to be the next day of the selected start date
-                        const startDateObj = new Date(startDate);
-                        startDateObj.setDate(startDateObj.getDate() + 1); // Set to the next day
+            // Function to update the end date min value based on start date
+            function updateEndDateMin() {
+                const startDate = startDateInput.value;
+                if (startDate) {
+                    // Set end date min to be the next day of the selected start date
+                    const startDateObj = new Date(startDate);
+                    startDateObj.setDate(startDateObj.getDate() + 1); // Set to the next day
 
-                        // Format the date to yyyy-mm-dd
-                        const minEndDate = startDateObj.toISOString().split('T')[0];
-                        endDateInput.setAttribute('min', minEndDate);
-                    }
+                    // Format the date to yyyy-mm-dd
+                    const minEndDate = startDateObj.toISOString().split('T')[0];
+                    endDateInput.setAttribute('min', minEndDate);
                 }
+            }
 
-                // Listen for changes on the start date input
-                startDateInput.addEventListener('change', updateEndDateMin);
+            // Listen for changes on the start date input
+            startDateInput.addEventListener('change', updateEndDateMin);
 
-                // Initialize on page load if there's an existing start date
-                if (startDateInput.value) {
-                    updateEndDateMin();
-                }
-            });
+            // Initialize on page load if there's an existing start date
+            if (startDateInput.value) {
+                updateEndDateMin();
+            }
+        });
 
     </script>
 
