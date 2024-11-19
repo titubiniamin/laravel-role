@@ -208,7 +208,7 @@
 
                         const popupContent = `
                     <div style="background-color: lightblue; padding: 10px;">
-                        <div><strong>${point.name}</strong></div>
+                        <div><strong>Name: </strong>${point.name}</div>
                         <div><strong>Location:</strong> ${point.location || 'N/A'}</div>
                         <div><strong>Distance from ${selectedCentralPoint.name}:</strong> ${distance.toFixed(2)} km</div>
                         ${point.average_sales ? `<div><strong>Average Sales:</strong> ${point.average_sales}</div>` : ''}
