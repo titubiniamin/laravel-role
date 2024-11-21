@@ -40,20 +40,29 @@
                 <div class="card mt-5 mb-3" style="background-color: white;">
                     <div class="p-4">
                         <div class="form-group mb-4">
-                            <label for="select-central-point" class="form-label" style="font-weight: 500; font-size: 14px; color: #464A4D;">Select Central Point</label>
-                            <select id="select-central-point" class="form-control" style="height: 40px; font-size: 14px; color: #464A4D; border: 1px solid #dcdcdc; border-radius: 4px; background-color: #fff;">
-                                <option value="" disabled selected>Select</option> <!-- Added this line for "All Central Points" option -->
-                                <option value="all">All Central Points</option> <!-- Added this line for "All Central Points" option -->
+                            <label for="select-central-point" class="form-label"
+                                   style="font-weight: 500; font-size: 14px; color: #464A4D;">Select Central
+                                Point</label>
+                            <select id="select-central-point" class="form-control"
+                                    style="height: 40px; font-size: 14px; color: #464A4D; border: 1px solid #dcdcdc; border-radius: 4px; background-color: #fff;">
+                                <option value="" disabled selected>Select</option>
+                                <!-- Added this line for "All Central Points" option -->
+                                <option value="all">All Central Points</option>
+                                <!-- Added this line for "All Central Points" option -->
                                 @foreach ($centralPoints as $centralPoint)
-                                    <option value="{{ $centralPoint['id'] }}" data-lat="{{ $centralPoint['latitude'] }}" data-lng="{{ $centralPoint['longitude'] }}" data-district="{{ $centralPoint['district'] }}">
+                                    <option value="{{ $centralPoint['id'] }}" data-lat="{{ $centralPoint['latitude'] }}"
+                                            data-lng="{{ $centralPoint['longitude'] }}"
+                                            data-district="{{ $centralPoint['district'] }}">
                                         {{ $centralPoint['name'] }}
                                     </option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="form-group mb-4">
-                            <label for="select-data-type" class="form-label" style="font-weight: 500; font-size: 14px; color: #464A4D;">Select Data Type</label>
-                            <select id="select-data-type" class="form-control" style="height: 40px; font-size: 14px; color: #464A4D; border: 1px solid #dcdcdc; border-radius: 4px; background-color: #fff;">
+                            <label for="select-data-type" class="form-label"
+                                   style="font-weight: 500; font-size: 14px; color: #464A4D;">Select Data Type</label>
+                            <select id="select-data-type" class="form-control"
+                                    style="height: 40px; font-size: 14px; color: #464A4D; border: 1px solid #dcdcdc; border-radius: 4px; background-color: #fff;">
                                 <option value="" disabled selected>Select Data Type</option>
                             </select>
                         </div>
@@ -79,30 +88,30 @@
         const dealers = @json($dealers);
         const retailers = @json($retailers);
         const billboards = @json($billboards);
-        const shopsigns=@json($shopsigns);
-        const highwalls=@json($highwalls);
+        const shopsigns =@json($shopsigns);
+        const highwalls =@json($highwalls);
         const dealersByDistrict = @json($dealersByDistrict);
         const retailersByDistrict = @json($retailersByDistrict);
         const billboardsByDistrict = @json($billboardsByDistrict);
-        const shopsignsByDistrict=@json($shopsignsByDistrict);
-        const highwallsByDistrict=@json($highwallsByDistrict);
+        const shopsignsByDistrict =@json($shopsignsByDistrict);
+        const highwallsByDistrict =@json($highwallsByDistrict);
 
-        console.log('dhaka'+shopsignsByDistrict['Dhaka']);
+        console.log('dhaka' + shopsignsByDistrict['Dhaka']);
         const centralIconUrl = '{{ asset('images/pharmacy.png') }}'; // Branch icon for central points
         const dealerIconUrl = '{{ asset('images/red.png') }}'; // Red icon for dealers
         const retailerIconUrl = '{{ asset('images/blue.png') }}'; // Blue icon for retailers
         const billboardIconUrl = '{{ asset('images/billboard.png') }}'; // Blue icon for retailers
         const shopsignIconUrl = '{{ asset('images/billboard.png') }}'; // Blue icon for retailers
         const highwallIconUrl = '{{ asset('images/3415475.png') }}'; // Blue icon for retailers
-        console.log('this is shopu'+shopsignsByDistrict)
-        console.log('this is high'+billboardsByDistrict)
+        console.log('this is shopu' + shopsignsByDistrict)
+        console.log('this is high' + billboardsByDistrict)
 
         let centralPointsLayer = []; // Layer for central points
         let dealerMarkersLayer = []; // Layer for dealer markers
         let retailerMarkersLayer = []; // Layer for retailer markers
         let billboardMarkersLayer = []; // Layer for billboard markers
-        let shopsignMarkerLayer=[];
-        let highwallMarkerLayer=[];
+        let shopsignMarkerLayer = [];
+        let highwallMarkerLayer = [];
 
         // Function to create a custom marker element
         function createCustomMarkerElement(iconUrl) {
@@ -119,11 +128,13 @@
         // Function to add central points to the map (Always visible)
         function addCentralPoints() {
             centralPoints.forEach(point => {
-                const marker = new bkoigl.Marker({ element: createCustomMarkerElement(centralIconUrl) })
+                const marker = new bkoigl.Marker({element: createCustomMarkerElement(centralIconUrl)})
                     .setLngLat([point.longitude, point.latitude])
                     .setPopup(new bkoigl.Popup().setHTML(`
-                    <div><strong>${point.name}</strong></div>
-                    <div>Location: ${point.location || 'N/A'}</div>
+<div style="background-color: lightblue; padding: 10px;">
+                    <div><strong>Name: </strong>${point.name}</div>
+                    <div><strong>Location: </strong>${point.location || 'N/A'}</div>
+</div>
                 `))
                     .addTo(map);
                 centralPointsLayer.push(marker); // Store central points markers to a separate layer
@@ -149,18 +160,18 @@
 
         // Add icon URLs for different billboard brandshttp://127.0.0.1:8000/images/pharmacy.png
         const billboardIcons = {
-            'fresh_super_cement': '{{ asset('images/billboard-blue-1.png') }}',
-            'dhalai_special_cement': '{{ asset('images/billboard-purple-1.png') }}',
+            'fresh_super_cement': '{{ asset('images/billboard-red-1.png') }}',
+            'dhalai_special_cement': '{{ asset('images/billboard-blue-1.png') }}',
             'meghnacem_delux_cement': '{{ asset('images/billboard-green-1.png') }}'
         };
-        const shopsignIcons={
-            'fresh_super_cement':'{{asset('images/shop-blue.png')}}',
-            'dhalai_special_cement':'{{asset('images/shop-purple.png')}}',
+        const shopsignIcons = {
+            'fresh_super_cement': '{{asset('images/shop-red.png')}}',
+            'dhalai_special_cement': '{{asset('images/shop-blue.png')}}',
             'meghnacem_delux_cement': '{{ asset('images/shop-green.png') }}'
         }
-        const highwallIcons={
-            'fresh_super_cement':'{{asset('images/highwall-blue.png')}}',
-            'dhalai_special_cement':'{{asset('images/highwall-purple.png')}}',
+        const highwallIcons = {
+            'fresh_super_cement': '{{asset('images/highwall-red.png')}}',
+            'dhalai_special_cement': '{{asset('images/highwall-blue.png')}}',
             'meghnacem_delux_cement': '{{ asset('images/highwall-green.png') }}'
         }
 
@@ -173,9 +184,9 @@
                 filteredData = district ? retailers.filter(retailer => retailer.district === district) : retailers;
             } else if (dataType === 'billboards') {
                 filteredData = district ? billboards.filter(billboard => billboard.district === district) : billboards;
-            }else if(dataType === 'shopsigns'){
+            } else if (dataType === 'shopsigns') {
                 filteredData = district ? shopsigns.filter(shopsign => shopsign.district === district) : shopsigns;
-            }else if(dataType === 'highwalls'){
+            } else if (dataType === 'highwalls') {
                 filteredData = district ? highwalls.filter(highwall => highwall.district === district) : highwalls;
             }
             // Add filtered markers to the map
@@ -184,20 +195,19 @@
                 if (dataType === 'billboards') {
                     // Choose the icon based on the brand
                     iconUrl = billboardIcons[point.brand] || billboardIconUrl; // Default to general icon if brand not matched
-                } else if(dataType === 'shopsigns'){
+                } else if (dataType === 'shopsigns') {
                     iconUrl = shopsignIcons[point.brand] || shopsignIconUrl;
-                } else if(dataType === 'highwalls'){
+                } else if (dataType === 'highwalls') {
                     iconUrl = highwallIcons[point.brand] || highwallIconurl
-                }
-                else {
+                } else {
                     iconUrl = dataType === 'dealers' ? dealerIconUrl : retailerIconUrl;
                 }
 
-                const marker = new bkoigl.Marker({ element: createCustomMarkerElement(iconUrl) })
+                const marker = new bkoigl.Marker({element: createCustomMarkerElement(iconUrl)})
                     .setLngLat([point.longitude, point.latitude]);
 
                 // Add popup and click event logic as before
-                marker.getElement().addEventListener('click', function() {
+                marker.getElement().addEventListener('click', function () {
                     const selectedCentralPointId = document.getElementById('select-central-point').value;
                     if (selectedCentralPointId && selectedCentralPointId !== 'all') {
                         const selectedCentralPoint = centralPoints.find(point => point.id == selectedCentralPointId);
@@ -224,8 +234,12 @@
 
                 marker.setPopup(new bkoigl.Popup().setHTML(`
             <div style="background-color: lightblue; padding: 10px;">
-                <div><strong>${point.name}</strong></div>
+                <div><strong>Name: </strong>${point.name}</div>
                 <div><strong>Location:</strong> ${point.location || 'N/A'}</div>
+                        ${point.average_sales ? `<div><strong>Average Sales:</strong> ${point.average_sales}</div>` : ''}
+                        ${point.market_size ? `<div><strong>Market Size:</strong> ${point.market_size}</div>` : ''}
+                        ${point.market_share ? `<div><strong>Market Share:</strong> ${point.market_share}</div>` : ''}
+                        ${point.competition_brand ? `<div><strong>Competition Brand:</strong> ${point.competition_brand}</div>` : ''}
             </div>
         `)).addTo(map);
 
@@ -256,7 +270,7 @@
             defaultOption.selected = true;
             dataTypeSelect.appendChild(defaultOption);
 
-            let dealersCount, retailersCount, billboardsCount,shopsignsCount, highwallsCount;
+            let dealersCount, retailersCount, billboardsCount, shopsignsCount, highwallsCount;
 
             if (district === 'all' || district === '') {
                 // Calculate counts for all data types across all districts
@@ -272,7 +286,7 @@
                 billboardsCount = billboardsByDistrict[district] || 0;
                 shopsignsCount = shopsignsByDistrict[district] || 0;
                 highwallsCount = highwallsByDistrict[district] || 0;
-                console.log('this is calculated '+shopsignsCount)
+                console.log('this is calculated ' + shopsignsCount)
             }
 
             // Ensure all counts are valid numbers (prevent NaN)
@@ -294,11 +308,11 @@
 
             // Add individual options for dealers, retailers, and billboards
             const options = [
-                { type: 'dealers', label: 'Dealers', count: dealersCount },
-                { type: 'retailers', label: 'Retailers', count: retailersCount },
-                { type: 'billboards', label: 'Billboards', count: billboardsCount },
-                { type: 'shopsigns', label: 'Shop Signs', count: shopsignsCount },
-                { type: 'highwalls', label: 'Highwalls', count: highwallsCount }
+                {type: 'dealers', label: 'Dealers', count: dealersCount},
+                {type: 'retailers', label: 'Retailers', count: retailersCount},
+                {type: 'billboards', label: 'Billboards', count: billboardsCount},
+                {type: 'shopsigns', label: 'Shop Signs', count: shopsignsCount},
+                {type: 'highwalls', label: 'Highwalls', count: highwallsCount}
             ];
 
             options.forEach(option => {
@@ -310,12 +324,8 @@
         }
 
 
-
-
-
-
         // Event listener for central point selection
-        document.getElementById('select-central-point').addEventListener('change', function() {
+        document.getElementById('select-central-point').addEventListener('change', function () {
             const selectedCentralPoint = this.value;
 
             // If "All" is selected in the central point dropdown
@@ -360,7 +370,7 @@
         });
 
         // Event listener for data type selection
-        document.getElementById('select-data-type').addEventListener('change', function() {
+        document.getElementById('select-data-type').addEventListener('change', function () {
             const selectedDataType = this.value;
             const selectedCentralPoint = document.getElementById('select-central-point').value;
 
@@ -391,8 +401,8 @@
             dealerMarkersLayer = [];
             retailerMarkersLayer = [];
             billboardMarkersLayer = [];
-            shopsignMarkersLayer=[];
-            highwalldMarkersLayer=[];
+            shopsignMarkersLayer = [];
+            highwalldMarkersLayer = [];
         }
 
         // Initialize the map with central points

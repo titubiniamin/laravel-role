@@ -2,6 +2,7 @@
 namespace App\Exports;
 
 use App\Models\Shopsign;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -15,7 +16,22 @@ class ShopsignsExport implements FromCollection, WithHeadings, WithMapping
      */
     public function collection()
     {
-        return Shopsign::all(); // Get all billboards
+//        return Shopsign::all(); // Get all billboards
+        return DB::table('shopsigns')
+            ->selectRaw('
+            shopsigns.*,
+            central_points.latitude as central_lat,
+            central_points.longitude as central_lng,
+            (
+            6371 * ACOS(
+                        COS(RADIANS(central_points.latitude)) * COS(RADIANS(shopsigns.latitude)) *
+                        COS(RADIANS(shopsigns.longitude) - RADIANS(central_points.longitude)) +
+                        SIN(RADIANS(central_points.latitude)) * SIN(RADIANS(shopsigns.latitude))
+                    )
+            ) as distance
+            ')
+            ->join('central_points', 'central_points.district','=','shopsigns.district')
+            ->get();
     }
 
     /**
@@ -32,9 +48,11 @@ class ShopsignsExport implements FromCollection, WithHeadings, WithMapping
             'Type',
             'Brand',
             'Location',
+            'District',
             'Start Date',
             'End Date',
             'Image URL',
+            'Distance from Central Point(km)'
         ];
     }
 
@@ -69,9 +87,11 @@ class ShopsignsExport implements FromCollection, WithHeadings, WithMapping
             $typeLabel, // Mapped type value
             $brandLabel,
             $highwall->location,
+            $highwall->district,
             $highwall->start_date,
             $highwall->end_date,
             asset('storage/' . $highwall->image),  // Image URL
+            round($highwall->distance,2),
         ];
     }
 }

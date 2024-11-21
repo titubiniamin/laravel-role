@@ -185,7 +185,8 @@
                 console.error("Error fetching location:", error);
                 // Handle the error and provide fallback coordinates or message
                 if (error.code === error.PERMISSION_DENIED) {
-                    alert("Location access denied. Please enable location services.");
+                    alert(error)
+                    // alert("Location access denied. Please enable location services.");
                 } else if (error.code === error.POSITION_UNAVAILABLE) {
                     alert("Position unavailable. Try again later.");
                 } else if (error.code === error.TIMEOUT) {
