@@ -105,7 +105,7 @@ class DealerController extends Controller
             'owner_name' => 'required|string|max:255',
             'zone' => 'nullable|string|max:255',
             'dealer_code' => 'nullable|string|max:255',
-            'email' => 'required|email|unique:dealers,email,' . $dealer->id,//email
+            'email' => 'nullable|email|unique:dealers,email,' . $dealer->id,//email
             'website' => 'nullable|url|max:255',
             'mobile' => 'nullable|string|max:15', // Adjust max length as needed
             'address' => 'nullable|string|max:255',

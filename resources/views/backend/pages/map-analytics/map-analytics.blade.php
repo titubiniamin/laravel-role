@@ -217,16 +217,42 @@
                         );
 
                         const popupContent = `
-                    <div style="background-color: lightblue; padding: 10px;">
-                        <div><strong>Name: </strong>${point.name}</div>
-                        <div><strong>Location:</strong> ${point.location || 'N/A'}</div>
-                        <div><strong>Distance from ${selectedCentralPoint.name}:</strong> ${distance.toFixed(2)} km</div>
-                        ${point.average_sales ? `<div><strong>Average Sales:</strong> ${point.average_sales}</div>` : ''}
-                        ${point.market_size ? `<div><strong>Market Size:</strong> ${point.market_size}</div>` : ''}
-                        ${point.market_share ? `<div><strong>Market Share:</strong> ${point.market_share}</div>` : ''}
-                        ${point.competition_brand ? `<div><strong>Competition Brand:</strong> ${point.competition_brand}</div>` : ''}
-                    </div>
-                `;
+    <div style="background-color: lightblue; padding: 10px;">
+        <div><strong>Name: </strong>${point.name}</div>
+        <div><strong>Location:</strong> ${point.location || 'N/A'}</div>
+        <div><strong>Distance from ${selectedCentralPoint.name}:</strong> ${distance.toFixed(2)} km</div>
+        ${point.size ? `<div><strong>Size:</strong> ${point.size}</div>` : ''}
+        ${point.type ? `
+            <div><strong>Type:</strong>
+                ${
+                                point.type === 'single_side' ? 'Single Side' :
+                                    point.type === 'unipool' ? 'Unipool' :
+                                        point.type === 'neon' ? 'Neon' :
+                                            point.type === 'non_lit' ? 'Non Lit' :
+                                                point.type === 'lightbox' ? 'Light Box' :
+                                                    point.type === 'cold_store' ? 'Cold Store' :
+                                                        point.type === 'high_raise' ? 'High Raise' :
+                                                            point.type
+                            }
+            </div>`
+                            : ''}
+        ${point.brand ? `
+            <div><strong>Brand:</strong>
+                ${
+                                point.brand === 'fresh_super_cement' ? 'Fresh Super Cement' :
+                                    point.brand === 'dhalai_special_cement' ? 'Dhalai Special Cement' :
+                                        point.brand === 'meghnacem_delux_cement' ? 'Meghnacem Delux Cement' :
+                                            point.brand
+                            }
+            </div>`
+                            : ''}
+        ${point.average_sales ? `<div><strong>Average Sales:</strong> ${point.average_sales}</div>` : ''}
+        ${point.market_size ? `<div><strong>Market Size:</strong> ${point.market_size}</div>` : ''}
+        ${point.market_share ? `<div><strong>Market Share:</strong> ${point.market_share}</div>` : ''}
+        ${point.competition_brand ? `<div><strong>Competition Brand:</strong> ${point.competition_brand}</div>` : ''}
+    </div>
+`;
+
 
                         marker.setPopup(new bkoigl.Popup().setHTML(popupContent)).addTo(map);
                     }
@@ -236,6 +262,32 @@
             <div style="background-color: lightblue; padding: 10px;">
                 <div><strong>Name: </strong>${point.name}</div>
                 <div><strong>Location:</strong> ${point.location || 'N/A'}</div>
+                        ${point.size ? `<div><strong>Size:</strong> ${point.size}</div>` : ''}
+                        ${point.type ? `
+            <div><strong>Type:</strong>
+                ${
+                        point.type === 'single_side' ? 'Single Side' :
+                            point.type === 'unipool' ? 'Unipool' :
+                                point.type === 'neon' ? 'Neon' :
+                                    point.type === 'non_lit' ? 'Non Lit' :
+                                        point.type === 'lightbox' ? 'Light Box' :
+                                            point.type === 'lightbox' ? 'Light Box' :
+                                                point.type === 'cold_store' ? 'Cold Store' :
+                                                    point.type === 'high_raise' ? 'High Raise' :
+                                                        point.type
+                    }
+            </div>`
+                    : ''}
+                        ${point.brand ? `
+            <div><strong>Brand:</strong>
+                ${
+                        point.brand === 'fresh_super_cement' ? 'Fresh Super Cement' :
+                            point.brand === 'dhalai_special_cement' ? 'Dhalai Special Cement' :
+                                point.brand === 'meghnacem_delux_cement' ? 'Meghnacem Delux Cement' :
+                                    point.brand
+                    }
+            </div>`
+                    : ''}
                         ${point.average_sales ? `<div><strong>Average Sales:</strong> ${point.average_sales}</div>` : ''}
                         ${point.market_size ? `<div><strong>Market Size:</strong> ${point.market_size}</div>` : ''}
                         ${point.market_share ? `<div><strong>Market Share:</strong> ${point.market_share}</div>` : ''}
