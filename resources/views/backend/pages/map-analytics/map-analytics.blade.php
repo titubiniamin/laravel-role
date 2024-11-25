@@ -39,16 +39,14 @@
             <div class="col-lg-3" style="height: 70vh;">
                 <div class="card mt-5 mb-3" style="background-color: white;">
                     <div class="p-4">
+                        <!-- Central Point Select -->
                         <div class="form-group mb-4">
                             <label for="select-central-point" class="form-label"
-                                   style="font-weight: 500; font-size: 14px; color: #464A4D;">Select Central
-                                Point</label>
+                                   style="font-weight: 500; font-size: 14px; color: #464A4D;">Select Central Point</label>
                             <select id="select-central-point" class="form-control"
                                     style="height: 40px; font-size: 14px; color: #464A4D; border: 1px solid #dcdcdc; border-radius: 4px; background-color: #fff;">
                                 <option value="" disabled selected>Select</option>
-                                <!-- Added this line for "All Central Points" option -->
                                 <option value="all">All Central Points</option>
-                                <!-- Added this line for "All Central Points" option -->
                                 @foreach ($centralPoints as $centralPoint)
                                     <option value="{{ $centralPoint['id'] }}" data-lat="{{ $centralPoint['latitude'] }}"
                                             data-lng="{{ $centralPoint['longitude'] }}"
@@ -58,6 +56,8 @@
                                 @endforeach
                             </select>
                         </div>
+
+                        <!-- Data Type Select -->
                         <div class="form-group mb-4">
                             <label for="select-data-type" class="form-label"
                                    style="font-weight: 500; font-size: 14px; color: #464A4D;">Select Data Type</label>
@@ -66,9 +66,53 @@
                                 <option value="" disabled selected>Select Data Type</option>
                             </select>
                         </div>
+
+                        <!-- Legend -->
+                        <div class="map-legend" style="position: relative; bottom: 0; padding: 5px; background-color: white; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); font-size: 10px; width: 100%; overflow-y: auto;">
+                            <div class="legend-header" style="font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 5px;">Legend</div>
+
+                            <!-- Legend items -->
+                            <div class="legend-item" style="display: flex; align-items: center; margin-bottom: 4px;">
+                                <div class="legend-icon" style="background-image: url('{{ asset('images/pharmacy.png') }}'); width: 20px; height: 20px; background-size: contain; margin-right: 5px;"></div>
+                                <span class="legend-label">Central Point</span>
+                            </div>
+                            <div class="legend-item" style="display: flex; align-items: center; margin-bottom: 4px;">
+                                <div class="legend-icon" style="background-image: url('{{asset('images/dealer-2.png')}}'); width: 20px; height: 20px; background-size: contain; margin-right: 5px;"></div>
+                                <span class="legend-label">Dealer</span>
+                            </div>
+                            <div class="legend-item" style="display: flex; align-items: center; margin-bottom: 4px;">
+                                <div class="legend-icon" style="background-image: url('{{asset('images/retailer.png')}}'); width: 20px; height: 20px; background-size: contain; margin-right: 5px;"></div>
+                                <span class="legend-label">Retailer</span>
+                            </div>
+                            <div class="legend-item" style="display: flex; align-items: center; margin-bottom: 4px;">
+                                <div class="legend-icon" style="background-image: url('{{asset('images/billboard-black-1.png')}}'); width: 20px; height: 20px; background-size: contain; margin-right: 5px;"></div>
+                                <span class="legend-label">Billboard</span>
+                            </div>
+                            <div class="legend-item" style="display: flex; align-items: center; margin-bottom: 4px;">
+                                <div class="legend-icon" style="background-image: url('{{ asset('images/shop-black.png') }}'); width: 18px; height: 18px; background-size: contain; margin-right: 5px;background-repeat: no-repeat;"></div>
+                                <span class="legend-label">Shop Sign</span>
+                            </div>
+                            <div class="legend-item" style="display: flex; align-items: center; margin-bottom: 4px;">
+                                <div class="legend-icon" style="background-image: url('{{asset('images/highwall-black.png')}}'); width: 20px; height: 20px; background-size: contain; margin-right: 5px;"></div>
+                                <span class="legend-label">Highwalls</span>
+                            </div>
+                            <div class="legend-item" style="display: flex; align-items: center; margin-bottom: 4px;">
+                                <div class="legend-color-box" style="background-color: red; width: 12px; height: 12px; margin-right: 5px;"></div>
+                                <span class="legend-label">Fresh Super Cement</span>
+                            </div>
+                            <div class="legend-item" style="display: flex; align-items: center; margin-bottom: 4px;">
+                                <div class="legend-color-box" style="background-color: blue; width: 12px; height: 12px; margin-right: 5px;"></div>
+                                <span class="legend-label">Dhalai Special Cement</span>
+                            </div>
+                            <div class="legend-item" style="display: flex; align-items: center; margin-bottom: 4px;">
+                                <div class="legend-color-box" style="background-color: green; width: 12px; height: 12px; margin-right: 5px;"></div>
+                                <span class="legend-label">Meghnacem Delux Cement</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 
@@ -84,6 +128,8 @@
         map.addControl(new bkoigl.NavigationControl());
         map.addControl(new bkoigl.ScaleControl());
 
+
+
         const centralPoints = @json($centralPoints);
         const dealers = @json($dealers);
         const retailers = @json($retailers);
@@ -98,13 +144,12 @@
 
         console.log('dhaka' + shopsignsByDistrict['Dhaka']);
         const centralIconUrl = '{{ asset('images/pharmacy.png') }}'; // Branch icon for central points
-        const dealerIconUrl = '{{ asset('images/red.png') }}'; // Red icon for dealers
-        const retailerIconUrl = '{{ asset('images/blue.png') }}'; // Blue icon for retailers
+        const dealerIconUrl = '{{ asset('images/dealer-2.png') }}'; // Red icon for dealers
+        const retailerIconUrl = '{{ asset('images/retailer.png') }}'; // Blue icon for retailers
         const billboardIconUrl = '{{ asset('images/billboard.png') }}'; // Blue icon for retailers
-        const shopsignIconUrl = '{{ asset('images/billboard.png') }}'; // Blue icon for retailers
+        const shopsignIconUrl = '{{ asset('images/shop-blue.png') }}'; // Blue icon for retailers
         const highwallIconUrl = '{{ asset('images/3415475.png') }}'; // Blue icon for retailers
-        console.log('this is shopu' + shopsignsByDistrict)
-        console.log('this is high' + billboardsByDistrict)
+
 
         let centralPointsLayer = []; // Layer for central points
         let dealerMarkersLayer = []; // Layer for dealer markers
@@ -112,6 +157,8 @@
         let billboardMarkersLayer = []; // Layer for billboard markers
         let shopsignMarkerLayer = [];
         let highwallMarkerLayer = [];
+
+
 
         // Function to create a custom marker element
         function createCustomMarkerElement(iconUrl) {

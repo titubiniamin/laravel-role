@@ -75,7 +75,7 @@ class CentralPointController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $this->checkAuthorization(auth()->user(), ['central-point.update']);
+        $this->checkAuthorization(auth()->user(), ['central-point.edit']);
         $centralPoint=CentralPoint::findOrfail($id);
         $request->validate([
             'name' => 'required|string|max:255',
