@@ -19,15 +19,10 @@
 
                     @if ($usr->can('dashboard.view'))
                         <li class="{{ Route::is('admin.dashboard') ? 'active' : '' }}">
-                            <a href="javascript:void(0)" aria-expanded="{{ Route::is('admin.dashboard') ? 'true' : 'false' }}">
+                            <a href="{{ route('admin.dashboard') }}">
                                 <i class="ti-dashboard"></i>
                                 <span>Dashboard</span>
                             </a>
-                            <ul class="collapse {{ Route::is('admin.dashboard') ? 'in' : '' }}">
-                                <li class="{{ Route::is('admin.dashboard') ? 'active' : '' }}">
-                                    <a href="{{ route('admin.dashboard') }}">Dashboard</a>
-                                </li>
-                            </ul>
                         </li>
                     @endif
 
