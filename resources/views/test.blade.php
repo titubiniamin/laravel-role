@@ -1,24 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Display Block Example</title>
-    <style>
-        .block-example {
-            display: block;
-            width: 300px;
-            background-color: lightblue;
-            margin: 10px auto;
-            text-align: center;
-            padding: 10px;
-            border: 1px solid #000;
+<select id="select-data-type">
+    <option value="" disabled>Select</option>
+
+</select>
+<button onclick="getValue()">Click</button>
+<script>
+
+    const dealers= {
+    dealer1:{
+        "name":"dealer-1",
+        "district":"Dhaka"
+    },
+    dealer2:{
+      "name":"dealer-2",
+      "district":"Dhaka"
+    }
+    }
+
+    const retailers=[
+        {
+            "name":"retailer1",
+            "district":"Dhaka"
+        },
+        {
+            "name":"retailer2",
+            "district":"Dhaka"
         }
-    </style>
-</head>
-<body>
-<div class="block-example">I am a block element</div>
-<div class="block-example">Another block element</div>
-<span class="block-example">A span turned into a block</span>
-</body>
-</html>
+    ]
+
+    const getValue=()=>{
+        console.log('getvaue')
+        const dataTypeSelect=document.getElementById('select-data-type')
+        dataTypeSelect.innerHTML="";
+        const defaultOptions=document.createElement('option')
+        defaultOptions.textContent="Select Data Type";
+        defaultOptions.disabled=true;
+        defaultOptions.selected=true;
+        dataTypeSelect.appendChild(defaultOptions);
+
+
+        retailers.map((value)=>{
+            let options=document.createElement('option');
+            options.textContent=value.name;
+            options.value=value.name;
+            dataTypeSelect.appendChild(options)
+        })
+
+       const a= retailers.filter((retailer)=>{
+           return   retailer.district === 'Dhaka';
+        })
+        console.log(a)
+
+
+    }
+
+
+</script>
