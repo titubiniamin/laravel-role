@@ -1,7 +1,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-    Dealers Page - Dealer
+    District Page - District
 @endsection
 
 @section('admin-content')
@@ -11,10 +11,10 @@
         <div class="row align-items-center">
             <div class="col-sm-6">
                 <div class="breadcrumbs-area clearfix">
-                    <h4 class="page-title pull-left">Dealers</h4>
+                    <h4 class="page-title pull-left">District</h4>
                     <ul class="breadcrumbs pull-left">
                         <li><a href="{{ route('admin.dashboard') }}">Home</a></li>
-                        <li><span>Dealers</span></li>
+                        <li><span>District</span></li>
                     </ul>
                 </div>
             </div>
@@ -26,7 +26,7 @@
     <!-- page title area end -->
 
     <div class="main-content-inner">
-        <form action="{{ route('admin.dealers.store') }}" method="POST"> <!-- Form starts here -->
+        <form action="{{ route('admin.districts.store') }}" method="POST"> <!-- Form starts here -->
             @csrf
             <div class="row">
                 <!-- Left column for form inputs -->
@@ -35,7 +35,7 @@
                         <div class="col-md-12 mt-5 mb-3">
                             <div class="card">
                                 <div class="p-4">
-                                    <h4>Create Dealer</h4>
+                                    <h4>Create District</h4>
 
                                     <!-- Display validation errors -->
                                     @if ($errors->any())
@@ -55,7 +55,7 @@
                                     @endif
                                     <script>
                                         // Automatically hide the flash message after 5 seconds
-                                        setTimeout(function() {
+                                        setTimeout(function () {
                                             const flashMessage = document.getElementById('flash-message');
                                             if (flashMessage) {
                                                 flashMessage.style.transition = 'opacity 0.5s ease'; // Fade-out transition
@@ -69,41 +69,43 @@
                                     <!-- Form Fields Start -->
                                     <div class="form-group">
                                         <label for="name">Name</label>
-                                        <input type="text" class="form-control" value="{{ old('name') }}" name="name" required>
+                                        <input type="text" class="form-control" value="{{ old('name') }}" name="name"
+                                               required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="owner_name">Owner Name</label>
-                                        <input type="text" class="form-control" value="{{ old('owner_name') }}" name="owner_name" required>
+                                        <label for="average-sales">Average Sales</label>
+                                        <input type="text" class="form-control" value="{{ old('average_sales') }}"
+                                               name="average_sales">
                                     </div>
-
                                     <div class="form-group">
-                                        <label for="zone">Zone</label>
-                                        <input type="text" class="form-control" value="{{ old('zone')  }}" name="zone">
+                                        <label for="market-size">Market Size</label>
+                                        <input type="text" class="form-control" value="{{ old('market_size') }}"
+                                               name="market_size">
                                     </div>
-
                                     <div class="form-group">
-                                        <label for="dealer_code">Dealer Code</label>
-                                        <input type="text" class="form-control" value="{{ old('dealer_code') }}" name="dealer_code">
+                                        <label for="market-share">Market Share</label>
+                                        <input type="text" class="form-control" value="{{ old('market_share') }}"
+                                               name="market_share" id="market_share" readonly>
                                     </div>
-
                                     <div class="form-group">
-                                        <label for="email">Email</label>
-                                        <input type="email" class="form-control"  name="email">
+                                        <label for="competitor-brand">Competitor Brand</label>
+                                        <input type="text" class="form-control" value="{{ old('competition_brand') }}"
+                                               name="competition_brand">
                                     </div>
-
                                     <div class="form-group">
-                                        <label for="website">Website</label>
-                                        <input type="text" class="form-control" value="{{ old('website') }}" name="website">
+                                        <label for="name">Total Outlets</label>
+                                        <input type="text" class="form-control" value="{{ old('total_outlets') }}"
+                                               name="total_outlets">
                                     </div>
-
                                     <div class="form-group">
-                                        <label for="phone">Mobile</label>
-                                        <input type="text" class="form-control" value="{{ old('mobile') }}" name="mobile">
+                                        <label for="name">Own Outlets</label>
+                                        <input type="text" class="form-control" value="{{ old('own_outlets') }}"
+                                               name="own_outlets">
                                     </div>
-
                                     <div class="form-group">
-                                        <label for="address">Address</label>
-                                        <input type="text" class="form-control" value="{{ old('address') }}" name="address">
+                                        <label for="name">Coverage</label>
+                                        <input type="text" class="form-control" value="{{ old('coverage') }}"
+                                               name="coverage" id="coverage" readonly>
                                     </div>
 
                                     <div class="form-group">
@@ -111,16 +113,18 @@
                                         <input type="text" name="longitude" id="longitude" hidden>
                                         <input type="text" name="latitude" id="latitude" hidden>
                                         <input type="text" name="district" id="district" hidden>
-                                        <input type="text" class="form-control bksearch" name="location" id="location" />
+                                        <input type="text" class="form-control bksearch" name="location" id="location"/>
                                         <div class="bklist"></div>
-                                        <div id="loading" style="display: none;">Loading...</div> <!-- Loading indicator -->
+                                        <div id="loading" style="display: none;">Loading...</div>
+                                        <!-- Loading indicator -->
                                     </div>
 
                                     <div class="form-group">
-                                        <div id="map" style="width: 100%; height: 400px; background-color: yellow;"></div>
+                                        <div id="map"
+                                             style="width: 100%; height: 400px; background-color: yellow;"></div>
                                     </div>
 
-                                    <button type="submit" class="btn btn-primary">Save Dealer</button>
+                                    <button type="submit" class="btn btn-primary">Save District</button>
                                     <!-- Form Fields End -->
 
                                 </div>
@@ -129,32 +133,7 @@
                     </div>
                 </div>
 
-                <!-- Right column for additional content -->
-                <div class="col-lg-3" style="height: 70vh;">
-                    <div class="card mt-5 mb-3" style="height: 400px;background-color: white">
-                        <div class="p-4">
-                            <div class="form-group mb-4">
-                                <div class="form-group">
-                                    <label for="name">Average Sales</label>
-                                    <input type="text" class="form-control" value="{{ old('average_sales') }}" name="average_sales">
-                                </div>
-                                <div class="form-group">
-                                    <label for="name">Market Size</label>
-                                    <input type="text" class="form-control" value="{{ old('market_size') }}" name="market_size">
-                                </div>
-                                <div class="form-group">
-                                    <label for="market-share">Market Share</label>
-                                    <input type="text" class="form-control" value="{{ old('market_share') }}" name="market_share" id="market_share" readonly>
-                                </div>
-                                <div class="form-group">
-                                    <label for="name">Competitor Brand</label>
-                                    <input type="text" class="form-control" value="{{ old('competition_brand') }}" name="competition_brand">
-                                </div>
-                            </div>
-                            <!-- Additional content goes here -->
-                        </div>
-                    </div>
-                </div>
+
             </div>
         </form> <!-- Form ends here -->
     </div>
@@ -165,35 +144,50 @@
 
 
     <script>
-        document.addEventListener('DOMContentLoaded',function(){
+        document.addEventListener('DOMContentLoaded', function () {
+            //Calculate Market Share
             const averageSalesInput = document.querySelector('input[name="average_sales"]');
             const marketSizeInput = document.querySelector('input[name="market_size"]');
             const marketShareInput = document.getElementById("market_share");
 
-            //Calculate Market Share
-            function calculateMarketShare(){
-                console.log('calculate')
-                const averageSales=parseFloat(averageSalesInput.value) || 0;
+            function calculateMarketShare() {
+                const averageSales = parseFloat(averageSalesInput.value) || 0;
                 const marketSize = parseFloat(marketSizeInput.value) || 0;
-                if(marketSize >0){
-                    const marketShare=(averageSales/marketSize) * 100;
-                    marketShareInput.value=marketShare.toFixed(2);
-                }else{
-                    marketShareInput.value="0.00"
+                if (marketSize > 0) {
+                    const marketShare = (averageSales / marketSize) * 100;
+                    marketShareInput.value = marketShare.toFixed(2);
+                } else {
+                    marketShareInput.value = "0.00";
                 }
             }
-            //Attach event Listener to trigger calculation on input change
 
-            averageSalesInput.addEventListener('input',calculateMarketShare);
+            averageSalesInput.addEventListener('input', calculateMarketShare);
             marketSizeInput.addEventListener('input', calculateMarketShare);
+
+            //Calculate Coverage
+            const totalOutletsInput = document.querySelector('input[name="total_outlets"]');
+            const ownOutletsInput = document.querySelector('input[name="own_outlets"]');
+            const coverageInput = document.getElementById("coverage");
+
+            function calculateCoverage() {
+                const totalOutlets = parseFloat(totalOutletsInput.value) || 0;
+                const ownOutlets = parseFloat(ownOutletsInput.value) || 0;
+                if (ownOutlets > 0) {
+                    const coverage = (totalOutlets / ownOutlets) * 100;
+                    coverageInput.value = coverage.toFixed(2);
+                } else {
+                    coverageInput.value = "0.00";
+                }
+            }
+
+            totalOutletsInput.addEventListener('input', calculateCoverage);
+            ownOutletsInput.addEventListener('input', calculateCoverage);
 
         });
 
         bkoigl.accessToken = "{{ env('BARIKOI_API_KEY') }}";
 
         let map, marker;
-
-        // Use geolocation to show the current location on map load
 
         // Use geolocation to show the current location on map load
         navigator.geolocation.getCurrentPosition(
@@ -209,8 +203,7 @@
                 console.error("Error fetching location:", error);
                 // Handle the error and provide fallback coordinates or message
                 if (error.code === error.PERMISSION_DENIED) {
-                    alert(error)
-                    // alert("Location access denied. Please enable location services.");
+                    alert("Location access denied. Please enable location services.");
                 } else if (error.code === error.POSITION_UNAVAILABLE) {
                     alert("Position unavailable. Try again later.");
                 } else if (error.code === error.TIMEOUT) {
@@ -238,7 +231,7 @@
             map.addControl(new bkoigl.ScaleControl());
 
             // Initialize a draggable marker
-            marker = new bkoigl.Marker({ draggable: true })
+            marker = new bkoigl.Marker({draggable: true})
                 .setLngLat([longitude, latitude])
                 .addTo(map);
 
@@ -285,7 +278,7 @@
                                 suggestionItem.className = 'suggestion-item';
                                 suggestionItem.onclick = function () {
                                     marker.setLngLat([place.longitude, place.latitude]);
-                                    map.flyTo({ center: [place.longitude, place.latitude], zoom: 15 });
+                                    map.flyTo({center: [place.longitude, place.latitude], zoom: 15});
                                     suggestionList.innerHTML = '';
                                     document.getElementById("location").value = place.address;
                                     document.getElementById("longitude").value = place.longitude;
@@ -307,21 +300,22 @@
         });
     </script>
 
-
     <style>
-    .suggestion-item {
-        padding: 5px;
-        cursor: pointer;
-    }
-    .suggestion-item:hover {
-        background-color: #f0f0f0; /* Highlight on hover */
-    }
-    #loading {
-        display: none; /* Initially hidden */
-        font-size: 14px;
-        color: #888;
-        padding: 10px 0;
-    }
+        .suggestion-item {
+            padding: 5px;
+            cursor: pointer;
+        }
+
+        .suggestion-item:hover {
+            background-color: #f0f0f0; /* Highlight on hover */
+        }
+
+        #loading {
+            display: none; /* Initially hidden */
+            font-size: 14px;
+            color: #888;
+            padding: 10px 0;
+        }
 
 
     </style>

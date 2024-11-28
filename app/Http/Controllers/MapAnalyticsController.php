@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Billboard;
 use App\Models\CentralPoint;
+use App\Models\District;
 use App\Models\Highwall;
 use App\Models\Retailer;
 use App\Models\Shopsign;
@@ -23,6 +24,7 @@ class MapAnalyticsController extends Controller
         $centralPoints = CentralPoint::all();
         $shopsigns = ShopSign::all();
         $highwalls = HighWall::all();
+        $districts = District::all();
 
         // Count entities grouped by district
         $dealersByDistrict = $dealers->groupBy('district')->map->count();
@@ -45,6 +47,7 @@ class MapAnalyticsController extends Controller
             'billboardsByDistrict' => $billboardsByDistrict,
             'shopsignsByDistrict' => $shopsignsByDistrict,
             'highwallsByDistrict' => $highwallsByDistrict,
+            'districts' => $districts,
         ]);
     }
 }

@@ -157,7 +157,7 @@
                                            name="market_share" id="market_share">
                                 </div>
                                 <div class="form-group">
-                                    <label for="name">Competition Brand</label>
+                                    <label for="name">Competitor Brand</label>
                                     <input type="text" class="form-control" value="{{ old('competition_brand') }}"
                                            name="competition_brand">
                                 </div>

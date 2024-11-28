@@ -84,7 +84,7 @@
                     <!--Retailer End-->
 
                     <!-- Central Point Menu Section-->
-                    @if ($usr->can('billboard.create') || $usr->can('central-point.view') || $usr->can('central-point.edit') || $usr->can('central-point.delete'))
+                    @if ($usr->can('central-point.view') || $usr->can('central-point.edit') || $usr->can('central-point.delete'))
                         <li>
                             <a href="javascript:void(0)" aria-expanded="true"><i
                                     class="fa fa-map-pin"></i><span>Central Point</span></a>
@@ -97,6 +97,27 @@
                                 @if ($usr->can('central-point.create'))
                                     <li class="{{ Route::is('admin.central-points.create') ? 'active' : '' }}">
                                         <a href="{{ route('admin.central-points.create') }}">Create Central Point</a>
+                                    </li>
+                                @endif
+
+                            </ul>
+                        </li>
+                    @endif
+                    <!--Central End-->
+                        <!-- District Section-->
+                    @if ($usr->can('district.view') || $usr->can('district.edit') || $usr->can('district.delete') || $usr->can('district.create'))
+                        <li>
+                            <a href="javascript:void(0)" aria-expanded="true"><i
+                                    class="fa fa-map-pin"></i><span>District</span></a>
+                            <ul class="collapse {{ Route::is('admin.districts.create') || Route::is('admin.districts.index') || Route::is('admin.districts.edit') || Route::is('admin.districts.show') ? 'in' : '' }}">
+                                @if ($usr->can('district.view'))
+                                    <li class="{{ Route::is('admin.districts.index') || Route::is('admin.districts.edit') ? 'active' : '' }}">
+                                        <a href="{{ route('admin.districts.index') }}">All District</a>
+                                    </li>
+                                @endif
+                                @if ($usr->can('district.create'))
+                                    <li class="{{ Route::is('admin.districts.create') ? 'active' : '' }}">
+                                        <a href="{{ route('admin.districts.create') }}">Create District</a>
                                     </li>
                                 @endif
 

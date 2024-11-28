@@ -133,6 +133,17 @@ class RolePermissionSeeder extends Seeder
                 ]
             ],
             [
+                'group_name' => 'district',
+                'permissions' => [
+                    // role Permissions
+                    'district.create',
+                    'district.view',
+                    'district.edit',
+                    'district.delete',
+                    'district.export',
+                ]
+            ],
+            [
                 'group_name' => 'map',
                 'permissions' => [
                     // map Permissions

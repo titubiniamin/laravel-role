@@ -1,7 +1,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-    Edit Page - Retailer
+    Edit Page - District
 @endsection
 
 @section('admin-content')
@@ -11,10 +11,10 @@
         <div class="row align-items-center">
             <div class="col-sm-6">
                 <div class="breadcrumbs-area clearfix">
-                    <h4 class="page-title pull-left">Retailers</h4>
+                    <h4 class="page-title pull-left">Districts</h4>
                     <ul class="breadcrumbs pull-left">
                         <li><a href="{{ route('admin.dashboard') }}">Home</a></li>
-                        <li><span>Retailers</span></li>
+                        <li><span>Districts</span></li>
                     </ul>
                 </div>
             </div>
@@ -26,94 +26,87 @@
     <!-- page title area end -->
 
     <div class="main-content-inner">
-        <form action="{{ route('admin.retailers.update',$retailer->id) }}" method="POST">
+        <form action="{{ route('admin.districts.update',$district->id) }}" method="POST">
             @csrf
             @method('PUT')
-        <div class="row">
-            <!--Left Column-->
-            <div class="col-lg-9">
-                <div class="row">
-                    <div class="col-md-12 mt-5 mb-3">
-                        <div class="card">
-                            <div class="p-4">
-                                <h4>Update Retailer</h4>
+            <div class="row">
+                <!--Left Column-->
+                <div class="col-lg-9">
+                    <div class="row">
+                        <div class="col-md-12 mt-5 mb-3">
+                            <div class="card">
+                                <div class="p-4">
+                                    <h4>Update District</h4>
 
-                                <!-- Display validation errors -->
-                                @if ($errors->any())
-                                    <div class="alert alert-danger">
-                                        <ul>
-                                            @foreach ($errors->all() as $error)
-                                                <li>{{ $error }}</li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
-                                @endif
-                                <!-- Display success message -->
-                                @if (session('success'))
-                                    <div id="flash-message" class="alert alert-success">
-                                        {{ session('success') }}
-                                    </div>
-                                @endif
-                                <script>
-                                    // Automatically hide the flash message after 5 seconds
-                                    setTimeout(function() {
-                                        const flashMessage = document.getElementById('flash-message');
-                                        if (flashMessage) {
-                                            flashMessage.style.transition = 'opacity 0.5s ease'; // Fade-out transition
-                                            flashMessage.style.opacity = '0'; // Start fading
+                                    <!-- Display validation errors -->
+                                    @if ($errors->any())
+                                        <div class="alert alert-danger">
+                                            <ul>
+                                                @foreach ($errors->all() as $error)
+                                                    <li>{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endif
+                                    <!-- Display success message -->
+                                    @if (session('success'))
+                                        <div id="flash-message" class="alert alert-success">
+                                            {{ session('success') }}
+                                        </div>
+                                    @endif
+                                    <script>
+                                        // Automatically hide the flash message after 5 seconds
+                                        setTimeout(function() {
+                                            const flashMessage = document.getElementById('flash-message');
+                                            if (flashMessage) {
+                                                flashMessage.style.transition = 'opacity 0.5s ease'; // Fade-out transition
+                                                flashMessage.style.opacity = '0'; // Start fading
 
-                                            setTimeout(() => flashMessage.remove(), 500); // Remove from DOM after fade-out
-                                        }
-                                    }, 5000); // 5-second delay
-                                </script>
+                                                setTimeout(() => flashMessage.remove(), 500); // Remove from DOM after fade-out
+                                            }
+                                        }, 5000); // 5-second delay
+                                    </script>
 
 
 
                                     <div class="form-group">
                                         <label for="name">Name</label>
-                                        <input type="text" class="form-control" value="{{ old('name', $retailer->name) }}" name="name" required>
+                                        <input type="text" class="form-control" value="{{ old('name', $district->name) }}" name="name" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="owner_name">Owner Name</label>
-                                        <input type="text" class="form-control" value="{{ old('owner_name', $retailer->owner_name) }}" name="owner_name" required>
+                                        <label for="average-sales">Average Sales</label>
+                                        <input type="text" class="form-control" value="{{ old('average_sales', $district->average_sales) }}" name="average_sales">
                                     </div>
-
                                     <div class="form-group">
-                                        <label for="zone">Zone</label>
-                                        <input type="text" class="form-control" value="{{ old('zone', $retailer->zone) }}" name="zone">
+                                        <label for="market-size">Market Size</label>
+                                        <input type="text" class="form-control" value="{{ old('market_size', $district->market_size) }}" name="market_size">
                                     </div>
-
                                     <div class="form-group">
-                                        <label for="retailer_code">Retailer Code</label>
-                                        <input type="text" class="form-control" value="{{ old('retailer_code', $retailer->retailer_code) }}" name="retailer_code">
+                                        <label for="market-share">Market Share</label>
+                                        <input type="text" class="form-control" value="{{ old('market_share', $district->market_share) }}" name="market_share" id="market_share" readonly>
                                     </div>
-
                                     <div class="form-group">
-                                        <label for="email">Email</label>
-                                        <input type="email" class="form-control" value="{{old('email',$retailer->email)}}" name="email">
+                                        <label for="competitor-brand">Competitor Brand</label>
+                                        <input type="text" class="form-control" value="{{ old('competition_brand', $district->competition_brand) }}" name="competition_brand">
                                     </div>
-
                                     <div class="form-group">
-                                        <label for="website">Website</label>
-                                        <input type="text" class="form-control" value="{{old('website',$retailer->website)}}" name="website">
+                                        <label for="name">Total Outlets</label>
+                                        <input type="text" class="form-control" value="{{ old('total_outlets',$district->total_outlets) }}" name="total_outlets">
                                     </div>
-
                                     <div class="form-group">
-                                        <label for="phone">Mobile</label>
-                                        <input type="text" class="form-control" value="{{old('mobile',$retailer->mobile)}}" name="mobile">
+                                        <label for="name">Own Outlets</label>
+                                        <input type="text" class="form-control" value="{{ old('own_outlets', $district->own_outlets) }}" name="own_outlets">
                                     </div>
-
                                     <div class="form-group">
-                                        <label for="phone">Address</label>
-                                        <input type="text" class="form-control" value="{{old('address', $retailer->address)}}" name="address">
+                                        <label for="name">Coverage</label>
+                                        <input type="text" class="form-control" value="{{ old('coverage', $district->coverage) }}" name="coverage" id="coverage" readonly>
                                     </div>
-
                                     <div class="form-group">
                                         <label for="location">Location</label>
-                                        <input type="text" name="longitude" value="{{$retailer->longitude}}" id="longitude" hidden>
-                                        <input type="text" name="latitude" value="{{$retailer->latitude}}"  id="latitude" hidden>
-                                        <input type="text" name="district" value="{{$retailer->district}}" id="district" hidden>
-                                        <input type="text" class="form-control bksearch" value="{{$retailer->location}}"  name="location" id="location"/>
+                                        <input type="text" name="longitude" value="{{$district->longitude}}" id="longitude" hidden>
+                                        <input type="text" name="latitude" value="{{$district->latitude}}"  id="latitude" hidden>
+                                        <input type="text" name="district" value="{{$district->district}}"  id="district" hidden>
+                                        <input type="text" class="form-control bksearch" value="{{$district->location}}"  name="location" id="location"/>
                                         <div class="bklist"></div>
                                         <div id="loading" style="display: none;">Loading...</div> <!-- Loading indicator -->
                                     </div>
@@ -122,40 +115,15 @@
                                         <div id="map" style="width: 100%; height: 400px;"></div>
                                     </div>
 
-                                    <button type="submit" class="btn btn-primary">Update Retailer</button>
+                                    <button type="submit" class="btn btn-primary">Update District</button>
 
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
-            <!-- Right column for additional content -->
-            <div class="col-lg-3" style="height: 70vh;">
-                <div class="card mt-5 mb-3" style="height: 400px;background-color: white">
-                    <div class="p-4">
-                        <div class="form-group mb-4">
-                            <div class="form-group">
-                                <label for="name">Average Sales</label>
-                                <input type="text" class="form-control" value="{{ old('average_sales', $retailer->average_sales) }}" name="average_sales">
-                            </div>
-                            <div class="form-group">
-                                <label for="name">Market Size</label>
-                                <input type="text" class="form-control" value="{{ old('market_size', $retailer->market_size) }}" name="market_size">
-                            </div>
-                            <div class="form-group">
-                                <label for="market-share">Market Share</label>
-                                <input type="text" class="form-control" value="{{ old('market_share', $retailer->market_share) }}" name="market_share" id="market_share">
-                            </div>
-                            <div class="form-group">
-                                <label for="name">Competitor Brand</label>
-                                <input type="text" class="form-control" value="{{ old('competition_brand', $retailer->competition_brand )}}" name="competition_brand">
-                            </div>
-                        </div>
-                        <!-- Additional content goes here -->
-                    </div>
-                </div>
-            </div>
-        </div>
         </form>
     </div>
 
@@ -164,10 +132,10 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            //Calculate Market Share
             const averageSalesInput = document.querySelector('input[name="average_sales"]');
             const marketSizeInput = document.querySelector('input[name="market_size"]');
             const marketShareInput = document.getElementById("market_share");
-
 
             function calculateMarketShare() {
                 const averageSales = parseFloat(averageSalesInput.value) || 0;
@@ -183,18 +151,36 @@
             averageSalesInput.addEventListener('input', calculateMarketShare);
             marketSizeInput.addEventListener('input', calculateMarketShare);
 
+            //Calculate Coverage
+            const totalOutletsInput = document.querySelector('input[name="total_outlets"]');
+            const ownOutletsInput = document.querySelector('input[name="own_outlets"]');
+            const coverageInput = document.getElementById("coverage");
+
+            function calculateCoverage() {
+                const totalOutlets = parseFloat(totalOutletsInput.value) || 0;
+                const ownOutlets = parseFloat(ownOutletsInput.value) || 0;
+                if (ownOutlets > 0) {
+                    const coverage = (totalOutlets / ownOutlets) * 100;
+                    coverageInput.value = coverage.toFixed(2);
+                } else {
+                    coverageInput.value = "0.00";
+                }
+            }
+
+            totalOutletsInput.addEventListener('input', calculateCoverage);
+            ownOutletsInput.addEventListener('input', calculateCoverage);
+
         });
         bkoigl.accessToken = "{{ env('BARIKOI_API_KEY') }}"; // required
 
-        // Fetch retailer's coordinates from backend
-        const retailerLongitude = {{ $retailer->longitude ?? 90.3938010872331 }};
-        const retailerLatitude = {{ $retailer->latitude ?? 23.821600277500405 }};
-        const retailerLocation = "{{ $retailer->location ?? '' }}";
-        const retailerDistrict = "{{ $retailer->district ?? '' }}";
+        // Fetch centralPoint's coordinates from backend
+        const centralPointLongitude = {{ $district->longitude ?? 90.3938010872331 }};
+        const centralPointLatitude = {{ $district->latitude ?? 23.821600277500405 }};
+        const centralPointLocation = "{{ $district->location ?? '' }}";
 
         const map = new bkoigl.Map({
             container: "map",
-            center: [retailerLongitude, retailerLatitude], // Set map center to retailer's coordinates
+            center: [centralPointLongitude, centralPointLatitude], // Set map center to centralPoint's coordinates
             zoom: 15,
         });
         map.addControl(new bkoigl.FullscreenControl());
@@ -202,16 +188,15 @@
         map.addControl(new bkoigl.ScaleControl());
 
 
-        // Initialize the marker at retailer's coordinates
+        // Initialize the marker at centralPoint's coordinates
         let marker = new bkoigl.Marker({ draggable: true })
-            .setLngLat([retailerLongitude, retailerLatitude])
+            .setLngLat([centralPointLongitude, centralPointLatitude])
             .addTo(map);
 
-        // Populate location input field with retailer's location
-        document.getElementById("location").value = retailerLocation;
-        document.getElementById("longitude").value = retailerLongitude;
-        document.getElementById("latitude").value = retailerLatitude;
-        // document.getElementById("district").value = retailerDistrict;
+        // Populate location input field with centralPoint's location
+        document.getElementById("location").value = centralPointLocation;
+        document.getElementById("longitude").value = centralPointLongitude;
+        document.getElementById("latitude").value = centralPointLatitude;
 
         // Event listener for location search
         document.getElementById("location").addEventListener("input", function () {

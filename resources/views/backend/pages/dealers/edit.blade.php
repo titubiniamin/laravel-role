@@ -147,7 +147,7 @@
                                 <input type="text" class="form-control" value="{{ old('market_share', $dealer->market_share) }}" id="market_share" name="market_share" readonly>
                             </div>
                             <div class="form-group">
-                                <label for="name">Competition Brand</label>
+                                <label for="name">Competitor Brand</label>
                                 <input type="text" class="form-control" value="{{ old('competition_brand', $dealer->competition_brand )}}" name="competition_brand">
                             </div>
                         </div>

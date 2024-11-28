@@ -7,6 +7,7 @@ use App\Http\Controllers\Backend\BillboardController;
 use App\Http\Controllers\Backend\CentralPointController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\DealerController;
+use App\Http\Controllers\Backend\DistrictController;
 use App\Http\Controllers\Backend\HighwallController;
 use App\Http\Controllers\Backend\RetailerController;
 use App\Http\Controllers\Backend\RolesController;
@@ -71,6 +72,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::get('all-retailers', [RetailerController::class,'allDealers'])->name('allRetailers');
     Route::get('map-analytics', [MapAnalyticsController::class, 'mapAnalytics'])->name('map.analytics');
     Route::resource('central-points',CentralPointController::class);
+    Route::resource('districts',DistrictController::class);
+    Route::get('district/export',[DistrictController::class,'export'])->name('districts.export');
     Route::resource('billboards',BillboardController::class)->except(['show']);
     Route::get('billboards/export',[BillboardController::class,'export'])->name('billboards.export');
     Route::resource('highwalls',HighwallController::class)->except(['show']);
