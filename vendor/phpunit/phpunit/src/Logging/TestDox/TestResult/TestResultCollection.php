@@ -16,14 +16,16 @@ use IteratorAggregate;
  *
  * @psalm-immutable
  *
+ * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ *
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
-final readonly class TestResultCollection implements IteratorAggregate
+final class TestResultCollection implements IteratorAggregate
 {
     /**
      * @psalm-var list<TestResult>
      */
-    private array $testResults;
+    private readonly array $testResults;
 
     /**
      * @psalm-param list<TestResult> $testResults

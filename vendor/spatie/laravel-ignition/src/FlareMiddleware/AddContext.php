@@ -13,15 +13,15 @@ class AddContext implements FlareMiddleware
     public function handle(Report $report, Closure $next)
     {
         if (! class_exists(Repository::class)) {
-            return $report;
+            return $next($report);
         }
 
         $allContext = Context::all();
 
         if (count($allContext)) {
-            $report->group('laravel_context', Context::all());
+            $report->group('laravel_context', $allContext);
         }
 
-        return $report;
+        return $next($report);
     }
 }

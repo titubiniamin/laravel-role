@@ -12,9 +12,11 @@ namespace PHPUnit\Framework\TestStatus;
 /**
  * @psalm-immutable
  *
+ * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ *
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
-final readonly class Success extends Known
+final class Success extends Known
 {
     /**
      * @psalm-assert-if-true Success $this

@@ -9,12 +9,8 @@
  */
 namespace PHPUnit\Event;
 
-use function assert;
 use PHPUnit\Event\Code\ClassMethod;
 use PHPUnit\Event\Code\ComparisonFailure;
-use PHPUnit\Event\Code\NoTestCaseObjectOnCallStackException;
-use PHPUnit\Event\Code\TestMethod;
-use PHPUnit\Event\Code\TestMethodBuilder;
 use PHPUnit\Event\Code\Throwable;
 use PHPUnit\Event\Test\DataProviderMethodCalled;
 use PHPUnit\Event\Test\DataProviderMethodFinished;
@@ -25,10 +21,13 @@ use PHPUnit\Event\TestSuite\Skipped as TestSuiteSkipped;
 use PHPUnit\Event\TestSuite\Sorted as TestSuiteSorted;
 use PHPUnit\Event\TestSuite\Started as TestSuiteStarted;
 use PHPUnit\Event\TestSuite\TestSuite;
+use PHPUnit\Framework\Constraint;
 use PHPUnit\TextUI\Configuration\Configuration;
-use SebastianBergmann\Exporter\Exporter;
+use PHPUnit\Util\Exporter;
 
 /**
+ * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ *
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
 final class DispatchingEmitter implements Emitter
@@ -37,6 +36,7 @@ final class DispatchingEmitter implements Emitter
     private readonly Telemetry\System $system;
     private readonly Telemetry\Snapshot $startSnapshot;
     private Telemetry\Snapshot $previousSnapshot;
+    private bool $exportObjects = false;
 
     public function __construct(Dispatcher $dispatcher, Telemetry\System $system)
     {
@@ -45,6 +45,22 @@ final class DispatchingEmitter implements Emitter
 
         $this->startSnapshot    = $system->snapshot();
         $this->previousSnapshot = $this->startSnapshot;
+    }
+
+    /**
+     * @deprecated
+     */
+    public function exportObjects(): void
+    {
+        $this->exportObjects = true;
+    }
+
+    /**
+     * @deprecated
+     */
+    public function exportsObjects(): bool
+    {
+        return $this->exportObjects;
     }
 
     /**
@@ -467,6 +483,44 @@ final class DispatchingEmitter implements Emitter
     }
 
     /**
+     * @throws InvalidArgumentException
+     * @throws UnknownEventTypeException
+     *
+     * @deprecated
+     */
+    public function testAssertionSucceeded(mixed $value, Constraint\Constraint $constraint, string $message): void
+    {
+        $this->dispatcher->dispatch(
+            new Test\AssertionSucceeded(
+                $this->telemetryInfo(),
+                Exporter::export($value, $this->exportObjects),
+                $constraint->toString($this->exportObjects),
+                $constraint->count(),
+                $message,
+            ),
+        );
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     * @throws UnknownEventTypeException
+     *
+     * @deprecated
+     */
+    public function testAssertionFailed(mixed $value, Constraint\Constraint $constraint, string $message): void
+    {
+        $this->dispatcher->dispatch(
+            new Test\AssertionFailed(
+                $this->telemetryInfo(),
+                Exporter::export($value, $this->exportObjects),
+                $constraint->toString($this->exportObjects),
+                $constraint->count(),
+                $message,
+            ),
+        );
+    }
+
+    /**
      * @psalm-param class-string $className
      *
      * @throws InvalidArgumentException
@@ -581,7 +635,7 @@ final class DispatchingEmitter implements Emitter
             new Test\TestProxyCreated(
                 $this->telemetryInfo(),
                 $className,
-                (new Exporter)->export($constructorArguments),
+                Exporter::export($constructorArguments, $this->exportObjects),
             ),
         );
     }
@@ -712,23 +766,10 @@ final class DispatchingEmitter implements Emitter
      * @psalm-param non-empty-string $message
      *
      * @throws InvalidArgumentException
-     * @throws NoTestCaseObjectOnCallStackException
      * @throws UnknownEventTypeException
      */
-    public function testTriggeredPhpunitDeprecation(?Code\Test $test, string $message): void
+    public function testTriggeredPhpunitDeprecation(Code\Test $test, string $message): void
     {
-        if ($test === null) {
-            $test = TestMethodBuilder::fromCallStack();
-        }
-
-        if ($test->isTestMethod()) {
-            assert($test instanceof TestMethod);
-
-            if ($test->metadata()->isIgnorePhpunitDeprecations()->isNotEmpty()) {
-                return;
-            }
-        }
-
         $this->dispatcher->dispatch(
             new Test\PhpunitDeprecationTriggered(
                 $this->telemetryInfo(),

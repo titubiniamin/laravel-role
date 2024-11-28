@@ -12,6 +12,7 @@ namespace PHPUnit\Runner;
 use function file_put_contents;
 use function sprintf;
 use PHPUnit\Event\Facade as EventFacade;
+use PHPUnit\Event\TestData\MoreThanOneDataSetFromDataProviderException;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\TextUI\Configuration\CodeCoverageFilterRegistry;
 use PHPUnit\TextUI\Configuration\Configuration;
@@ -37,7 +38,11 @@ use SebastianBergmann\Timer\NoActiveTimerException;
 use SebastianBergmann\Timer\Timer;
 
 /**
+ * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ *
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
+ *
+ * @codeCoverageIgnore
  */
 final class CodeCoverage
 {
@@ -137,6 +142,9 @@ final class CodeCoverage
         return $this->driver;
     }
 
+    /**
+     * @throws MoreThanOneDataSetFromDataProviderException
+     */
     public function start(TestCase $test): void
     {
         if ($this->collecting) {
@@ -308,7 +316,9 @@ final class CodeCoverage
             $textReport = $processor->process($this->codeCoverage(), $configuration->colors());
 
             if ($configuration->coverageText() === 'php://stdout') {
-                $printer->print($textReport);
+                if (!$configuration->noOutput() && !$configuration->debug()) {
+                    $printer->print($textReport);
+                }
             } else {
                 file_put_contents($configuration->coverageText(), $textReport);
             }

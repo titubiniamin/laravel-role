@@ -14,9 +14,7 @@ final class Node
     /**
      * A value object with helper methods for working with DOM node.
      */
-    public function __construct(private \DOMNode $node)
-    {
-    }
+    public function __construct(private \DOMNode $node) {}
 
     /**
      * Gets the value of the node.
@@ -101,7 +99,7 @@ final class Node
     /**
      * Gets the previous sibling from the node.
      */
-    public function getPreviousSibling(): ?static
+    public function getPreviousSibling(): static|null
     {
         $node = $this->node;
 
@@ -127,7 +125,7 @@ final class Node
     /**
      * Gets the next sibling from the node.
      */
-    public function getNextSibling(): ?static
+    public function getNextSibling(): static|null
     {
         $node = $this->node;
 

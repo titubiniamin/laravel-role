@@ -160,7 +160,7 @@ class Rule
     /**
      * Get an enum constraint builder instance.
      *
-     * @param  class-string  $type
+     * @param  string  $type
      * @return \Illuminate\Validation\Rules\Enum
      */
     public static function enum($type)

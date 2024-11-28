@@ -22,16 +22,18 @@ use function substr;
 use function trim;
 
 /**
+ * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ *
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  *
  * @see Copied from https://github.com/phpstan/phpstan-src/blob/1.10.33/src/File/ParentDirectoryRelativePathHelper.php
  */
-final readonly class RelativePathCalculator
+final class RelativePathCalculator
 {
     /**
      * @psalm-var non-empty-string $baselineDirectory
      */
-    private string $baselineDirectory;
+    private readonly string $baselineDirectory;
 
     /**
      * @psalm-param non-empty-string $baselineDirectory

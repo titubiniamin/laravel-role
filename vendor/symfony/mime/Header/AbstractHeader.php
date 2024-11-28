@@ -34,7 +34,10 @@ abstract class AbstractHeader implements HeaderInterface
         $this->name = $name;
     }
 
-    public function setCharset(string $charset): void
+    /**
+     * @return void
+     */
+    public function setCharset(string $charset)
     {
         $this->charset = $charset;
     }
@@ -48,8 +51,10 @@ abstract class AbstractHeader implements HeaderInterface
      * Set the language used in this Header.
      *
      * For example, for US English, 'en-us'.
+     *
+     * @return void
      */
-    public function setLanguage(string $lang): void
+    public function setLanguage(string $lang)
     {
         $this->lang = $lang;
     }
@@ -64,7 +69,10 @@ abstract class AbstractHeader implements HeaderInterface
         return $this->name;
     }
 
-    public function setMaxLineLength(int $lineLength): void
+    /**
+     * @return void
+     */
+    public function setMaxLineLength(int $lineLength)
     {
         $this->lineLength = $lineLength;
     }
@@ -178,6 +186,20 @@ abstract class AbstractHeader implements HeaderInterface
         }
         if ('' !== $encodedToken) {
             $tokens[] = $encodedToken;
+        }
+
+        foreach ($tokens as $i => $token) {
+            // whitespace(s) between 2 encoded tokens
+            if (
+                0 < $i
+                && isset($tokens[$i + 1])
+                && preg_match('~^[\t ]+$~', $token)
+                && $this->tokenNeedsEncoding($tokens[$i - 1])
+                && $this->tokenNeedsEncoding($tokens[$i + 1])
+            ) {
+                $tokens[$i - 1] .= $token.$tokens[$i + 1];
+                array_splice($tokens, $i, 2);
+            }
         }
 
         return $tokens;

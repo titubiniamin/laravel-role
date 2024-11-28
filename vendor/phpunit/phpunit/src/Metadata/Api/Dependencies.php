@@ -16,9 +16,11 @@ use PHPUnit\Metadata\DependsOnMethod;
 use PHPUnit\Metadata\Parser\Registry;
 
 /**
+ * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ *
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
-final readonly class Dependencies
+final class Dependencies
 {
     /**
      * @psalm-param class-string $className

@@ -16,9 +16,11 @@ use function libxml_use_internal_errors;
 use DOMDocument;
 
 /**
+ * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ *
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
-final readonly class Validator
+final class Validator
 {
     public function validate(DOMDocument $document, string $xsdFilename): ValidationResult
     {

@@ -78,7 +78,7 @@
 
                                     <div class="form-group">
                                         <label for="zone">Zone</label>
-                                        <input type="text" class="form-control" name="zone">
+                                        <input type="text" class="form-control" value="{{ old('zone')  }}" name="zone">
                                     </div>
 
                                     <div class="form-group">
@@ -88,7 +88,7 @@
 
                                     <div class="form-group">
                                         <label for="email">Email</label>
-                                        <input type="email" class="form-control" name="email">
+                                        <input type="email" class="form-control" value="email" name="email">
                                     </div>
 
                                     <div class="form-group">
@@ -110,6 +110,7 @@
                                         <label for="location">Location</label>
                                         <input type="text" name="longitude" id="longitude" hidden>
                                         <input type="text" name="latitude" id="latitude" hidden>
+                                        <input type="text" name="district" id="district" hidden>
                                         <input type="text" class="form-control bksearch" name="location" id="location" />
                                         <div class="bklist"></div>
                                         <div id="loading" style="display: none;">Loading...</div> <!-- Loading indicator -->
@@ -163,39 +164,98 @@
     <!-- Your existing script and styles here -->
 
 
-<script>
-        bkoigl.accessToken = "{{ env('BARIKOI_API_KEY') }}"; // required
+    <script>
+        bkoigl.accessToken = "{{ env('BARIKOI_API_KEY') }}";
 
-        const map = new bkoigl.Map({
-            container: "map",
-            center: [90.3938010872331, 23.821600277500405],
-            zoom: 15,
-        });
-        map.addControl(new bkoigl.FullscreenControl());
-        map.addControl(new bkoigl.NavigationControl());
-        map.addControl(new bkoigl.ScaleControl());
+        let map, marker;
 
+        // Use geolocation to show the current location on map load
 
+        // Use geolocation to show the current location on map load
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+                console.log("Initial location:", latitude, longitude);
+
+                initializeMap(latitude, longitude);
+                fetchLocationName(latitude, longitude);
+            },
+            (error) => {
+                console.error("Error fetching location:", error);
+                // Handle the error and provide fallback coordinates or message
+                if (error.code === error.PERMISSION_DENIED) {
+                    alert(error)
+                    // alert("Location access denied. Please enable location services.");
+                } else if (error.code === error.POSITION_UNAVAILABLE) {
+                    alert("Position unavailable. Try again later.");
+                } else if (error.code === error.TIMEOUT) {
+                    alert("Location request timed out. Please try again.");
+                }
+                // Fallback coordinates if geolocation fails
+                initializeMap(23.821600277500405, 90.3938010872331);
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000, // Timeout after 10 seconds
+                maximumAge: 0 // Do not use cached location
+            }
+        );
+
+        function initializeMap(latitude, longitude) {
+            map = new bkoigl.Map({
+                container: "map",
+                center: [longitude, latitude],
+                zoom: 15,
+            });
+
+            map.addControl(new bkoigl.FullscreenControl());
+            map.addControl(new bkoigl.NavigationControl());
+            map.addControl(new bkoigl.ScaleControl());
+
+            // Initialize a draggable marker
+            marker = new bkoigl.Marker({ draggable: true })
+                .setLngLat([longitude, latitude])
+                .addTo(map);
+
+            // Update input fields when the marker is dragged
+            marker.on('dragend', () => {
+                const lngLat = marker.getLngLat();
+                fetchLocationName(lngLat.lat, lngLat.lng);
+            });
+        }
+
+        function fetchLocationName(latitude, longitude) {
+            fetch(`/api/proxy/reverse-geocode?longitude=${longitude}&latitude=${latitude}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.place && data.place.address) {
+                        document.getElementById("location").value = data.place.address;
+                        document.getElementById("longitude").value = longitude;
+                        document.getElementById("latitude").value = latitude;
+                        document.getElementById("district").value = data.place.district;
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching address:", error);
+                });
+        }
 
         document.getElementById("location").addEventListener("input", function () {
             let query = this.value;
             let loadingIndicator = document.getElementById("loading");
 
             if (query.length > 2) {
-                console.log('Searching for:', query);
-                loadingIndicator.style.display = "block"; // Show loading indicator
+                loadingIndicator.style.display = "block";
                 fetch(`/api/proxy/autocomplete?q=${query}`)
                     .then(response => response.json())
                     .then(data => {
-                        loadingIndicator.style.display = "none"; // Hide loading indicator
+                        loadingIndicator.style.display = "none";
+                        let suggestionList = document.querySelector('.bklist');
+                        suggestionList.innerHTML = '';
+
                         if (data.places) {
-                            let suggestions = data.places;
-                            console.log('suggestion', suggestions);
-
-                            let suggestionList = document.querySelector('.bklist');
-                            suggestionList.innerHTML = ''; // Clear previous suggestions
-
-                            suggestions.forEach(place => {
+                            data.places.forEach(place => {
                                 let suggestionItem = document.createElement('div');
                                 suggestionItem.textContent = place.address;
                                 suggestionItem.className = 'suggestion-item';
@@ -206,49 +266,23 @@
                                     document.getElementById("location").value = place.address;
                                     document.getElementById("longitude").value = place.longitude;
                                     document.getElementById("latitude").value = place.latitude;
+                                    document.getElementById("district").value = place.district;
                                 };
                                 suggestionList.appendChild(suggestionItem);
                             });
                         }
                     })
                     .catch(error => {
-                        loadingIndicator.style.display = "none"; // Hide loading indicator on error
-                        console.error('Error fetching data:', error);
+                        loadingIndicator.style.display = "none";
+                        console.error("Error fetching data:", error);
                     });
             } else {
-                document.querySelector('.bklist').innerHTML = ''; // Clear suggestions if query is too short
-                loadingIndicator.style.display = "none"; // Hide loading indicator if no query
+                document.querySelector('.bklist').innerHTML = '';
+                loadingIndicator.style.display = "none";
             }
         });
-
-        // Initialize the marker
-        let marker = new bkoigl.Marker({ draggable: true })
-            .setLngLat([90.3938010872331, 23.821600277500405])
-            .addTo(map);
-
-        // Event listener for marker drag end
-        marker.on('dragend', function() {
-            const lngLat = marker.getLngLat();
-            const longitude = lngLat.lng;
-            const latitude = lngLat.lat;
-
-            fetch(`/api/proxy/reverse-geocode?longitude=${longitude}&latitude=${latitude}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.place && data.place.address) {
-                        const locationInput = document.getElementById("location");
-                        const longitudeInput = document.getElementById("longitude");
-                        const latitudeInput = document.getElementById("latitude");
-                        locationInput.value = data.place.address;
-                        longitudeInput.value = longitude;
-                        latitudeInput.value = latitude;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching address:', error);
-                });
-        });
     </script>
+
 
     <style>
     .suggestion-item {

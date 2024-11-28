@@ -3,12 +3,15 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Backend;
 
+use App\Exports\DealersExport;
 use App\Http\Controllers\Controller;
+use App\Imports\DealersImport;
 use App\Models\Dealer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 use Spatie\Permission\Models\Role;
 
 // Use this import for the Request class
@@ -46,8 +49,6 @@ class DealerController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-//dd(request()->all());
-        // Check authorization before proceeding
         $this->checkAuthorization(auth()->user(), ['dealer.create']);
 
         // Validate the request data and handle any validation errors automatically
@@ -63,6 +64,7 @@ class DealerController extends Controller
             'longitude' => 'nullable',
             'latitude' => 'nullable',
             'location' => 'nullable',
+            'district' => 'nullable',
             'average_sales' => 'nullable',
             'market_size' => 'nullable',
             'market_share' => 'nullable',
@@ -103,13 +105,14 @@ class DealerController extends Controller
             'owner_name' => 'required|string|max:255',
             'zone' => 'nullable|string|max:255',
             'dealer_code' => 'nullable|string|max:255',
-            'email' => 'required|email|unique:dealers,email,' . $dealer->id,//email
+            'email' => 'nullable|email|unique:dealers,email,' . $dealer->id,//email
             'website' => 'nullable|url|max:255',
             'mobile' => 'nullable|string|max:15', // Adjust max length as needed
             'address' => 'nullable|string|max:255',
             'longitude' => 'nullable',
             'latitude' => 'nullable',
             'location' => 'nullable',
+            'district' => 'nullable',
             'average_sales' => 'nullable',
             'market_size' => 'nullable',
             'market_share' => 'nullable',
@@ -135,4 +138,35 @@ class DealerController extends Controller
         session()->flash('success', 'Dealer has been deleted.');
         return redirect()->route('admin.dealers.index');
     }
+
+    public function importShow(Request $request)
+    {
+
+//        dd($request->route()->getName());
+        $dealer = Dealer::all(); // Use findOrFail to throw an error if not found
+
+        // Return the view with the dealer data
+        return view('backend.pages.dealers.excel-import', compact('dealer'));
+    }
+
+    public function import(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'file' => 'required|mimes:xls,xlsx',
+        ]);
+
+        // Import the data from the Excel file
+        Excel::import(new DealersImport, $request->file('file'));
+
+        return redirect()->back()->with('success', 'Dealers data imported successfully.');
+    }
+
+    public function export()
+    {
+        return Excel::download(new DealersExport, 'dealers.xlsx');
+    }
+
+
+
 }

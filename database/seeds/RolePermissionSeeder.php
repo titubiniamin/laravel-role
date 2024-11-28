@@ -44,17 +44,7 @@ class RolePermissionSeeder extends Seeder
                     'dashboard.edit',
                 ]
             ],
-            [
-                'group_name' => 'blog',
-                'permissions' => [
-                    // Blog Permissions
-                    'blog.create',
-                    'blog.view',
-                    'blog.edit',
-                    'blog.delete',
-                    'blog.approve',
-                ]
-            ],
+
             [
                 'group_name' => 'admin',
                 'permissions' => [
@@ -63,7 +53,6 @@ class RolePermissionSeeder extends Seeder
                     'admin.view',
                     'admin.edit',
                     'admin.delete',
-                    'admin.approve',
                 ]
             ],
             [
@@ -74,7 +63,53 @@ class RolePermissionSeeder extends Seeder
                     'dealer.view',
                     'dealer.edit',
                     'dealer.delete',
-                    'dealer.approve',
+                    'dealer.import',
+                    'dealer.import-show',
+                ]
+            ],
+            [
+                'group_name' => 'retailer',
+                'permissions' => [
+                    // admin Permissions
+                    'retailer.create',
+                    'retailer.view',
+                    'retailer.edit',
+                    'retailer.delete',
+                    'retailer.import',
+                    'retailer.import-show'
+                ]
+            ],
+            [
+                'group_name' => 'billboard',
+                'permissions' => [
+                    // admin Permissions
+                    'billboard.create',
+                    'billboard.view',
+                    'billboard.edit',
+                    'billboard.delete',
+                    'billboard.export',
+                ]
+            ],
+            [
+                'group_name' => 'highwall',
+                'permissions' => [
+                    // admin Permissions
+                    'highwall.create',
+                    'highwall.view',
+                    'highwall.edit',
+                    'highwall.delete',
+                    'highwall.export',
+                ]
+            ],
+            [
+                'group_name' => 'shopsign',
+                'permissions' => [
+                    // admin Permissions
+                    'shopsign.create',
+                    'shopsign.view',
+                    'shopsign.edit',
+                    'shopsign.delete',
+                    'shopsign.export',
                 ]
             ],
             [
@@ -85,19 +120,26 @@ class RolePermissionSeeder extends Seeder
                     'role.view',
                     'role.edit',
                     'role.delete',
-                    'role.approve',
                 ]
             ],
             [
-                'group_name' => 'profile',
+                'group_name' => 'central-point',
                 'permissions' => [
-                    // profile Permissions
-                    'profile.view',
-                    'profile.edit',
-                    'profile.delete',
-                    'profile.update',
+                    // role Permissions
+                    'central-point.create',
+                    'central-point.view',
+                    'central-point.edit',
+                    'central-point.delete',
                 ]
             ],
+            [
+                'group_name' => 'map',
+                'permissions' => [
+                    // map Permissions
+                    'map.analytics',
+                ]
+            ],
+
         ];
 
 

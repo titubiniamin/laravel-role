@@ -1,17 +1,15 @@
 @extends('backend.layouts.master')
 
 @section('title')
-    Dealers Page - Dealer
+    Map Analytics - Dealer
 @endsection
-
 @section('admin-content')
-
     <!-- page title area start -->
     <div class="page-title-area">
         <div class="row align-items-center">
             <div class="col-sm-6">
                 <div class="breadcrumbs-area clearfix">
-                    <h4 class="page-title pull-left">Dealers</h4>
+                    <h4 class="page-title pull-left">Map Analytics</h4>
                     <ul class="breadcrumbs pull-left">
                         <li><a href="{{ route('admin.dashboard') }}">Home</a></li>
                         <li><span>Map Analytics</span></li>
@@ -37,128 +35,477 @@
                 </div>
             </div>
 
-            <!-- Right column for additional content -->
+            <!-- Right column for dropdowns and additional content -->
             <div class="col-lg-3" style="height: 70vh;">
-                <div class="card mt-5 mb-3" style="height: 400px;background-color: white">
+                <div class="card mt-5 mb-3" style="background-color: white;">
                     <div class="p-4">
+                        <!-- Central Point Select -->
                         <div class="form-group mb-4">
-                            <label for="select-view" class="form-label" style="font-weight: 500; font-size: 14px; color: #464A4D;">Select View</label>
-                            <select id="select-view" class="form-control" style="height: 40px; font-size: 14px; color: #464A4D; border: 1px solid #dcdcdc; border-radius: 4px; background-color: #fff;">
+                            <label for="select-central-point" class="form-label"
+                                   style="font-weight: 500; font-size: 14px; color: #464A4D;">Select Central Point</label>
+                            <select id="select-central-point" class="form-control"
+                                    style="height: 40px; font-size: 14px; color: #464A4D; border: 1px solid #dcdcdc; border-radius: 4px; background-color: #fff;">
                                 <option value="" disabled selected>Select</option>
-                                <option value="dealers" selected style="background-color: white">Dealers</option>
-                                <option value="retailers">Retailers</option>
-                                <option value="all">All</option>
+                                <option value="all">All Central Points</option>
+                                @foreach ($centralPoints as $centralPoint)
+                                    <option value="{{ $centralPoint['id'] }}" data-lat="{{ $centralPoint['latitude'] }}"
+                                            data-lng="{{ $centralPoint['longitude'] }}"
+                                            data-district="{{ $centralPoint['district'] }}">
+                                        {{ $centralPoint['name'] }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
-                        <!-- Add more content here -->
+
+                        <!-- Data Type Select -->
+                        <div class="form-group mb-4">
+                            <label for="select-data-type" class="form-label"
+                                   style="font-weight: 500; font-size: 14px; color: #464A4D;">Select Data Type</label>
+                            <select id="select-data-type" class="form-control"
+                                    style="height: 40px; font-size: 14px; color: #464A4D; border: 1px solid #dcdcdc; border-radius: 4px; background-color: #fff;">
+                                <option value="" disabled selected>Select Data Type</option>
+                            </select>
+                        </div>
+
+                        <!-- Legend -->
+                        <div class="map-legend" style="position: relative; bottom: 0; padding: 5px; background-color: white; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); font-size: 10px; width: 100%; overflow-y: auto;">
+                            <div class="legend-header" style="font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 5px;">Legend</div>
+
+                            <!-- Legend items -->
+                            <div class="legend-item" style="display: flex; align-items: center; margin-bottom: 4px;">
+                                <div class="legend-icon" style="background-image: url('{{ asset('images/pharmacy.png') }}'); width: 20px; height: 20px; background-size: contain; margin-right: 5px;"></div>
+                                <span class="legend-label">Central Point</span>
+                            </div>
+                            <div class="legend-item" style="display: flex; align-items: center; margin-bottom: 4px;">
+                                <div class="legend-icon" style="background-image: url('{{asset('images/dealer-2.png')}}'); width: 20px; height: 20px; background-size: contain; margin-right: 5px;"></div>
+                                <span class="legend-label">Dealer</span>
+                            </div>
+                            <div class="legend-item" style="display: flex; align-items: center; margin-bottom: 4px;">
+                                <div class="legend-icon" style="background-image: url('{{asset('images/retailer.png')}}'); width: 20px; height: 20px; background-size: contain; margin-right: 5px;"></div>
+                                <span class="legend-label">Retailer</span>
+                            </div>
+                            <div class="legend-item" style="display: flex; align-items: center; margin-bottom: 4px;">
+                                <div class="legend-icon" style="background-image: url('{{asset('images/billboard-black-1.png')}}'); width: 20px; height: 20px; background-size: contain; margin-right: 5px;"></div>
+                                <span class="legend-label">Billboard</span>
+                            </div>
+                            <div class="legend-item" style="display: flex; align-items: center; margin-bottom: 4px;">
+                                <div class="legend-icon" style="background-image: url('{{ asset('images/shop-black.png') }}'); width: 18px; height: 18px; background-size: contain; margin-right: 5px;background-repeat: no-repeat;"></div>
+                                <span class="legend-label">Shop Sign</span>
+                            </div>
+                            <div class="legend-item" style="display: flex; align-items: center; margin-bottom: 4px;">
+                                <div class="legend-icon" style="background-image: url('{{asset('images/highwall-black.png')}}'); width: 20px; height: 20px; background-size: contain; margin-right: 5px;"></div>
+                                <span class="legend-label">Highwalls</span>
+                            </div>
+                            <div class="legend-item" style="display: flex; align-items: center; margin-bottom: 4px;">
+                                <div class="legend-color-box" style="background-color: red; width: 12px; height: 12px; margin-right: 5px;"></div>
+                                <span class="legend-label">Fresh Super Cement</span>
+                            </div>
+                            <div class="legend-item" style="display: flex; align-items: center; margin-bottom: 4px;">
+                                <div class="legend-color-box" style="background-color: blue; width: 12px; height: 12px; margin-right: 5px;"></div>
+                                <span class="legend-label">Dhalai Special Cement</span>
+                            </div>
+                            <div class="legend-item" style="display: flex; align-items: center; margin-bottom: 4px;">
+                                <div class="legend-color-box" style="background-color: green; width: 12px; height: 12px; margin-right: 5px;"></div>
+                                <span class="legend-label">Meghnacem Delux Cement</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 
     <script>
-        bkoigl.accessToken = "bkoi_0f0c0e2aaed92fda43a85d29493d69776ef1c810e8f3d425f0b90fed001bef50"; // required
+
+        bkoigl.accessToken = "{{ env('BARIKOI_API_KEY') }}"; // Pass the environment variable to JavaScript
         const map = new bkoigl.Map({
             container: "map",
             center: [90.3938010872331, 23.821600277500405],
-            zoom: 10,
+            zoom: 6.5,
         });
         map.addControl(new bkoigl.FullscreenControl());
         map.addControl(new bkoigl.NavigationControl());
         map.addControl(new bkoigl.ScaleControl());
 
-        const dealers = @json($dealers); // Pass the dealer data to JavaScript
-        console.log("Dealers data:", dealers); // Check dealer data in console
-        console.log("Dealers data:", dealers);
 
-        // Function to add markers for dealers on the map
-        // Function to add markers for dealers on the map
-        function addMarkers(dealers) {
-            if (!Array.isArray(dealers)) {
-                console.error("Expected dealers to be an array");
-                return;
+
+        const centralPoints = @json($centralPoints);
+        const dealers = @json($dealers);
+        const retailers = @json($retailers);
+        const billboards = @json($billboards);
+        const shopsigns =@json($shopsigns);
+        const highwalls =@json($highwalls);
+        const dealersByDistrict = @json($dealersByDistrict);
+        const retailersByDistrict = @json($retailersByDistrict);
+        const billboardsByDistrict = @json($billboardsByDistrict);
+        const shopsignsByDistrict =@json($shopsignsByDistrict);
+        const highwallsByDistrict =@json($highwallsByDistrict);
+
+        console.log('dhaka' + shopsignsByDistrict['Dhaka']);
+        const centralIconUrl = '{{ asset('images/pharmacy.png') }}'; // Branch icon for central points
+        const dealerIconUrl = '{{ asset('images/dealer-2.png') }}'; // Red icon for dealers
+        const retailerIconUrl = '{{ asset('images/retailer.png') }}'; // Blue icon for retailers
+        const billboardIconUrl = '{{ asset('images/billboard.png') }}'; // Blue icon for retailers
+        const shopsignIconUrl = '{{ asset('images/shop-blue.png') }}'; // Blue icon for retailers
+        const highwallIconUrl = '{{ asset('images/3415475.png') }}'; // Blue icon for retailers
+
+
+        let centralPointsLayer = []; // Layer for central points
+        let dealerMarkersLayer = []; // Layer for dealer markers
+        let retailerMarkersLayer = []; // Layer for retailer markers
+        let billboardMarkersLayer = []; // Layer for billboard markers
+        let shopsignMarkerLayer = [];
+        let highwallMarkerLayer = [];
+
+
+
+        // Function to create a custom marker element
+        function createCustomMarkerElement(iconUrl) {
+            const markerElement = document.createElement('div');
+            markerElement.className = 'marker';
+            markerElement.style.backgroundImage = `url(${iconUrl})`;
+            markerElement.style.backgroundSize = 'contain';
+            markerElement.style.backgroundRepeat = 'no-repeat'; // Prevent the image from repeating
+            markerElement.style.width = '30px';
+            markerElement.style.height = '30px';
+            return markerElement;
+        }
+
+        // Function to add central points to the map (Always visible)
+        function addCentralPoints() {
+            centralPoints.forEach(point => {
+                const marker = new bkoigl.Marker({element: createCustomMarkerElement(centralIconUrl)})
+                    .setLngLat([point.longitude, point.latitude])
+                    .setPopup(new bkoigl.Popup().setHTML(`
+<div style="background-color: lightblue; padding: 10px;">
+                    <div><strong>Name: </strong>${point.name}</div>
+                    <div><strong>Location: </strong>${point.location || 'N/A'}</div>
+</div>
+                `))
+                    .addTo(map);
+                centralPointsLayer.push(marker); // Store central points markers to a separate layer
+            });
+        }
+
+        // Function to add markers for the selected data type (dealers, retailers, billboards)
+        // Define calculateDistance function first
+        function calculateDistance(lat1, lng1, lat2, lng2) {
+            const R = 6371; // Earth's radius in kilometers
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLng = (lng2 - lng1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLng / 2) * Math.sin(dLng / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            const distance = R * c; // Distance in kilometers
+            return distance;
+        }
+
+        // Add district markers after defining the function
+
+
+        // Add icon URLs for different billboard brandshttp://127.0.0.1:8000/images/pharmacy.png
+        const billboardIcons = {
+            'fresh_super_cement': '{{ asset('images/billboard-red-1.png') }}',
+            'dhalai_special_cement': '{{ asset('images/billboard-blue-1.png') }}',
+            'meghnacem_delux_cement': '{{ asset('images/billboard-green-1.png') }}'
+        };
+        const shopsignIcons = {
+            'fresh_super_cement': '{{asset('images/shop-red.png')}}',
+            'dhalai_special_cement': '{{asset('images/shop-blue.png')}}',
+            'meghnacem_delux_cement': '{{ asset('images/shop-green.png') }}'
+        }
+        const highwallIcons = {
+            'fresh_super_cement': '{{asset('images/highwall-red.png')}}',
+            'dhalai_special_cement': '{{asset('images/highwall-blue.png')}}',
+            'meghnacem_delux_cement': '{{ asset('images/highwall-green.png') }}'
+        }
+
+        // Modify addDistrictMarkers function to use specific icons based on brand
+        function addDistrictMarkers(dataType, district) {
+            let filteredData = [];
+            if (dataType === 'dealers') {
+                filteredData = district ? dealers.filter(dealer => dealer.district === district) : dealers;
+            } else if (dataType === 'retailers') {
+                filteredData = district ? retailers.filter(retailer => retailer.district === district) : retailers;
+            } else if (dataType === 'billboards') {
+                filteredData = district ? billboards.filter(billboard => billboard.district === district) : billboards;
+            } else if (dataType === 'shopsigns') {
+                filteredData = district ? shopsigns.filter(shopsign => shopsign.district === district) : shopsigns;
+            } else if (dataType === 'highwalls') {
+                filteredData = district ? highwalls.filter(highwall => highwall.district === district) : highwalls;
             }
-            dealers.forEach(dealer => {
-                const longitude = parseFloat(dealer.longitude);
-                const latitude = parseFloat(dealer.latitude);
-
-
-                // Ensure coordinates are valid
-                if (!isNaN(longitude) && !isNaN(latitude)) {
-                    // Create a popup with styled HTML content
-                    let popupContent = `
-                <div class="maplibregl-popup-content mapboxgl-popup-content">
-                    <div>
-                        <span>
-                            <div><span class="popup-label">Branch Name: </span>${dealer.name || "N/A"}</div>
-                            <div><span class="popup-label">Address: </span>${dealer.location || "N/A"}</div>`;
-
-                    if (dealer.average_sales) {
-                        popupContent += `<div><span class="popup-label">Average Sales: </span>${dealer.average_sales}</div>`;
-                    }
-
-                    if (dealer.market_size) {
-                        popupContent += `<div><span class="popup-label">Market Size: </span>${dealer.market_size}</div>`;
-                    }
-
-                    if (dealer.market_share) {
-                        popupContent += `<div><span class="popup-label">Market Share: </span>${dealer.market_share}</div>`;
-                    }
-
-                    if (dealer.competition_brand) {
-                        popupContent += `<div><span class="popup-label">Competition Brand: </span>${dealer.competition_brand}</div>`;
-                    }
-
-                    // Close the content div
-                    popupContent += `
-                        </span>
-                    </div>
-                </div>
-            `;
-
-                    const marker = new bkoigl.Marker()
-                        .setLngLat([longitude, latitude])
-                        .setPopup(new bkoigl.Popup().setHTML(popupContent)) // Set the popup with styled HTML
-                        .addTo(map);
+            // Add filtered markers to the map
+            filteredData.forEach(point => {
+                let iconUrl;
+                if (dataType === 'billboards') {
+                    // Choose the icon based on the brand
+                    iconUrl = billboardIcons[point.brand] || billboardIconUrl; // Default to general icon if brand not matched
+                } else if (dataType === 'shopsigns') {
+                    iconUrl = shopsignIcons[point.brand] || shopsignIconUrl;
+                } else if (dataType === 'highwalls') {
+                    iconUrl = highwallIcons[point.brand] || highwallIconurl
                 } else {
-                    console.error("Invalid coordinates for dealer:", dealer);
+                    iconUrl = dataType === 'dealers' ? dealerIconUrl : retailerIconUrl;
                 }
+
+                const marker = new bkoigl.Marker({element: createCustomMarkerElement(iconUrl)})
+                    .setLngLat([point.longitude, point.latitude]);
+
+                // Add popup and click event logic as before
+                marker.getElement().addEventListener('click', function () {
+                    const selectedCentralPointId = document.getElementById('select-central-point').value;
+                    if (selectedCentralPointId && selectedCentralPointId !== 'all') {
+                        const selectedCentralPoint = centralPoints.find(point => point.id == selectedCentralPointId);
+                        const distance = calculateDistance(
+                            selectedCentralPoint.latitude, selectedCentralPoint.longitude,
+                            point.latitude, point.longitude
+                        );
+
+                        const popupContent = `
+    <div style="background-color: lightblue; padding: 10px;">
+        <div><strong>Name: </strong>${point.name}</div>
+        <div><strong>Location:</strong> ${point.location || 'N/A'}</div>
+        <div><strong>Distance from ${selectedCentralPoint.name}:</strong> ${distance.toFixed(2)} km</div>
+        ${point.size ? `<div><strong>Size:</strong> ${point.size}</div>` : ''}
+        ${point.type ? `
+            <div><strong>Type:</strong>
+                ${
+                                point.type === 'single_side' ? 'Single Side' :
+                                    point.type === 'unipool' ? 'Unipool' :
+                                        point.type === 'neon' ? 'Neon' :
+                                            point.type === 'non_lit' ? 'Non Lit' :
+                                                point.type === 'lightbox' ? 'Light Box' :
+                                                    point.type === 'cold_store' ? 'Cold Store' :
+                                                        point.type === 'high_raise' ? 'High Raise' :
+                                                            point.type
+                            }
+            </div>`
+                            : ''}
+        ${point.brand ? `
+            <div><strong>Brand:</strong>
+                ${
+                                point.brand === 'fresh_super_cement' ? 'Fresh Super Cement' :
+                                    point.brand === 'dhalai_special_cement' ? 'Dhalai Special Cement' :
+                                        point.brand === 'meghnacem_delux_cement' ? 'Meghnacem Delux Cement' :
+                                            point.brand
+                            }
+            </div>`
+                            : ''}
+        ${point.average_sales ? `<div><strong>Average Sales:</strong> ${point.average_sales}</div>` : ''}
+        ${point.market_size ? `<div><strong>Market Size:</strong> ${point.market_size}</div>` : ''}
+        ${point.market_share ? `<div><strong>Market Share:</strong> ${point.market_share}</div>` : ''}
+        ${point.competition_brand ? `<div><strong>Competition Brand:</strong> ${point.competition_brand}</div>` : ''}
+    </div>
+`;
+
+
+                        marker.setPopup(new bkoigl.Popup().setHTML(popupContent)).addTo(map);
+                    }
+                });
+
+                marker.setPopup(new bkoigl.Popup().setHTML(`
+            <div style="background-color: lightblue; padding: 10px;">
+                <div><strong>Name: </strong>${point.name}</div>
+                <div><strong>Location:</strong> ${point.location || 'N/A'}</div>
+                        ${point.size ? `<div><strong>Size:</strong> ${point.size}</div>` : ''}
+                        ${point.type ? `
+            <div><strong>Type:</strong>
+                ${
+                        point.type === 'single_side' ? 'Single Side' :
+                            point.type === 'unipool' ? 'Unipool' :
+                                point.type === 'neon' ? 'Neon' :
+                                    point.type === 'non_lit' ? 'Non Lit' :
+                                        point.type === 'lightbox' ? 'Light Box' :
+                                            point.type === 'lightbox' ? 'Light Box' :
+                                                point.type === 'cold_store' ? 'Cold Store' :
+                                                    point.type === 'high_raise' ? 'High Raise' :
+                                                        point.type
+                    }
+            </div>`
+                    : ''}
+                        ${point.brand ? `
+            <div><strong>Brand:</strong>
+                ${
+                        point.brand === 'fresh_super_cement' ? 'Fresh Super Cement' :
+                            point.brand === 'dhalai_special_cement' ? 'Dhalai Special Cement' :
+                                point.brand === 'meghnacem_delux_cement' ? 'Meghnacem Delux Cement' :
+                                    point.brand
+                    }
+            </div>`
+                    : ''}
+                        ${point.average_sales ? `<div><strong>Average Sales:</strong> ${point.average_sales}</div>` : ''}
+                        ${point.market_size ? `<div><strong>Market Size:</strong> ${point.market_size}</div>` : ''}
+                        ${point.market_share ? `<div><strong>Market Share:</strong> ${point.market_share}</div>` : ''}
+                        ${point.competition_brand ? `<div><strong>Competition Brand:</strong> ${point.competition_brand}</div>` : ''}
+            </div>
+        `)).addTo(map);
+
+                if (dataType === 'dealers') {
+                    dealerMarkersLayer.push(marker);
+                } else if (dataType === 'retailers') {
+                    retailerMarkersLayer.push(marker);
+                } else if (dataType === 'billboards') {
+                    billboardMarkersLayer.push(marker);
+                } else if (dataType === 'shopsigns') {
+                    shopsignMarkerLayer.push(marker);
+                } else if (dataType === 'highwalls') {
+                    highwallMarkerLayer.push(marker);
+                }
+            });
+            console.log(shopsignsByDistrict[district] || 0)
+        }
+
+
+        // Function to populate the data type dropdown based on the selected district
+        function populateDataTypeDropdown(district) {
+            const dataTypeSelect = document.getElementById('select-data-type');
+            dataTypeSelect.innerHTML = ''; // Clear existing options
+
+            const defaultOption = document.createElement('option');
+            defaultOption.textContent = 'Select Data Type'; // Default option for the user to choose
+            defaultOption.disabled = true;
+            defaultOption.selected = true;
+            dataTypeSelect.appendChild(defaultOption);
+
+            let dealersCount, retailersCount, billboardsCount, shopsignsCount, highwallsCount;
+
+            if (district === 'all' || district === '') {
+                // Calculate counts for all data types across all districts
+                dealersCount = dealers.length;
+                retailersCount = retailers.length;
+                billboardsCount = billboards.length;
+                shopsignsCount = shopsigns.length;
+                highwallsCount = highwalls.length;
+            } else {
+                // Calculate counts for the selected district only
+                dealersCount = dealersByDistrict[district] || 0;
+                retailersCount = retailersByDistrict[district] || 0;
+                billboardsCount = billboardsByDistrict[district] || 0;
+                shopsignsCount = shopsignsByDistrict[district] || 0;
+                highwallsCount = highwallsByDistrict[district] || 0;
+                console.log('this is calculated ' + shopsignsCount)
+            }
+
+            // Ensure all counts are valid numbers (prevent NaN)
+            dealersCount = Number(dealersCount) || 0;
+            retailersCount = Number(retailersCount) || 0;
+            billboardsCount = Number(billboardsCount) || 0;
+            shopsignsCount = Number(shopsignsCount) || 0;
+            highwallsCount = Number(highwallsCount) || 0;
+
+
+            // Calculate total count
+            const totalCount = dealersCount + retailersCount + billboardsCount + shopsignsCount + highwallsCount;
+
+            // Add the "All" option to the dropdown with the updated total count
+            const allOption = document.createElement('option');
+            allOption.value = 'all';
+            allOption.textContent = `All (${totalCount})`;
+            dataTypeSelect.appendChild(allOption);
+
+            // Add individual options for dealers, retailers, and billboards
+            const options = [
+                {type: 'dealers', label: 'Dealers', count: dealersCount},
+                {type: 'retailers', label: 'Retailers', count: retailersCount},
+                {type: 'billboards', label: 'Billboards', count: billboardsCount},
+                {type: 'shopsigns', label: 'Shop Signs', count: shopsignsCount},
+                {type: 'highwalls', label: 'Highwalls', count: highwallsCount}
+            ];
+
+            options.forEach(option => {
+                const dataOption = document.createElement('option');
+                dataOption.value = option.type;
+                dataOption.textContent = `${option.label} (${option.count})`;
+                dataTypeSelect.appendChild(dataOption);
             });
         }
 
 
+        // Event listener for central point selection
+        document.getElementById('select-central-point').addEventListener('change', function () {
+            const selectedCentralPoint = this.value;
 
-        // Add Marker on Map Load
-        map.on("load", () => {
-            addMarkers(dealers); // Call the addMarkers function to place dealer markers on the map
+            // If "All" is selected in the central point dropdown
+            if (selectedCentralPoint === 'all') {
+                map.flyTo({
+                    center: [90.3938010872331, 23.821600277500405], // Center of the country/region
+                    zoom: 6.5, // Adjust zoom level to show all points
+                    essential: true // Ensures the animation runs even in non-interactive contexts (like page load)
+                });
+
+                // Clear existing markers for data types
+                clearDataTypeMarkers();
+
+                // Show all markers (dealers, retailers, billboards)
+                addDistrictMarkers('dealers', '');  // Empty district to show all
+                addDistrictMarkers('retailers', '');
+                addDistrictMarkers('billboards', '');
+                addDistrictMarkers('shopsigns', '');
+                addDistrictMarkers('highwalls', '');
+
+                // Populate the data type dropdown with updated counts
+                populateDataTypeDropdown('');
+                return;
+            }
+
+            const lat = parseFloat(this.options[this.selectedIndex].dataset.lat);  // Ensure lat is a number
+            const lng = parseFloat(this.options[this.selectedIndex].dataset.lng);  // Ensure lng is a number
+            const district = this.options[this.selectedIndex].dataset.district;
+
+            // Fly to the selected central point and zoom in
+            map.flyTo({
+                center: [lng, lat],
+                zoom: 11, // Adjust zoom level as needed
+                essential: true // Ensures that the animation runs even in non-interactive contexts
+            });
+
+            // Clear existing markers for data types
+            clearDataTypeMarkers();
+
+            // Populate the data type dropdown based on the selected district
+            populateDataTypeDropdown(district);
         });
+
+        // Event listener for data type selection
+        document.getElementById('select-data-type').addEventListener('change', function () {
+            const selectedDataType = this.value;
+            const selectedCentralPoint = document.getElementById('select-central-point').value;
+
+            // If "All" is selected in the data type dropdown
+            if (selectedDataType === 'all') {
+                const district = selectedCentralPoint === 'all' ? '' : document.querySelector(`#select-central-point option[value="${selectedCentralPoint}"]`).getAttribute('data-district');
+
+                // Show all markers (dealers, retailers, billboards)
+                addDistrictMarkers('dealers', district);
+                addDistrictMarkers('retailers', district);
+                addDistrictMarkers('billboards', district);
+                addDistrictMarkers('shopsigns', district);
+                addDistrictMarkers('highwalls', district);
+            } else {
+                const district = selectedCentralPoint === 'all' ? '' : document.querySelector(`#select-central-point option[value="${selectedCentralPoint}"]`).getAttribute('data-district');
+                clearDataTypeMarkers();
+                addDistrictMarkers(selectedDataType, district);
+            }
+        });
+
+        // Function to clear all data type markers from the map
+        function clearDataTypeMarkers() {
+            dealerMarkersLayer.forEach(marker => marker.remove());
+            retailerMarkersLayer.forEach(marker => marker.remove());
+            billboardMarkersLayer.forEach(marker => marker.remove());
+            shopsignMarkerLayer.forEach(marker => marker.remove());
+            highwallMarkerLayer.forEach(marker => marker.remove());
+            dealerMarkersLayer = [];
+            retailerMarkersLayer = [];
+            billboardMarkersLayer = [];
+            shopsignMarkersLayer = [];
+            highwalldMarkersLayer = [];
+        }
+
+        // Initialize the map with central points
+        addCentralPoints();
+        populateDataTypeDropdown('');
     </script>
-
-<style>
-    .popup-label {
-        font-weight: 600;
-        color: rgb(70, 74, 77);
-    }
-    .maplibregl-popup-content {
-        background-color: #3498db; /* Change to your preferred color */
-        color: #fff; /* Text color */
-        padding: 10px;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    }
-
-    /* Popup tip styling (the small arrow pointing to the marker) */
-    .maplibregl-popup-tip {
-        background-color: #3498db; /* Same color as the popup content */
-    }
-
-    /* Label styling inside popup */
-    .popup-label {
-        font-weight: 600;
-        color: #fff; /* Adjust text color if needed */
-    }
-</style>
-
-
 @endsection

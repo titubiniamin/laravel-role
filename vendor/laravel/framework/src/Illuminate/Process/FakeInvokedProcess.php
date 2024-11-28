@@ -290,7 +290,7 @@ class FakeInvokedProcess implements InvokedProcessContract
     /**
      * Set the general output handler for the fake invoked process.
      *
-     * @param  callable|null  $outputHandler
+     * @param  callable|null  $output
      * @return $this
      */
     public function withOutputHandler(?callable $outputHandler)

@@ -15,9 +15,11 @@ use DOMElement;
 use DOMXPath;
 
 /**
+ * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ *
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
-abstract readonly class LogToReportMigration implements Migration
+abstract class LogToReportMigration implements Migration
 {
     /**
      * @throws MigrationException

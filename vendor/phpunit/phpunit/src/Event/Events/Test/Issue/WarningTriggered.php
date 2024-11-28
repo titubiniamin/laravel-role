@@ -20,27 +20,27 @@ use PHPUnit\Event\Telemetry;
  *
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  */
-final readonly class WarningTriggered implements Event
+final class WarningTriggered implements Event
 {
-    private Telemetry\Info $telemetryInfo;
-    private Test $test;
+    private readonly Telemetry\Info $telemetryInfo;
+    private readonly Test $test;
 
     /**
      * @psalm-var non-empty-string
      */
-    private string $message;
+    private readonly string $message;
 
     /**
      * @psalm-var non-empty-string
      */
-    private string $file;
+    private readonly string $file;
 
     /**
      * @psalm-var positive-int
      */
-    private int $line;
-    private bool $suppressed;
-    private bool $ignoredByBaseline;
+    private readonly int $line;
+    private readonly bool $suppressed;
+    private readonly bool $ignoredByBaseline;
 
     /**
      * @psalm-param non-empty-string $message

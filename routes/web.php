@@ -1,17 +1,20 @@
 <?php
 
-use App\Http\Controllers\ApiProxyController;
+use App\Http\Controllers\Backend\AdminsController;
+use App\Http\Controllers\Backend\Auth\ForgotPasswordController;
+use App\Http\Controllers\Backend\Auth\LoginController;
+use App\Http\Controllers\Backend\BillboardController;
+use App\Http\Controllers\Backend\CentralPointController;
+use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\DealerController;
+use App\Http\Controllers\Backend\HighwallController;
+use App\Http\Controllers\Backend\RetailerController;
+use App\Http\Controllers\Backend\RolesController;
+use App\Http\Controllers\Backend\ShopsignController;
 use App\Http\Controllers\MapAnalyticsController;
 use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\Backend\AdminsController;
-use App\Http\Controllers\Backend\Auth\ForgotPasswordController;
-use App\Http\Controllers\Backend\Auth\LoginController;
-use App\Http\Controllers\Backend\DashboardController;
-use App\Http\Controllers\Backend\RolesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,9 +58,25 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::post('/password/reset/submit', [ForgotPasswordController::class, 'reset'])->name('password.update');
 
     //Dealer
-    Route::resource('dealers', DealerController::class);
+    Route::get('dealers/import-show', [DealerController::class, 'importShow'])->name('dealers.import-show');
+    Route::post('dealers/import', [DealerController::class, 'import'])->name('dealers.import');
+    Route::get('dealers/sample-excel', [DealerController::class, 'export'])->name('dealers.sample-excel');
+    Route::resource('dealers', DealerController::class)->except(['show']);
     Route::get('all-dealers', [DealerController::class,'allDealers'])->name('allDealers');
+    //Retailer
+    Route::resource('retailers', RetailerController::class)->except(['show']);
+    Route::get('retailers/import-show', [RetailerController::class, 'importShow'])->name('retailers.import-show');
+    Route::post('retailers/import', [RetailerController::class, 'import'])->name('retailers.import');
+    Route::get('retailers/sample-excel', [RetailerController::class, 'export'])->name('retailers.sample-excel');
+    Route::get('all-retailers', [RetailerController::class,'allDealers'])->name('allRetailers');
     Route::get('map-analytics', [MapAnalyticsController::class, 'mapAnalytics'])->name('map.analytics');
+    Route::resource('central-points',CentralPointController::class);
+    Route::resource('billboards',BillboardController::class)->except(['show']);
+    Route::get('billboards/export',[BillboardController::class,'export'])->name('billboards.export');
+    Route::resource('highwalls',HighwallController::class)->except(['show']);
+    Route::get('highwalls/export',[HighwallController::class,'export'])->name('highwalls.export');
+    Route::resource('shopsigns',ShopsignController::class)->except(['show']);
+    Route::get('shopsigns/export',[ShopsignController::class,'export'])->name('shopsigns.export');
 })->middleware('auth:admin');
 Route::get('/test',[TestController::class,'index'])->name('test');
 //Route::get('/api/proxy/autocomplete', [ApiProxyController::class, 'fetchAutocomplete']);

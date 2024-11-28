@@ -16,7 +16,7 @@ use PHPUnit\Metadata\Version\Requirement;
  *
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  */
-abstract readonly class Metadata
+abstract class Metadata
 {
     private const CLASS_LEVEL  = 0;
     private const METHOD_LEVEL = 1;
@@ -24,7 +24,7 @@ abstract readonly class Metadata
     /**
      * @psalm-var 0|1
      */
-    private int $level;
+    private readonly int $level;
 
     public static function after(): After
     {
@@ -213,19 +213,28 @@ abstract readonly class Metadata
     }
 
     /**
-     * @internal This method is not covered by the backward compatibility promise for PHPUnit
+     * @psalm-param class-string $className
      */
-    public static function ignorePhpunitDeprecationsOnClass(): IgnorePhpunitDeprecations
+    public static function ignoreClassForCodeCoverage(string $className): IgnoreClassForCodeCoverage
     {
-        return new IgnorePhpunitDeprecations(self::CLASS_LEVEL);
+        return new IgnoreClassForCodeCoverage(self::CLASS_LEVEL, $className);
     }
 
     /**
-     * @internal This method is not covered by the backward compatibility promise for PHPUnit
+     * @psalm-param class-string $className
+     * @psalm-param non-empty-string $methodName
      */
-    public static function ignorePhpunitDeprecationsOnMethod(): IgnorePhpunitDeprecations
+    public static function ignoreMethodForCodeCoverage(string $className, string $methodName): IgnoreMethodForCodeCoverage
     {
-        return new IgnorePhpunitDeprecations(self::METHOD_LEVEL);
+        return new IgnoreMethodForCodeCoverage(self::CLASS_LEVEL, $className, $methodName);
+    }
+
+    /**
+     * @psalm-param non-empty-string $functionName
+     */
+    public static function ignoreFunctionForCodeCoverage(string $functionName): IgnoreFunctionForCodeCoverage
+    {
+        return new IgnoreFunctionForCodeCoverage(self::CLASS_LEVEL, $functionName);
     }
 
     public static function postCondition(): PostCondition
@@ -404,12 +413,9 @@ abstract readonly class Metadata
         return new TestDox(self::METHOD_LEVEL, $text);
     }
 
-    /**
-     * @psalm-param ?non-empty-string $name
-     */
-    public static function testWith(array $data, ?string $name = null): TestWith
+    public static function testWith(array $data): TestWith
     {
-        return new TestWith(self::METHOD_LEVEL, $data, $name);
+        return new TestWith(self::METHOD_LEVEL, $data);
     }
 
     /**
@@ -628,11 +634,25 @@ abstract readonly class Metadata
     }
 
     /**
-     * @psalm-assert-if-true IgnorePhpunitDeprecations $this
-     *
-     * @internal This method is not covered by the backward compatibility promise for PHPUnit
+     * @psalm-assert-if-true IgnoreClassForCodeCoverage $this
      */
-    public function isIgnorePhpunitDeprecations(): bool
+    public function isIgnoreClassForCodeCoverage(): bool
+    {
+        return false;
+    }
+
+    /**
+     * @psalm-assert-if-true IgnoreMethodForCodeCoverage $this
+     */
+    public function isIgnoreMethodForCodeCoverage(): bool
+    {
+        return false;
+    }
+
+    /**
+     * @psalm-assert-if-true IgnoreFunctionForCodeCoverage $this
+     */
+    public function isIgnoreFunctionForCodeCoverage(): bool
     {
         return false;
     }

@@ -166,7 +166,6 @@ class Command extends SymfonyCommand
      * @param  \Symfony\Component\Console\Output\OutputInterface  $output
      * @return int
      */
-    #[\Override]
     public function run(InputInterface $input, OutputInterface $output): int
     {
         $this->output = $output instanceof OutputStyle ? $output : $this->laravel->make(
@@ -191,9 +190,9 @@ class Command extends SymfonyCommand
      *
      * @param  \Symfony\Component\Console\Input\InputInterface  $input
      * @param  \Symfony\Component\Console\Output\OutputInterface  $output
+     * @return int
      */
-    #[\Override]
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         if ($this instanceof Isolatable && $this->option('isolated') !== false &&
             ! $this->commandIsolationMutex()->create($this)) {
@@ -237,11 +236,13 @@ class Command extends SymfonyCommand
      */
     protected function resolveCommand($command)
     {
-        if (! class_exists($command)) {
-            return $this->getApplication()->find($command);
-        }
+        if (is_string($command)) {
+            if (! class_exists($command)) {
+                return $this->getApplication()->find($command);
+            }
 
-        $command = $this->laravel->make($command);
+            $command = $this->laravel->make($command);
+        }
 
         if ($command instanceof SymfonyCommand) {
             $command->setApplication($this->getApplication());
@@ -259,7 +260,6 @@ class Command extends SymfonyCommand
      *
      * @return bool
      */
-    #[\Override]
     public function isHidden(): bool
     {
         return $this->hidden;
@@ -268,7 +268,6 @@ class Command extends SymfonyCommand
     /**
      * {@inheritdoc}
      */
-    #[\Override]
     public function setHidden(bool $hidden = true): static
     {
         parent::setHidden($this->hidden = $hidden);

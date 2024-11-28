@@ -15,9 +15,11 @@ use function file_put_contents;
 use XMLWriter;
 
 /**
+ * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ *
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
-final readonly class Writer
+final class Writer
 {
     /**
      * @psalm-param non-empty-string $baselineFile

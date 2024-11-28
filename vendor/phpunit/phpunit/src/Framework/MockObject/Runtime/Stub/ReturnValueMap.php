@@ -15,11 +15,13 @@ use function is_array;
 use PHPUnit\Framework\MockObject\Invocation;
 
 /**
+ * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ *
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
-final readonly class ReturnValueMap implements Stub
+final class ReturnValueMap implements Stub
 {
-    private array $valueMap;
+    private readonly array $valueMap;
 
     public function __construct(array $valueMap)
     {
