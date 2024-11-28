@@ -51,6 +51,10 @@
                                         </a>
                                     </li>
                                 @endif
+                                @if ($usr->can('dealer.excel'))
+                                    <li class="{{ Route::is('admin.dealers.excel')  ? 'active' : '' }}"><a
+                                            href="{{ route('admin.dealers.excel') }}">Create Dealer</a></li>
+                                @endif
                             </ul>
                         </li>
                     @endif
