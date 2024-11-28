@@ -88,7 +88,7 @@
 
                                     <div class="form-group">
                                         <label for="email">Email</label>
-                                        <input type="email" class="form-control" value="email" name="email">
+                                        <input type="email" class="form-control"  name="email">
                                     </div>
 
                                     <div class="form-group">
@@ -144,7 +144,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="market-share">Market Share</label>
-                                    <input type="text" class="form-control" value="{{ old('market_share') }}" name="market_share">
+                                    <input type="text" class="form-control" value="{{ old('market_share') }}" name="market_share" id="market_share" readonly>
                                 </div>
                                 <div class="form-group">
                                     <label for="name">Competition Brand</label>
@@ -165,6 +165,30 @@
 
 
     <script>
+        document.addEventListener('DOMContentLoaded',function(){
+            const averageSalesInput = document.querySelector('input[name="average_sales"]');
+            const marketSizeInput = document.querySelector('input[name="market_size"]');
+            const marketShareInput = document.getElementById("market_share");
+
+            //Calculate Market Share
+            function calculateMarketShare(){
+                console.log('calculate')
+                const averageSales=parseFloat(averageSalesInput.value) || 0;
+                const marketSize = parseFloat(marketSizeInput.value) || 0;
+                if(marketSize >0){
+                    const marketShare=(averageSales/marketSize) * 100;
+                    marketShareInput.value=marketShare.toFixed(2);
+                }else{
+                    marketShareInput.value="0.00"
+                }
+            }
+            //Attach event Listener to trigger calculation on input change
+
+            averageSalesInput.addEventListener('input',calculateMarketShare);
+            marketSizeInput.addEventListener('input', calculateMarketShare);
+
+        });
+
         bkoigl.accessToken = "{{ env('BARIKOI_API_KEY') }}";
 
         let map, marker;

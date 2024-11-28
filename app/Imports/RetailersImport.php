@@ -21,7 +21,7 @@ class RetailersImport implements ToModel, WithHeadingRow
                 $retailer->update([
                     'average_sales'     => $row['average_sales'],
                     'market_size'       => $row['market_size'],
-                    'market_share'      => $row['market_share'],
+                    'market_share'      => number_format($row['average_sales'] / $row['market_size'] * 100,2),
                     'competition_brand' => $row['competition_brand'],
                 ]);
             } else {

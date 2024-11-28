@@ -67,8 +67,8 @@ class RetailerController extends Controller
             'latitude' => 'nullable',
             'location' => 'nullable',
             'district' => 'nullable',
-            'average_sales' => 'nullable',
-            'market_size' => 'nullable',
+            'average_sales' => 'nullable|numeric',
+            'market_size' => 'nullable|numeric',
             'market_share' => 'nullable',
             'competition_brand' => 'nullable',
         ]);
@@ -115,8 +115,8 @@ class RetailerController extends Controller
             'latitude' => 'nullable',
             'location' => 'nullable',
             'district' => 'nullable',
-            'average_sales' => 'nullable',
-            'market_size' => 'nullable',
+            'average_sales' => 'nullable|numeric',
+            'market_size' => 'nullable|numeric',
             'market_share' => 'nullable',
             'competition_brand' => 'nullable',
         ]);

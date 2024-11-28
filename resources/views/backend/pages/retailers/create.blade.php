@@ -55,7 +55,7 @@
                                     @endif
                                     <script>
                                         // Automatically hide the flash message after 5 seconds
-                                        setTimeout(function() {
+                                        setTimeout(function () {
                                             const flashMessage = document.getElementById('flash-message');
                                             if (flashMessage) {
                                                 flashMessage.style.transition = 'opacity 0.5s ease'; // Fade-out transition
@@ -69,11 +69,13 @@
                                     <!-- Form Fields Start -->
                                     <div class="form-group">
                                         <label for="name">Name</label>
-                                        <input type="text" class="form-control" value="{{ old('name') }}" name="name" required>
+                                        <input type="text" class="form-control" value="{{ old('name') }}" name="name"
+                                               required>
                                     </div>
                                     <div class="form-group">
                                         <label for="owner_name">Owner Name</label>
-                                        <input type="text" class="form-control" value="{{ old('owner_name') }}" name="owner_name" required>
+                                        <input type="text" class="form-control" value="{{ old('owner_name') }}"
+                                               name="owner_name" required>
                                     </div>
 
                                     <div class="form-group">
@@ -83,27 +85,31 @@
 
                                     <div class="form-group">
                                         <label for="retailer_code">Retailer Code</label>
-                                        <input type="text" class="form-control" value="{{ old('retailer_code') }}" name="retailer_code">
+                                        <input type="text" class="form-control" value="{{ old('retailer_code') }}"
+                                               name="retailer_code">
                                     </div>
 
                                     <div class="form-group">
                                         <label for="email">Email</label>
-                                        <input type="email" class="form-control" value="email" name="email">
+                                        <input type="email" class="form-control" value="{{old('email')}}" name="email">
                                     </div>
 
                                     <div class="form-group">
                                         <label for="website">Website</label>
-                                        <input type="text" class="form-control" value="{{ old('website') }}" name="website">
+                                        <input type="text" class="form-control" value="{{ old('website') }}"
+                                               name="website">
                                     </div>
 
                                     <div class="form-group">
                                         <label for="phone">Mobile</label>
-                                        <input type="text" class="form-control" value="{{ old('mobile') }}" name="mobile">
+                                        <input type="text" class="form-control" value="{{ old('mobile') }}"
+                                               name="mobile">
                                     </div>
 
                                     <div class="form-group">
                                         <label for="address">Address</label>
-                                        <input type="text" class="form-control" value="{{ old('address') }}" name="address">
+                                        <input type="text" class="form-control" value="{{ old('address') }}"
+                                               name="address">
                                     </div>
 
                                     <div class="form-group">
@@ -111,9 +117,10 @@
                                         <input type="text" name="longitude" id="longitude" hidden>
                                         <input type="text" name="latitude" id="latitude" hidden>
                                         <input type="text" name="district" id="district" hidden>
-                                        <input type="text" class="form-control bksearch" name="location" id="location" />
+                                        <input type="text" class="form-control bksearch" name="location" id="location"/>
                                         <div class="bklist"></div>
-                                        <div id="loading" style="display: none;">Loading...</div> <!-- Loading indicator -->
+                                        <div id="loading" style="display: none;">Loading...</div>
+                                        <!-- Loading indicator -->
                                     </div>
 
                                     <div class="form-group">
@@ -136,19 +143,23 @@
                             <div class="form-group mb-4">
                                 <div class="form-group">
                                     <label for="name">Average Sales</label>
-                                    <input type="text" class="form-control" value="{{ old('average_sales') }}" name="average_sales">
+                                    <input type="text" class="form-control" value="{{ old('average_sales') }}"
+                                           name="average_sales">
                                 </div>
                                 <div class="form-group">
                                     <label for="name">Market Size</label>
-                                    <input type="text" class="form-control" value="{{ old('market_size') }}" name="market_size">
+                                    <input type="text" class="form-control" value="{{ old('market_size') }}"
+                                           name="market_size">
                                 </div>
                                 <div class="form-group">
                                     <label for="market-share">Market Share</label>
-                                    <input type="text" class="form-control" value="{{ old('market_share') }}" name="market_share">
+                                    <input type="text" class="form-control" value="{{ old('market_share') }}"
+                                           name="market_share" id="market_share">
                                 </div>
                                 <div class="form-group">
                                     <label for="name">Competition Brand</label>
-                                    <input type="text" class="form-control" value="{{ old('competition_brand') }}" name="competition_brand">
+                                    <input type="text" class="form-control" value="{{ old('competition_brand') }}"
+                                           name="competition_brand">
                                 </div>
                             </div>
                             <!-- Additional content goes here -->
@@ -164,6 +175,27 @@
     <!-- Your existing script and styles here -->
 
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const averageSalesInput = document.querySelector('input[name="average_sales"]');
+            const marketSizeInput = document.querySelector('input[name="market_size"]');
+            const marketShareInput = document.getElementById("market_share");
+
+
+            function calculateMarketShare() {
+                const averageSales = parseFloat(averageSalesInput.value) || 0;
+                const marketSize = parseFloat(marketSizeInput.value) || 0;
+                if (marketSize > 0) {
+                    const marketShare = (averageSales / marketSize) * 100;
+                    marketShareInput.value = marketShare.toFixed(2);
+                } else {
+                    marketShareInput.value = "0.00";
+                }
+            }
+
+            averageSalesInput.addEventListener('input', calculateMarketShare);
+            marketSizeInput.addEventListener('input', calculateMarketShare);
+
+        });
         bkoigl.accessToken = "{{ env('BARIKOI_API_KEY') }}";
 
         let map, marker;
@@ -210,7 +242,7 @@
             map.addControl(new bkoigl.ScaleControl());
 
             // Initialize a draggable marker
-            marker = new bkoigl.Marker({ draggable: true })
+            marker = new bkoigl.Marker({draggable: true})
                 .setLngLat([longitude, latitude])
                 .addTo(map);
 
@@ -257,7 +289,7 @@
                                 suggestionItem.className = 'suggestion-item';
                                 suggestionItem.onclick = function () {
                                     marker.setLngLat([place.longitude, place.latitude]);
-                                    map.flyTo({ center: [place.longitude, place.latitude], zoom: 15 });
+                                    map.flyTo({center: [place.longitude, place.latitude], zoom: 15});
                                     suggestionList.innerHTML = '';
                                     document.getElementById("location").value = place.address;
                                     document.getElementById("longitude").value = place.longitude;
@@ -280,19 +312,21 @@
     </script>
 
     <style>
-    .suggestion-item {
-        padding: 5px;
-        cursor: pointer;
-    }
-    .suggestion-item:hover {
-        background-color: #f0f0f0; /* Highlight on hover */
-    }
-    #loading {
-        display: none; /* Initially hidden */
-        font-size: 14px;
-        color: #888;
-        padding: 10px 0;
-    }
+        .suggestion-item {
+            padding: 5px;
+            cursor: pointer;
+        }
+
+        .suggestion-item:hover {
+            background-color: #f0f0f0; /* Highlight on hover */
+        }
+
+        #loading {
+            display: none; /* Initially hidden */
+            font-size: 14px;
+            color: #888;
+            padding: 10px 0;
+        }
 
 
     </style>
