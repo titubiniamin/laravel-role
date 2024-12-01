@@ -57,7 +57,7 @@
                         <div class="form-group mb-4">
                             <label for="select-district" class="form-label"
                                    style="font-weight: 500; font-size: 14px; color: #464A4D;">Select District</label>
-                            <select id="select-district" class="form-control"
+                            <select id="select-district" name="select-district" class="form-control"
                                     style="height: 40px; font-size: 14px; color: #464A4D; border: 1px solid #dcdcdc; border-radius: 4px; background-color: #fff;">
                                 <option value="" disabled selected>Select</option>
                                 <option value="all">All Districts</option>
@@ -157,7 +157,6 @@
         const shopsignsByDistrict =@json($shopsignsByDistrict);
         const highwallsByDistrict =@json($highwallsByDistrict);
 
-        console.log('dhaka' + shopsignsByDistrict['Dhaka']);
         const districtIconUrl = '{{ asset('images/pharmacy.png') }}'; // Branch icon for district points
         const dealerIconUrl = '{{ asset('images/dealer-2.png') }}'; // Red icon for dealers
         const retailerIconUrl = '{{ asset('images/retailer.png') }}'; // Blue icon for retailers
@@ -377,7 +376,6 @@
         function populateDataTypeDropdown(district) {
             const dataTypeSelect = document.getElementById('select-data-type');
             dataTypeSelect.innerHTML = ''; // Clear existing options
-
             const defaultOption = document.createElement('option');
             defaultOption.textContent = 'Select Data Type'; // Default option for the user to choose
             defaultOption.disabled = true;
@@ -441,6 +439,7 @@
         // Event listener for district point selection
         document.getElementById('select-district').addEventListener('change', function () {
             const selectedDistrict = this.value;
+            console.log('selected district'+selectedDistrict)
 
             // If "All" is selected in the district point dropdown
             if (selectedDistrict === 'all') {
@@ -468,6 +467,7 @@
             const lat = parseFloat(this.options[this.selectedIndex].dataset.lat);  // Ensure lat is a number
             const lng = parseFloat(this.options[this.selectedIndex].dataset.lng);  // Ensure lng is a number
             const district = this.options[this.selectedIndex].dataset.district;
+            console.log('the district is'+ district)
 
             // Fly to the selected district point and zoom in
             map.flyTo({
@@ -538,7 +538,7 @@
             if (!isChecked) {
                 console.log(isChecked)
                 clearDataTypeMarkers()
-                populateDataTypeDropdown()
+                populateDataTypeDropdown('')
                 minInput.value = '';
                 maxInput.value = '';
             }
@@ -555,8 +555,10 @@
             districtSelect.innerHTML = ''; // Clear existing options
 
             const defaultOption = document.createElement('option');
-            defaultOption.value = 'all';
-            defaultOption.textContent = 'All Districts';
+            defaultOption.textContent = 'Select'; // Default option for the user to choose
+            defaultOption.disabled = true;
+            defaultOption.value = '';
+            defaultOption.selected = true; // This makes it the default selected option
             districtSelect.appendChild(defaultOption);
 
             districts.forEach(district => {
@@ -568,7 +570,7 @@
                     option.textContent = `${district.name} (${share}%)`;
                     option.dataset.lat = district.latitude;
                     option.dataset.lng = district.longitude;
-                    option.dataset.district = district.name;
+                    option.dataset.district = district.district;
                     districtSelect.appendChild(option);
                 }
             });
