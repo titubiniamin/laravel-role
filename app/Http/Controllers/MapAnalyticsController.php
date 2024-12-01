@@ -21,7 +21,6 @@ class MapAnalyticsController extends Controller
         $dealers = Dealer::all();
         $retailers = Retailer::all();
         $billboards = Billboard::all();
-        $centralPoints = CentralPoint::all();
         $shopsigns = ShopSign::all();
         $highwalls = HighWall::all();
         $districts = District::all();
@@ -39,7 +38,6 @@ class MapAnalyticsController extends Controller
             'dealers' => $dealers,
             'retailers' => $retailers,
             'billboards' => $billboards,
-            'centralPoints' => $centralPoints,
             'shopsigns' => $shopsigns,
             'highwalls' => $highwalls,
             'dealersByDistrict' => $dealersByDistrict,

@@ -83,27 +83,27 @@
                     @endif
                     <!--Retailer End-->
 
-                    <!-- Central Point Menu Section-->
-                    @if ($usr->can('central-point.view') || $usr->can('central-point.edit') || $usr->can('central-point.delete'))
-                        <li>
-                            <a href="javascript:void(0)" aria-expanded="true"><i
-                                    class="fa fa-map-pin"></i><span>Central Point</span></a>
-                            <ul class="collapse {{ Route::is('admin.central-points.create') || Route::is('admin.central-points.index') || Route::is('admin.central-points.edit') || Route::is('admin.central-points.show') ? 'in' : '' }}">
-                                @if ($usr->can('central-point.view'))
-                                    <li class="{{ Route::is('admin.central-points.index') || Route::is('admin.central-points.edit') ? 'active' : '' }}">
-                                        <a href="{{ route('admin.central-points.index') }}">All Central Point</a>
-                                    </li>
-                                @endif
-                                @if ($usr->can('central-point.create'))
-                                    <li class="{{ Route::is('admin.central-points.create') ? 'active' : '' }}">
-                                        <a href="{{ route('admin.central-points.create') }}">Create Central Point</a>
-                                    </li>
-                                @endif
+{{--                    <!-- Central Point Menu Section-->--}}
+{{--                    @if ($usr->can('central-point.view') || $usr->can('central-point.edit') || $usr->can('central-point.delete'))--}}
+{{--                        <li>--}}
+{{--                            <a href="javascript:void(0)" aria-expanded="true"><i--}}
+{{--                                    class="fa fa-map-pin"></i><span>Central Point</span></a>--}}
+{{--                            <ul class="collapse {{ Route::is('admin.central-points.create') || Route::is('admin.central-points.index') || Route::is('admin.central-points.edit') || Route::is('admin.central-points.show') ? 'in' : '' }}">--}}
+{{--                                @if ($usr->can('central-point.view'))--}}
+{{--                                    <li class="{{ Route::is('admin.central-points.index') || Route::is('admin.central-points.edit') ? 'active' : '' }}">--}}
+{{--                                        <a href="{{ route('admin.central-points.index') }}">All Central Point</a>--}}
+{{--                                    </li>--}}
+{{--                                @endif--}}
+{{--                                @if ($usr->can('central-point.create'))--}}
+{{--                                    <li class="{{ Route::is('admin.central-points.create') ? 'active' : '' }}">--}}
+{{--                                        <a href="{{ route('admin.central-points.create') }}">Create Central Point</a>--}}
+{{--                                    </li>--}}
+{{--                                @endif--}}
 
-                            </ul>
-                        </li>
-                    @endif
-                    <!--Central End-->
+{{--                            </ul>--}}
+{{--                        </li>--}}
+{{--                    @endif--}}
+{{--                    <!--Central End-->--}}
                         <!-- District Section-->
                     @if ($usr->can('district.view') || $usr->can('district.edit') || $usr->can('district.delete') || $usr->can('district.create'))
                         <li>

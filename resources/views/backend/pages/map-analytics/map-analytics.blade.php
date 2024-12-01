@@ -39,19 +39,33 @@
             <div class="col-lg-3" style="height: 70vh;">
                 <div class="card mt-5 mb-3" style="background-color: white;">
                     <div class="p-4">
-                        <!-- Central Point Select -->
+                        <!--range-->
                         <div class="form-group mb-4">
-                            <label for="select-central-point" class="form-label"
-                                   style="font-weight: 500; font-size: 14px; color: #464A4D;">Select Central Point</label>
-                            <select id="select-central-point" class="form-control"
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <input type="checkbox" id="enable-district-range">
+                                <label for="enable-district-range" style="margin-bottom: 0;">District Market Share (%)</label>
+                            </div>
+                            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                <input type="number" id="district-share-min" class="form-control" placeholder="Min" min="0" disabled
+                                       style="height: 40px; font-size: 14px; color: #464A4D; border: 1px solid #dcdcdc; border-radius: 4px; background-color: #f8f9fa;">
+                                <input type="number" id="district-share-max" class="form-control" placeholder="Max" min="0" disabled
+                                       style="height: 40px; font-size: 14px; color: #464A4D; border: 1px solid #dcdcdc; border-radius: 4px; background-color: #f8f9fa;">
+                            </div>
+                        </div>
+
+                        <!-- District Select -->
+                        <div class="form-group mb-4">
+                            <label for="select-district" class="form-label"
+                                   style="font-weight: 500; font-size: 14px; color: #464A4D;">Select District</label>
+                            <select id="select-district" class="form-control"
                                     style="height: 40px; font-size: 14px; color: #464A4D; border: 1px solid #dcdcdc; border-radius: 4px; background-color: #fff;">
                                 <option value="" disabled selected>Select</option>
-                                <option value="all">All Central Points</option>
-                                @foreach ($centralPoints as $centralPoint)
-                                    <option value="{{ $centralPoint['id'] }}" data-lat="{{ $centralPoint['latitude'] }}"
-                                            data-lng="{{ $centralPoint['longitude'] }}"
-                                            data-district="{{ $centralPoint['district'] }}">
-                                        {{ $centralPoint['name'] }}
+                                <option value="all">All Districts</option>
+                                @foreach ($districts as $district)
+                                    <option value="{{ $district['id'] }}" data-lat="{{ $district['latitude'] }}"
+                                            data-lng="{{ $district['longitude'] }}"
+                                            data-district="{{ $district['district'] }}">
+                                        {{ $district['name'] }}
                                     </option>
                                 @endforeach
                             </select>
@@ -74,7 +88,7 @@
                             <!-- Legend items -->
                             <div class="legend-item" style="display: flex; align-items: center; margin-bottom: 4px;">
                                 <div class="legend-icon" style="background-image: url('{{ asset('images/pharmacy.png') }}'); width: 20px; height: 20px; background-size: contain; margin-right: 5px;"></div>
-                                <span class="legend-label">Central Point</span>
+                                <span class="legend-label">District</span>
                             </div>
                             <div class="legend-item" style="display: flex; align-items: center; margin-bottom: 4px;">
                                 <div class="legend-icon" style="background-image: url('{{asset('images/dealer-2.png')}}'); width: 20px; height: 20px; background-size: contain; margin-right: 5px;"></div>
@@ -118,6 +132,7 @@
 
     <script>
 
+
         bkoigl.accessToken = "{{ env('BARIKOI_API_KEY') }}"; // Pass the environment variable to JavaScript
         const map = new bkoigl.Map({
             container: "map",
@@ -130,7 +145,7 @@
 
 
 
-        const centralPoints = @json($centralPoints);
+        const districts = @json($districts);
         const dealers = @json($dealers);
         const retailers = @json($retailers);
         const billboards = @json($billboards);
@@ -143,7 +158,7 @@
         const highwallsByDistrict =@json($highwallsByDistrict);
 
         console.log('dhaka' + shopsignsByDistrict['Dhaka']);
-        const centralIconUrl = '{{ asset('images/pharmacy.png') }}'; // Branch icon for central points
+        const districtIconUrl = '{{ asset('images/pharmacy.png') }}'; // Branch icon for district points
         const dealerIconUrl = '{{ asset('images/dealer-2.png') }}'; // Red icon for dealers
         const retailerIconUrl = '{{ asset('images/retailer.png') }}'; // Blue icon for retailers
         const billboardIconUrl = '{{ asset('images/billboard.png') }}'; // Blue icon for retailers
@@ -151,7 +166,7 @@
         const highwallIconUrl = '{{ asset('images/3415475.png') }}'; // Blue icon for retailers
 
 
-        let centralPointsLayer = []; // Layer for central points
+        let districtsLayer = []; // Layer for district points
         let dealerMarkersLayer = []; // Layer for dealer markers
         let retailerMarkersLayer = []; // Layer for retailer markers
         let billboardMarkersLayer = []; // Layer for billboard markers
@@ -172,10 +187,10 @@
             return markerElement;
         }
 
-        // Function to add central points to the map (Always visible)
-        function addCentralPoints() {
-            centralPoints.forEach(point => {
-                const marker = new bkoigl.Marker({element: createCustomMarkerElement(centralIconUrl)})
+        // Function to add district points to the map (Always visible)
+        function addDistricts() {
+            districts.forEach(point => {
+                const marker = new bkoigl.Marker({element: createCustomMarkerElement(districtIconUrl)})
                     .setLngLat([point.longitude, point.latitude])
                     .setPopup(new bkoigl.Popup().setHTML(`
 <div style="background-color: lightblue; padding: 10px;">
@@ -184,7 +199,7 @@
 </div>
                 `))
                     .addTo(map);
-                centralPointsLayer.push(marker); // Store central points markers to a separate layer
+                districtsLayer.push(marker); // Store district points markers to a separate layer
             });
         }
 
@@ -255,11 +270,11 @@
 
                 // Add popup and click event logic as before
                 marker.getElement().addEventListener('click', function () {
-                    const selectedCentralPointId = document.getElementById('select-central-point').value;
-                    if (selectedCentralPointId && selectedCentralPointId !== 'all') {
-                        const selectedCentralPoint = centralPoints.find(point => point.id == selectedCentralPointId);
+                    const selectedDistrictId = document.getElementById('select-district').value;
+                    if (selectedDistrictId && selectedDistrictId !== 'all') {
+                        const selectedDistrict = districts.find(point => point.id == selectedDistrictId);
                         const distance = calculateDistance(
-                            selectedCentralPoint.latitude, selectedCentralPoint.longitude,
+                            selectedDistrict.latitude, selectedDistrict.longitude,
                             point.latitude, point.longitude
                         );
 
@@ -267,7 +282,7 @@
     <div style="background-color: lightblue; padding: 10px;">
         <div><strong>Name: </strong>${point.name}</div>
         <div><strong>Location:</strong> ${point.location || 'N/A'}</div>
-        <div><strong>Distance from ${selectedCentralPoint.name}:</strong> ${distance.toFixed(2)} km</div>
+        <div><strong>Distance from District ${selectedDistrict.name}:</strong> ${distance.toFixed(2)} km</div>
         ${point.size ? `<div><strong>Size:</strong> ${point.size}</div>` : ''}
         ${point.type ? `
             <div><strong>Type:</strong>
@@ -423,12 +438,12 @@
         }
 
 
-        // Event listener for central point selection
-        document.getElementById('select-central-point').addEventListener('change', function () {
-            const selectedCentralPoint = this.value;
+        // Event listener for district point selection
+        document.getElementById('select-district').addEventListener('change', function () {
+            const selectedDistrict = this.value;
 
-            // If "All" is selected in the central point dropdown
-            if (selectedCentralPoint === 'all') {
+            // If "All" is selected in the district point dropdown
+            if (selectedDistrict === 'all') {
                 map.flyTo({
                     center: [90.3938010872331, 23.821600277500405], // Center of the country/region
                     zoom: 6.5, // Adjust zoom level to show all points
@@ -454,7 +469,7 @@
             const lng = parseFloat(this.options[this.selectedIndex].dataset.lng);  // Ensure lng is a number
             const district = this.options[this.selectedIndex].dataset.district;
 
-            // Fly to the selected central point and zoom in
+            // Fly to the selected district point and zoom in
             map.flyTo({
                 center: [lng, lat],
                 zoom: 11, // Adjust zoom level as needed
@@ -471,11 +486,11 @@
         // Event listener for data type selection
         document.getElementById('select-data-type').addEventListener('change', function () {
             const selectedDataType = this.value;
-            const selectedCentralPoint = document.getElementById('select-central-point').value;
+            const selectedDistrict = document.getElementById('select-district').value;
 
             // If "All" is selected in the data type dropdown
             if (selectedDataType === 'all') {
-                const district = selectedCentralPoint === 'all' ? '' : document.querySelector(`#select-central-point option[value="${selectedCentralPoint}"]`).getAttribute('data-district');
+                const district = selectedDistrict === 'all' ? '' : document.querySelector(`#select-district option[value="${selectedDistrict}"]`).getAttribute('data-district');
 
                 // Show all markers (dealers, retailers, billboards)
                 addDistrictMarkers('dealers', district);
@@ -484,7 +499,7 @@
                 addDistrictMarkers('shopsigns', district);
                 addDistrictMarkers('highwalls', district);
             } else {
-                const district = selectedCentralPoint === 'all' ? '' : document.querySelector(`#select-central-point option[value="${selectedCentralPoint}"]`).getAttribute('data-district');
+                const district = selectedDistrict === 'all' ? '' : document.querySelector(`#select-district option[value="${selectedDistrict}"]`).getAttribute('data-district');
                 clearDataTypeMarkers();
                 addDistrictMarkers(selectedDataType, district);
             }
@@ -492,6 +507,7 @@
 
         // Function to clear all data type markers from the map
         function clearDataTypeMarkers() {
+            console.log('clear')
             dealerMarkersLayer.forEach(marker => marker.remove());
             retailerMarkersLayer.forEach(marker => marker.remove());
             billboardMarkersLayer.forEach(marker => marker.remove());
@@ -504,8 +520,60 @@
             highwalldMarkersLayer = [];
         }
 
-        // Initialize the map with central points
-        addCentralPoints();
+        // Initialize the map with district points
+        addDistricts();
         populateDataTypeDropdown('');
+        document.getElementById('enable-district-range').addEventListener('change', function () {
+            const isChecked = this.checked;
+            const minInput = document.getElementById('district-share-min');
+            const maxInput = document.getElementById('district-share-max');
+
+            // Enable/disable inputs and change background color
+            minInput.disabled = !isChecked;
+            maxInput.disabled = !isChecked;
+            minInput.style.backgroundColor = isChecked ? '#fff' : '#f8f9fa';
+            maxInput.style.backgroundColor = isChecked ? '#fff' : '#f8f9fa';
+
+            // Clear values if unchecked
+            if (!isChecked) {
+                console.log(isChecked)
+                clearDataTypeMarkers()
+                populateDataTypeDropdown()
+                minInput.value = '';
+                maxInput.value = '';
+            }
+        });
+        // Event listener for min and max input changes
+        document.getElementById('district-share-min').addEventListener('input', filterDistrictsByShare);
+        document.getElementById('district-share-max').addEventListener('input', filterDistrictsByShare);
+
+        function filterDistrictsByShare() {
+            const minShare = parseFloat(document.getElementById('district-share-min').value) || 0;
+            const maxShare = parseFloat(document.getElementById('district-share-max').value) || Number.MAX_VALUE;
+
+            const districtSelect = document.getElementById('select-district');
+            districtSelect.innerHTML = ''; // Clear existing options
+
+            const defaultOption = document.createElement('option');
+            defaultOption.value = 'all';
+            defaultOption.textContent = 'All Districts';
+            districtSelect.appendChild(defaultOption);
+
+            districts.forEach(district => {
+                const share = district.market_share || 0; // Assuming `market_share` is a field in your district data
+
+                if (share >= minShare && share <= maxShare) {
+                    const option = document.createElement('option');
+                    option.value = district.id;
+                    option.textContent = `${district.name} (${share}%)`;
+                    option.dataset.lat = district.latitude;
+                    option.dataset.lng = district.longitude;
+                    option.dataset.district = district.name;
+                    districtSelect.appendChild(option);
+                }
+            });
+        }
+
+        ////////////
     </script>
 @endsection
