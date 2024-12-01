@@ -224,7 +224,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/resources/views/backend/pages/map-analytics/map-analytics.blade.php</url>
-          <line>132</line>
+          <line>124</line>
           <option name="timeStamp" value="10" />
         </line-breakpoint>
       </breakpoints>

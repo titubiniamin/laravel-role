@@ -59,15 +59,7 @@
                                    style="font-weight: 500; font-size: 14px; color: #464A4D;">Select District</label>
                             <select id="select-district" name="select-district" class="form-control"
                                     style="height: 40px; font-size: 14px; color: #464A4D; border: 1px solid #dcdcdc; border-radius: 4px; background-color: #fff;">
-                                <option value="" disabled selected>Select</option>
-                                <option value="all">All Districts</option>
-                                @foreach ($districts as $district)
-                                    <option value="{{ $district['id'] }}" data-lat="{{ $district['latitude'] }}"
-                                            data-lng="{{ $district['longitude'] }}"
-                                            data-district="{{ $district['district'] }}">
-                                        {{ $district['name'] }}
-                                    </option>
-                                @endforeach
+
                             </select>
                         </div>
 
@@ -534,11 +526,24 @@
             minInput.style.backgroundColor = isChecked ? '#fff' : '#f8f9fa';
             maxInput.style.backgroundColor = isChecked ? '#fff' : '#f8f9fa';
 
-            // Clear values if unchecked
+            if(isChecked){
+                clearDataTypeMarkers();
+            }
+
+            // Clear values if unchecked set default dropdown list and default map view
             if (!isChecked) {
                 console.log(isChecked)
                 clearDataTypeMarkers()
                 populateDataTypeDropdown('')
+                const districtSelectInput = document.getElementById('select-district');
+                districtSelectInput.innerHTML = '';
+                createDistrictSelect(districts);
+                map.flyTo({
+                    center: [90.3938010872331, 23.821600277500405], // Center of the country/region
+                    zoom: 6.5, // Adjust zoom level to show all points
+                    essential: true // Ensures the animation runs even in non-interactive contexts (like page load)
+                });
+
                 minInput.value = '';
                 maxInput.value = '';
             }
@@ -575,7 +580,37 @@
                 }
             });
         }
+        ///District Drop down list
+        function createDistrictSelect(districts) {
+            const selectElement = document.getElementById('select-district');
 
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.disabled = true;
+            defaultOption.selected = true;
+            defaultOption.textContent = 'Select';
+            selectElement.appendChild(defaultOption);
+
+            const allDistrictsOption = document.createElement('option');
+            allDistrictsOption.value = 'all';
+            allDistrictsOption.textContent = 'All Districts';
+            selectElement.appendChild(allDistrictsOption);
+
+            districts.forEach(district => {
+                const option = document.createElement('option');
+                option.value = district.id;
+                option.setAttribute('data-lat', district.latitude);
+                option.setAttribute('data-lng', district.longitude);
+                option.setAttribute('data-district', district.district);
+                option.textContent = `${district.name} (${district.market_share})`
+
+                selectElement.appendChild(option);
+            });
+
+            // document.body.appendChild(selectElement);
+        }
+
+        createDistrictSelect(districts);
         ////////////
     </script>
 @endsection
